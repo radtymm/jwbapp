@@ -175,7 +175,7 @@ class MinePage extends React.Component {
 
     render() {
         let that = this;
-        let imageSrc = require("../images/headDef.png");
+        let imageSrc = require("../images/headDef.jpg");
         if (this.state.res.code && this.state.res.code.avatar != null){
             imageSrc = {uri: 'http://cdn.jiaowangba.com/' + this.state.res.code.avatar};
         }

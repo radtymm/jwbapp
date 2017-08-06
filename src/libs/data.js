@@ -23,6 +23,24 @@ for (let i=40; i < 100; i++ ){
     weight.push(strHeight);
 }
 
+// let year = [];
+// for (let i=1950; i < 2010; i++ ){
+//     let strHeight = i ;
+//     year.push(strHeight);
+// }
+//
+// let mouth = [];
+// for (let i=1; i < 13; i++ ){
+//     let strHeight = i ;
+//     mouth.push(strHeight);
+// }
+//
+// let day = [];
+// for (let i=1950; i < 2010; i++ ){
+//     let strHeight = i ;
+//     day.push(strHeight);
+// }
+
 let income = ["1千-5千/月", "5千-1万/月", "1万-2万/月", "2万-3万/月", "3万-5万/月", "5万以上/月"];
 
 let house = ["租房", "已购房", "单位宿舍", "和家人同住", ];
