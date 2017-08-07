@@ -102,7 +102,7 @@ class PageLikeMe extends React.Component {
                             if (item.users == null){
                                 return;
                             }
-                            let src = require('../images/headDef.png');
+                            let src = require('../images/headDef.jpg');
                             if (item.users.avatar){
                                 src = {uri: 'http://cdn.jiaowangba.com/' + item.users.avatar};
                             }

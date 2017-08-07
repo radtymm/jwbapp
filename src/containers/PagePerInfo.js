@@ -24,11 +24,12 @@ class PagePerInfo extends React.Component {
     constructor(props, context) {
         super(props, context);
         let {params} = this.props.navigation.state;
+        console.log(JSON.stringify(params));
         this.state = {
             page:0,
             data:[],
             isRefreshing:false,
-            live:params.live,
+            // live:params.live,
             nickname:params.nickname,
             wechat:params.wechat,
             occupation:params.occupation,
@@ -38,6 +39,7 @@ class PagePerInfo extends React.Component {
             height:params.height + "厘米",
             weight:params.weight + "公斤",
             income:params.income,
+            birthdate:params.birthdate,
             house:params.house,
             idea:params.idea,
             area:params.area,
@@ -119,11 +121,11 @@ class PagePerInfo extends React.Component {
             }
         }
 
-        let {house_type} = this.props.navigation.state.params;
-        let house = "Tenement";
-        for (let i in house_type) {
-            if (this.state.house == house_type[i]) {
-                house = i;
+        let {house_type} = this.props.navigation.state.params;//获取type
+        let house = "Tenement"; //默认值，
+        for (let i in house_type) {//遍历
+            if (this.state.house == house_type[i]) {//如果value相同
+                house = i; // 获取value相同的type
             }
         }
 
@@ -131,7 +133,7 @@ class PagePerInfo extends React.Component {
         let height = this.state.height?this.state.height.substring(0, this.state.height.length-2):null;
 
         console.log(`https://app.jiaowangba.com/mine_info?nickname=${this.state.nickname}&live=${this.state.live}&hometown=${this.state.hometown}&wechat=${this.state.wechat}&marry=${marry}&occupation=${this.state.occupation}&education=${education}&height=${height}&weight=${weight}&income=${this.state.income}&house=${house}&idea=${this.state.idea}`);
-        requestData(`https://app.jiaowangba.com/mine_info?nickname=${this.state.nickname}&live=${this.state.live}&hometown=${this.state.hometown}&wechat=${this.state.wechat}&marry=${marry}&occupation=${this.state.occupation}&education=${education}&height=${height}&weight=${weight}&income=${this.state.income}&house=${house}&idea=${this.state.idea}`, (res)=>{
+        requestData(`https://app.jiaowangba.com/mine_info?nickname=${this.state.nickname}&wechat=${this.state.wechat}&marry=${marry}&occupation=${this.state.occupation}&education=${education}&height=${height}&weight=${weight}&income=${this.state.income}&house=${house}&idea=${this.state.idea}`, (res)=>{
             if (res.status == "success"){
                 Alert.alert("提示", "保存个人信息成功", [{text:"确定", onPress:()=>{
                     this.props.navigation.state.params.refresh();

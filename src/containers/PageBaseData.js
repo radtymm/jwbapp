@@ -139,7 +139,7 @@ class PageBaseData extends React.Component {
 
     render() {
 
-        let imageSrc = require("../images/headDef.png");
+        let imageSrc = require("../images/headDef.jpg");
         if (this.props.navigation.state.params && this.props.navigation.state.params.avatar != null){
             imageSrc = {uri: 'http://cdn.jiaowangba.com/' + this.props.navigation.state.params.avatar};
         }
