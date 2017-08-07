@@ -21,7 +21,7 @@ class HomePage extends React.Component {
     static navigationOptions = ({navigation, screenProps}) =>({
         headerTitle: "相遇",
         headerStyle: styles.homePage.headerStyle,
-        tabBarLabel: ()=><TouchableOpacity onPress={()=>{
+        tabBarLabel: ()=><TouchableOpacity style={styles.tabbar.iconTextTouch} onPress={()=>{
             navigation.navigate("HomePage");
             navigation.state.params.navigatePress();}}>
             <Text>相遇</Text>
@@ -77,7 +77,6 @@ class HomePage extends React.Component {
         let that = this;
         that.setState({isRefreshing: true});
         requestData('https://app.jiaowangba.com/?page=1', (res) => {
-            console.log(JSON.stringify(res));
             if (res.status == 'success') {
                 that.setState({data: res.code.data, page:1, isRefreshing:false});
             }else {

@@ -63,7 +63,8 @@ class PageVip extends React.Component {
 
     render() {
         let {params} = this.props.navigation.state;
-        let isVipTime = params.vip_time == null? "您暂时未加入VIP" : params.vip_time;
+        console.log(JSON.stringify(params));
+        let isVipTime = params.vip_time? "您暂时未加入VIP" : params.vip_time;
 
         return (
             <ScrollView style={{flex: 1, backgroundColor:"#fff"}}>

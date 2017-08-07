@@ -28,7 +28,6 @@ class Login extends React.Component {
 
     componentDidMount(){
         requestData(`https://app.jiaowangba.com/login?telephone=${this.state.tel}&password=${this.state.pwd}`, (res)=>{
-            console.log(JSON.stringify(res));
             if (res.status != "error") {
                 this.props.navigation.navigate('Tab');
                 return;
@@ -53,7 +52,6 @@ class Login extends React.Component {
               return;
           }
           requestData(`https://app.jiaowangba.com/login?telephone=${this.state.tel}&password=${this.state.pwd}`, (res)=>{
-              console.log(JSON.stringify(res));
               if (res.status != "error") {
                   that.props.navigation.navigate('Tab');
                   return;

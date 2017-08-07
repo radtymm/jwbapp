@@ -21,9 +21,10 @@ class Live extends React.Component {
     static navigationOptions = ({navigation, screenProps}) =>({
         headerTitle: "同城",
         headerStyle: styles.homePage.headerStyle,
-        tabBarLabel: ()=><TouchableOpacity onPress={()=>{
+        tabBarLabel: ()=><TouchableOpacity  onPress={()=>{
             navigation.navigate("Live");
-            navigation.state.param();}}>
+            navigation.state.param();}}
+            style={styles.tabbar.iconTextTouch}>
             <Text>同城</Text>
         </TouchableOpacity>,
         // Note: By default the icon is only shown on iOS. Search the showIcon option below.
@@ -121,8 +122,8 @@ class Live extends React.Component {
                         renderItem={({item}) => {
                             return (
                                 <TouchableOpacity style={styles.live.flatTouch} onPress={() => this.props.navigation.navigate('PageBaseData', item)}>
-                                    <View style={styles.homePage.item}>
-                                        <Image resizeMode="cover" style={ styles.live.headImage}
+                                    <View style={styles.live.itemView}>
+                                        <Image resizeMode="cover" style={styles.live.headImage}
                                            source={{uri: 'http://cdn.jiaowangba.com/' + item.avatar}}/>
                                         <View style={styles.live.realnameView}>
                                             <Text style={styles.live.realname}>{item.nickname}</Text>

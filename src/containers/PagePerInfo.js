@@ -48,8 +48,10 @@ class PagePerInfo extends React.Component {
         navigator.geolocation.getCurrentPosition(
          (position) => {
            let initialPosition = JSON.stringify(position);
-           this.setState({initialPosition});
-           alert(initialPosition);
+             requestData(`https://app.jiaowangba.com/mine_info?lng=${initialPosition.longitude}&lat=${initialPosition.latitude}`, (res)=>{
+                 if (res.status == "success"){
+                 }
+             });
          },
          (error) => alert(JSON.stringify(error)),
          {enableHighAccuracy: false, timeout: 20000, maximumAge: 1000}
@@ -105,8 +107,6 @@ class PagePerInfo extends React.Component {
         let education = "Other";
         for (let i in education_type) {
             if (this.state.education == education_type[i]) {
-                console.log(this.state.education);
-                console.log(education_type[i]);
                 education = i;
             }
         }

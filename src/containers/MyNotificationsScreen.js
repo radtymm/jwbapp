@@ -12,7 +12,7 @@ class MyNotificationsScreen extends React.Component {
   static navigationOptions = {
       headerTitle:"消息",
       headerStyle:styles.homePage.headerStyle,
-    tabBarLabel: ()=><Text>我的</Text>,
+    tabBarLabel: ()=><View style={styles.tabbar.iconTextTouch}><Text>消息</Text></View>,
     tabBarIcon: ({ tintColor }) => (
       <Image
         source={require('../images/chat_list.png')}

@@ -30,7 +30,7 @@ class MinePage extends React.Component {
         headerMode: "none",
         headerTitle: "我的",
         headerStyle: styles.homePage.headerStyle,
-        tabBarLabel: ()=><Text>我的</Text>,
+        tabBarLabel: ()=><View style={styles.tabbar.iconTextTouch}><Text>我的</Text></View>,
         // Note: By default the icon is only shown on iOS. Search the showIcon option below.
         tabBarIcon: ({tintColor}) => (
             <Image
@@ -60,9 +60,13 @@ class MinePage extends React.Component {
     }
 
     refresh(){
+        console.log('rrrrrrrrrrrrrrr');
         requestData("http://app.jiaowangba.com/info", (res) => {
+            console.log(JSON.stringify(res));
+
             if (res.status == "success"){
                 this.setState({res: res});
+                console.log(JSON.stringify(res));
             }else {
                 Alert.alert("提示", "个人信息获取失败");
             }
@@ -159,6 +163,7 @@ class MinePage extends React.Component {
                                 perInfoParams.refresh = this.refresh;
                                 this.props.navigation.navigate(item.navi, perInfoParams);
                             }else{
+                                console.log(JSON.stringify(this.state.res.code));
                                 this.props.navigation.navigate(item.navi, this.state.res.code);
                             }
                         }}>

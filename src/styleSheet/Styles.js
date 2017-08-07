@@ -1,6 +1,7 @@
-import {StyleSheet, Dimensions, PixelRatio} from 'react-native';
+import {StyleSheet, Dimensions, PixelRatio, Platform} from 'react-native';
 const WIDTH = Dimensions.get('window').width;
 const HEIGHT = Dimensions.get('window').height;
+let isIOS = (Platform.OS === 'ios');
 let fontScale = PixelRatio.getFontScale();
 let pixelRatioGet = PixelRatio.get();
 const defaultPixel = 2;
@@ -57,6 +58,7 @@ const live = StyleSheet.create({
     icon: {width: 30, height: 30,},
     liveInImg:{ width:setScaleSize(32), height:setScaleSize(42), position:'absolute', left:setScaleSize(30), bottom:setScaleSize(20),},
     item: {width: (WIDTH / 2), backgroundColor: "red",},
+    itemView: { margin:5,  backgroundColor: '#fff', width: (WIDTH-setScaleSize(40)), },
     headImage: {width:(WIDTH - setScaleSize(40)), height:(WIDTH - setScaleSize(40))},
     imgInnerView:{ flexDirection:"row",},
     innerText:{color:"#fff",  fontSize:setScaleSize(24),},
@@ -65,7 +67,7 @@ const live = StyleSheet.create({
     innerViewMar:{marginLeft:setScaleSize(20), height:setScaleSize(36), width:setScaleSize(80), justifyContent:'center', alignItems:'center',backgroundColor:"#d5519e", borderRadius:setScaleSize(4), },
     realname: {fontSize: setScaleSize(28),  color: '#333', margin: setScaleSize(20),},
     realnameView:{ },
-    flatTouch:{marginLeft:setScaleSize(20), marginRight:setScaleSize(20), marginTop:setScaleSize(20), },
+    flatTouch:{overflow:'hidden', marginLeft:setScaleSize(20), marginRight:setScaleSize(20), marginTop:setScaleSize(20), },
     // sectionParentView: {flex: 1, },
     titleTotalView: {height: 100, backgroundColor: '#e74f7b',},
     messageTitleTotalView: {backgroundColor: '#e74f7b',},
@@ -81,12 +83,13 @@ const live = StyleSheet.create({
 const tabbar = StyleSheet.create({
     container: {flex: 1,},
     icon: {width: 22, height: 22,},
+    iconTextTouch:{flex:1, justifyContent: 'center', alignItems: 'center', },
 });
 const pageLuck = StyleSheet.create({
     heartView: { marginTop:setScaleSize(80),  flexDirection:'row', justifyContent:'space-around', alignItems:'center'},
     heartImg: {width: setScaleSize(152), height: setScaleSize(152), marginLeft:setScaleSize(15), marginRight:setScaleSize(15), },
     bodyView:{padding:setScaleSize(20), alignItems:"center", },
-    bottomView:{width:setScaleSize(660), height:setScaleSize(18), backgroundColor:"#fff", borderBottomLeftRadius:setScaleSize(8),  borderBottomRightRadius:setScaleSize(8),},
+    bottomView:{shadowColor:"#ebebeb", shadowRadius:setScaleSize(4), shadowOffset:{width:setScaleSize(4), height:setScaleSize(2),},width:setScaleSize(660), height:setScaleSize(18), backgroundColor:"#fff", borderBottomLeftRadius:setScaleSize(8),  borderBottomRightRadius:setScaleSize(8),},
     headTouch:{borderRadius:setScaleSize(8),},
     headImageLuck:{borderTopLeftRadius:setScaleSize(10), borderTopRightRadius:setScaleSize(10), width:(WIDTH - setScaleSize(40)), height:(WIDTH - setScaleSize(40)), },
     nameView:{margin:setScaleSize(20)},
@@ -149,7 +152,7 @@ const PageBaseData = StyleSheet.create({
 });
 const pageLogin = StyleSheet.create({
     container: {flex: 1, paddingTop:setScaleSize(234), paddingLeft: setScaleSize(85), paddingRight: setScaleSize(85), justifyContent: 'flex-start',  backgroundColor: "#0e6"},
-    input: {fontSize: setScaleSize(30), color: "#fff", padding: 0,},
+    input: {height:setScaleSize(34), fontSize: setScaleSize(30), color: "#fff", padding: 0,},
     inputView:{borderBottomWidth: 1, borderBottomColor: '#fff', paddingBottom:setScaleSize(20), },
     icon: {width: 26, height: 26,},
     submit: {marginTop: setScaleSize(100),borderRadius:setScaleSize(2), borderWidth: 1,borderColor: "#fff",height: setScaleSize(90),justifyContent: "center",alignItems: "center",},
