@@ -66,8 +66,8 @@ const live = StyleSheet.create({
     imgInnerView:{ flexDirection:"row",},
     innerText:{color:"#fff",  fontSize:setScaleSize(24),},
     innerViewAge:{marginLeft:setScaleSize(20), marginBottom:setScaleSize(20), height:setScaleSize(36), width:setScaleSize(80), justifyContent:'center', alignItems:'center',backgroundColor:"#669ce3", borderRadius:setScaleSize(4), },
-    innerViewEdu:{marginLeft:setScaleSize(20), height:setScaleSize(36), width:setScaleSize(100), justifyContent:'center', alignItems:'center',backgroundColor:"#32ad19", borderRadius:setScaleSize(4), },
-    innerViewMar:{marginLeft:setScaleSize(20), height:setScaleSize(36), width:setScaleSize(80), justifyContent:'center', alignItems:'center',backgroundColor:"#d5519e", borderRadius:setScaleSize(4), },
+    innerViewEdu:{marginLeft:setScaleSize(20), marginBottom:setScaleSize(20), height:setScaleSize(36), width:setScaleSize(100), justifyContent:'center', alignItems:'center',backgroundColor:"#32ad19", borderRadius:setScaleSize(4), },
+    innerViewMar:{marginLeft:setScaleSize(20), marginBottom:setScaleSize(20), height:setScaleSize(36), width:setScaleSize(80), justifyContent:'center', alignItems:'center',backgroundColor:"#d5519e", borderRadius:setScaleSize(4), },
     realname: {fontSize: setScaleSize(28),  color: '#333', margin: setScaleSize(20),},
     realnameView:{ },
     flatTouch:{overflow:'hidden', marginLeft:setScaleSize(20), marginRight:setScaleSize(20), marginTop:setScaleSize(20), },
@@ -154,7 +154,7 @@ const PageBaseData = StyleSheet.create({
     content: {fontSize:17, paddingRight: 25, color:"#888"},
 });
 const pageLogin = StyleSheet.create({
-    container: {flex: 1, paddingTop:setScaleSize(234), paddingLeft: setScaleSize(85), paddingRight: setScaleSize(85), justifyContent: 'flex-start',  backgroundColor: "#0e6"},
+    container: {width: WIDTH, height:HEIGHT, paddingTop:setScaleSize(234), paddingLeft: setScaleSize(85), paddingRight: setScaleSize(85), justifyContent: 'flex-start',  backgroundColor: "rgba(0, 0, 0, 0.4)",  position:'absolute', top:0, },
     input: {height:setScaleSize(34), fontSize: setScaleSize(30), color: "#fff", padding: 0,},
     inputView:{borderBottomWidth: 1, borderBottomColor: '#fff', paddingBottom:setScaleSize(20), },
     icon: {width: 26, height: 26,},
@@ -164,6 +164,8 @@ const pageLogin = StyleSheet.create({
     forgetpwdText:{fontSize:setScaleSize(22), color:"#fff", },
 });
 const PageRegister = StyleSheet.create({
+    containerView: {width: WIDTH, height:HEIGHT, justifyContent: 'flex-start',  backgroundColor: "rgba(0, 0, 0, 0.4)",  position:'absolute', top:0, },
+    container: {flex:1, paddingTop:setScaleSize(234), paddingLeft: setScaleSize(85), paddingRight: setScaleSize(85), justifyContent: 'flex-start',},
     sexBtnView: {height: setScaleSize(90), flexDirection: "row",  marginTop: setScaleSize(50)},
     sexText: {textAlign: "center", alignItems: "center", color:'#fff', fontSize:setScaleSize(30)},
     submitText: {textAlign: "center", color: "#fff", fontSize: setScaleSize(24),},
@@ -184,8 +186,9 @@ const PagePerInfo = StyleSheet.create({
     introduce:{height:setScaleSize(280), flex:1, borderWidth:1, borderColor:"#ebebeb", color:"#888", alignItems:"flex-start", justifyContent:"flex-start", fontSize:setScaleSize(28)},
     footerView:{ padding:setScaleSize(20), paddingTop:setScaleSize(40), paddingBottom:setScaleSize(40),},
     footBtn:{width:setScaleSize(260), marginLeft:setScaleSize(10), marginRight:setScaleSize(10), height:setScaleSize(88), borderWidth:1, borderColor:"#E7507D", borderRadius:setScaleSize(4), justifyContent:"center", alignItems:"center",},
-    itemTextInput:{color:"rgb(85, 85, 85)", width:120, textAlign:"left", justifyContent:"center", alignItems:'flex-end', height:40,  },
-    picker:{ width:120, height:40, flex:1, justifyContent:"flex-end", alignItems:'flex-end', },
+    itemTextInput:{fontSize:setScaleSize(28), color:"#888", width:150, textAlign:"right", alignItems:'flex-end', height:40,  },
+    areaDate:{fontSize:setScaleSize(28), color:"#888", },
+    picker:{ color:"#888", width:setScaleSize(28*6), height:40, flex:1, justifyContent:"flex-end", alignItems:'flex-end', },
     pickerItem:{width:30},
     pickerArea:{ width:120, height:40, color:"rgb(85, 85, 85)",},
 });

@@ -77,7 +77,7 @@ class PageLuck extends React.Component {
                         <Text style={styles.pageLuck.nameText}>{this.state.data.nickname?this.state.data.nickname:""}</Text>
                     </View>
                     <View style={styles.pageLuck.ageLiveEduView}>
-                        <View style={styles.pageLuck.ageView}><Text style={styles.pageLuck.ageLiveEdu}>{(this.state.data.age=="Unknown")?"100岁":(this.state.data.age+'岁')}</Text></View>
+                        <View style={styles.pageLuck.ageView}><Text style={styles.pageLuck.ageLiveEdu}>{(this.state.data.age=="Unknown")?"":(this.state.data.age+'岁')}</Text></View>
                         <View style={styles.pageLuck.liveView}><Text style={styles.pageLuck.ageLiveEdu}>{this.state.data.live}</Text></View>
                         <View style={styles.pageLuck.eduView}><Text style={styles.pageLuck.ageLiveEdu}>{this.state.data.education}</Text></View>
                     </View>

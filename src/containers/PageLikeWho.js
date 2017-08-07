@@ -117,9 +117,9 @@ class PageLikeWho extends React.Component {
                                         <View style={styles.pageLikeWho.itemTextView}>
                                             <View style={{flex:1, flexDirection:"row", justifyContent:'space-between'}}>
                                                 <Text style={styles.pageLikeWho.realname}>{item.users.nickname}</Text>
-                                                <Text style={styles.pageLikeWho.timeago}>5 分钟前</Text>
+                                                <Text style={styles.pageLikeWho.timeago}>{item.like_time}</Text>
                                             </View>
-                                            <Text style={styles.pageLikeWho.liveage}>{(item.users.age!="Unknown")?(item.users.age + "岁"):"100岁" }&nbsp;&nbsp;{item.users.live}</Text>
+                                            <Text style={styles.pageLikeWho.liveage}>{(item.users.age!="Unknown")?(item.users.age + "岁" + "&nbsp;&nbsp;"):"" }{item.users.live}</Text>
                                         </View>
                                     </View>
                                 </TouchableOpacity>

@@ -60,7 +60,7 @@ class MinePage extends React.Component {
     }
 
     refresh(){
-        requestData("http://app.jiaowangba.com/info", (res) => {
+        requestData("https://app.jiaowangba.com/info", (res) => {
             if (res.status == "success"){
                 this.setState({res: res});
             }else {

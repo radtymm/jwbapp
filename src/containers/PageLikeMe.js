@@ -116,7 +116,7 @@ class PageLikeMe extends React.Component {
                                                 <Text style={styles.pageLikeWho.realname}>{item.users.nickname}</Text>
                                                 <Text style={styles.pageLikeWho.timeago}>5 分钟前</Text>
                                             </View>
-                                            <Text style={styles.pageLikeWho.liveage}>{item.users.age!="Unknown"?(item.users.age + "岁"):"100岁" }&nbsp;&nbsp;{item.users.live}</Text>
+                                            <Text style={styles.pageLikeWho.liveage}>{(item.users.age!="Unknown")?(item.users.age + "岁" + "&nbsp;&nbsp;"):"" }{item.users.live}</Text>
                                         </View>
                                     </View>
                                 </TouchableOpacity>

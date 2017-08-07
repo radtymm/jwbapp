@@ -129,7 +129,7 @@ class Live extends React.Component {
                                         <View style={styles.live.realnameView}>
                                             <Text style={styles.live.realname}>{item.nickname}</Text>
                                             <View style={styles.live.imgInnerView}>
-                                                <View style={[styles.live.innerViewAge, ]}><Text style={styles.live.innerText}>{item.age != 'Unknown'? item.age + "岁" : "100岁"}</Text></View>
+                                                {item.age != 'Unknown'?<View style={[styles.live.innerViewAge, ]}><Text style={styles.live.innerText}>{item.age + "岁"}</Text></View>:<View/>}
                                                 <View style={[styles.live.innerViewEdu, ]}><Text style={styles.live.innerText}>{item.education}</Text></View>
                                                 <View style={[styles.live.innerViewMar, ]}><Text style={styles.live.innerText}>{item.marry ? item.marry : ""}</Text></View>
                                             </View>
