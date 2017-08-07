@@ -143,6 +143,7 @@ android {
 }
 
 dependencies {
+    compile project(':react-native-baidu-map')
     compile project(':react-native-video')
     compile project(':react-native-picker')
     compile project(':react-native-image-crop-picker')

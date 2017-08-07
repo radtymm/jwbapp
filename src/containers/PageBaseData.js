@@ -151,13 +151,13 @@ class PageBaseData extends React.Component {
 
         return (
             <View style={{flex:1}}>
+                <View style={styles.PagePerInfo.title}>
+                    <TouchableOpacity style={styles.PagePerInfo.titleBack} onPress={()=>this.props.navigation.goBack(null)}>
+                        <View style={styles.PagePerInfo.titleBackIcon}/>
+                    </TouchableOpacity>
+                    <Text style={styles.homePage.title}>{this.props.navigation.state.params.nickname}</Text>
+                </View>
                 <ScrollView style={{flex:1, }}>
-                    <View style={styles.PagePerInfo.title}>
-                        <TouchableOpacity style={styles.PagePerInfo.titleBack} onPress={()=>this.props.navigation.goBack(null)}>
-                            <View style={styles.PagePerInfo.titleBackIcon}/>
-                        </TouchableOpacity>
-                        <Text style={styles.homePage.title}>{this.props.navigation.state.params.nickname}</Text>
-                    </View>
                     <Image resizeMode="cover" style={styles.PageBaseData.headImage} source={imageSrc}>
                         <View style={styles.PageBaseData.imageTextView}>
                             {/*<Text style={styles.PageBaseData.imageTextName}>{this.state.data?this.state.data.code.nickname:""}</Text>*/}

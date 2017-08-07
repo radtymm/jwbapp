@@ -72,6 +72,7 @@ class PageLuck extends React.Component {
             <TouchableOpacity style={styles.pageLuck.headTouch} onPress={()=>{this.props.navigation.navigate("PageBaseData" , this.state.data)}}>
                 <View style={styles.pageLuck.contentView}>
                     <Image style={styles.pageLuck.headImageLuck} source={imageSrc}/>
+                    {(this.state.data.is_vip == "No")?<View/>:(<Image style={styles.minePage.isvip} source={require('../images/isvip.png')}/>)}
                     <View style={styles.pageLuck.nameView}>
                         <Text style={styles.pageLuck.nameText}>{this.state.data.nickname?this.state.data.nickname:""}</Text>
                     </View>

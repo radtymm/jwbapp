@@ -13,8 +13,9 @@ import {
 import styles from '../styleSheet/Styles';
 import {requestData} from '../libs/request.js';
 import {age, height, weight, income, } from '../libs/data.js';
-
-var Geolocation = require('Geolocation');
+import { MapView,  MapTypes,  Geolocation  } from 'react-native-baidu-map';
+import PickerArea from 'react-native-picker';
+import area from '../libs/area.json';
 
 class PagePerInfo extends React.Component {
     static navigationOptions = {
@@ -29,7 +30,7 @@ class PagePerInfo extends React.Component {
             page:0,
             data:[],
             isRefreshing:false,
-            // live:params.live,
+            live:params.live,
             nickname:params.nickname,
             wechat:params.wechat,
             occupation:params.occupation,
@@ -47,17 +48,40 @@ class PagePerInfo extends React.Component {
     }
 
     componentDidMount() {
-        navigator.geolocation.getCurrentPosition(
-         (position) => {
-           let initialPosition = JSON.stringify(position);
-             requestData(`https://app.jiaowangba.com/mine_info?lng=${initialPosition.longitude}&lat=${initialPosition.latitude}`, (res)=>{
-                 if (res.status == "success"){
-                 }
-             });
-         },
-         (error) => alert(JSON.stringify(error)),
-         {enableHighAccuracy: false, timeout: 20000, maximumAge: 1000}
-        );
+
+        Geolocation.getCurrentPosition().then(
+            (data) => {
+                console.log(JSON.stringify(data) + '--------');
+                Alert.alert("", JSON.stringify(data));
+                this.setState({
+                    zoom:18,
+                    markers:[{
+                        latitude:data.latitude,
+                        longitude:data.longitude,
+                        title:'我的位置'
+                    }],
+                    center:{
+                        latitude:data.latitude,
+                        longitude:data.longitude,
+                    }
+                })
+            }
+        ).catch(error => {
+            Alert.alert("", JSON.stringify(error));
+            console.warn(error,'error')
+        })
+
+        // navigator.geolocation.getCurrentPosition(
+        //  (position) => {
+        //    let initialPosition = JSON.stringify(position);
+        //      requestData(`https://app.jiaowangba.com/mine_info?lng=${initialPosition.longitude}&lat=${initialPosition.latitude}`, (res)=>{
+        //          if (res.status == "success"){
+        //          }
+        //      });
+        //  },
+        //  (error) => alert(JSON.stringify(error)),
+        //  {enableHighAccuracy: false, timeout: 20000, maximumAge: 1000}
+        // );
      }
 
     reqArea(value, id){
@@ -145,6 +169,57 @@ class PagePerInfo extends React.Component {
         });
     }
 
+    _createAreaData() {
+        let data = [];
+        let len = area.length;
+        for(let i=0;i < len;i++){
+            let city = [];
+            for(let j=0,cityLen=area[i]['city'].length;j < cityLen;j++){
+                let _city = {};
+                _city[area[i]['city'][j]['name']] = area[i]['city'][j]['area'];
+                city.push(area[i]['city'][j]['name']);
+            }
+
+            let _data = {};
+            _data[area[i]['name']] = city;
+            data.push(_data);
+        }
+        return data;
+    }
+
+    _showAreaPicker() {
+
+        PickerArea.init({
+            pickerData: this._createAreaData(),
+            pickerConfirmBtnText:"确定",
+            pickerCancelBtnText:"取消",
+            pickerTitleText:"居住城市",
+            selectedValue: ['北京', '北京'],
+            onPickerConfirm: pickedValue => {
+                console.log('area', pickedValue);
+                Alert.alert("", JSON.stringify(pickedValue));
+
+                // let province = {};
+                // province[item.value + "Province"] = text;
+                // this.reqArea(item.value, this.state.area[index].id);
+                // this.setState(province);
+                //
+                // let param = {};
+                // param[item.value] = this.state.area[index].id;
+                // this.setState(param);
+
+            },
+            onPickerCancel: pickedValue => {
+                console.log('area', pickedValue);
+            },
+            onPickerSelect: pickedValue => {
+                //Picker.select(['山东', '青岛', '黄岛区'])
+                console.log('area', pickedValue);
+            }
+        });
+        PickerArea.show();
+    }
+
     //普通picker
     renderPickerItem(arrContent){
         return arrContent.map((item, index)=>{
@@ -195,29 +270,10 @@ class PagePerInfo extends React.Component {
             </Picker>
         }else if (item.contentKey == 3){
             ComContent = <View style={{flexDirection:"row"}}>
-                <Picker
-                    style={styles.PagePerInfo.pickerArea}
-                    selectedValue={this.state[item.value + "Province"]}
-                    mode="dropdown"
-                    onValueChange={(text, index) => {
-                        let province = {};
-                        province[item.value + "Province"] = text;
-                        this.reqArea(item.value, this.state.area[index].id);
-                        this.setState(province);
-                    }}>
-                    {that.renderAreaPickerItem()}
-                </Picker>
-                <Picker
-                    style={styles.PagePerInfo.pickerArea}
-                    selectedValue={this.state[item.value]}
-                    mode="dropdown"
-                    onValueChange={(text, index) => {
-                        let param = {};
-                        param[item.value] = this.state.area[index].id;
-                        this.setState(param);
-                    }}>
-                    {that.renderCityPickerItem((item.value))}
-                </Picker>
+                <TouchableOpacity onPress={this._showAreaPicker.bind(this)}>
+                    <Text>{this.state.live?this.state.live:"请选择"}</Text>
+                </TouchableOpacity>
+
             </View>
         }
         return <View style={styles.PagePerInfo.flatItemView}>

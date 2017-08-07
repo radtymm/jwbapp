@@ -10,6 +10,7 @@
     "prop-types": "^15.5.10",
     "react": "16.0.0-alpha.12",
     "react-native": "0.45.1",
+    "react-native-baidu-map": "^0.6.0",
     "react-native-image-crop-picker": "^0.14.1",
     "react-native-image-picker": "^0.26.3",
     "react-native-picker": "^4.0.19",
