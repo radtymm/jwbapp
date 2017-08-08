@@ -12,9 +12,9 @@ import {
 } from 'react-native';
 import styles from '../styleSheet/Styles';
 import {requestData} from '../libs/request.js';
-import {age, height, weight, income, } from '../libs/data.js';
-
-var Geolocation = require('Geolocation');
+import {height, weight, } from '../libs/data.js';
+import PickerAreaDate from 'react-native-picker';
+import area from '../libs/area.json';
 
 class PagePerInfo extends React.Component {
     static navigationOptions = {
@@ -29,11 +29,12 @@ class PagePerInfo extends React.Component {
             page:0,
             data:[],
             isRefreshing:false,
-            // live:params.live,
+            live:params.live,
             nickname:params.nickname,
             wechat:params.wechat,
             occupation:params.occupation,
             marry:params.marry,
+            age:params.age,
             hometown:params.hometown,
             education:params.education,
             height:params.height + "厘米",
@@ -47,6 +48,29 @@ class PagePerInfo extends React.Component {
     }
 
     componentDidMount() {
+
+        // Geolocation.getCurrentPosition().then(
+        //     (data) => {
+        //         console.log(JSON.stringify(data) + '--------');
+        //         Alert.alert("", JSON.stringify(data));
+        //         this.setState({
+        //             zoom:18,
+        //             markers:[{
+        //                 latitude:data.latitude,
+        //                 longitude:data.longitude,
+        //                 title:'我的位置'
+        //             }],
+        //             center:{
+        //                 latitude:data.latitude,
+        //                 longitude:data.longitude,
+        //             }
+        //         })
+        //     }
+        // ).catch(error => {
+        //     Alert.alert("", JSON.stringify(error));
+        //     console.warn(error,'error')
+        // })
+
         navigator.geolocation.getCurrentPosition(
          (position) => {
            let initialPosition = JSON.stringify(position);
@@ -88,11 +112,17 @@ class PagePerInfo extends React.Component {
             house.push(params.house_type[i]);
         }
 
+        let income = [];
+        for (let i in params.income_type) {
+            income.push(params.income_type[i]);
+        }
+
         return [
             {title: "居住城市", value:'live', contentKey:3, arrContent:this.state.area},
             {title: "昵称", value:'nickname', contentKey:1},
             {title: "微信号", value:'wechat', contentKey:1},
             {title: "职业", value:'occupation', contentKey:1},
+            {title: "出生日期", value:'birthdate', contentKey:4},
             {title: "婚姻状况", value:'marry', contentKey:2, arrContent:marry},
             {title: "家乡", value:'hometown', contentKey:3, arrContent:this.state.area},
             {title: "学历", value:'education', contentKey:2, arrContent:education},
@@ -129,11 +159,19 @@ class PagePerInfo extends React.Component {
             }
         }
 
+        let {income_type} = this.props.navigation.state.params;//获取type
+        let income = "5k"; //默认值，
+        for (let i in income_type) {
+            if (this.state.income == income_type[i]) {//如果value相同
+                income = i; // 获取value相同的type
+            }
+        }
+
         let weight = this.state.weight?this.state.weight.substring(0, this.state.weight.length-2):null;
         let height = this.state.height?this.state.height.substring(0, this.state.height.length-2):null;
 
-        console.log(`https://app.jiaowangba.com/mine_info?nickname=${this.state.nickname}&live=${this.state.live}&hometown=${this.state.hometown}&wechat=${this.state.wechat}&marry=${marry}&occupation=${this.state.occupation}&education=${education}&height=${height}&weight=${weight}&income=${this.state.income}&house=${house}&idea=${this.state.idea}`);
-        requestData(`https://app.jiaowangba.com/mine_info?nickname=${this.state.nickname}&wechat=${this.state.wechat}&marry=${marry}&occupation=${this.state.occupation}&education=${education}&height=${height}&weight=${weight}&income=${this.state.income}&house=${house}&idea=${this.state.idea}`, (res)=>{
+        console.log(`https://app.jiaowangba.com/mine_info?nickname=${this.state.nickname}&live=${this.state.live}&hometown=${this.state.hometown}&wechat=${this.state.wechat}&marry=${marry}&occupation=${this.state.occupation}&education=${education}&height=${height}&weight=${weight}&income=${income}&house=${house}&idea=${this.state.idea}`);
+        requestData(`https://app.jiaowangba.com/mine_info?birthdate=${this.state.birthdate}&nickname=${this.state.nickname}&wechat=${this.state.wechat}&marry=${marry}&occupation=${this.state.occupation}&education=${education}&height=${height}&weight=${weight}&income=${income}&house=${house}&idea=${this.state.idea}`, (res)=>{
             if (res.status == "success"){
                 Alert.alert("提示", "保存个人信息成功", [{text:"确定", onPress:()=>{
                     this.props.navigation.state.params.refresh();
@@ -143,6 +181,134 @@ class PagePerInfo extends React.Component {
                 Alert.alert("提示", "保存失败");
             }
         });
+    }
+
+    _createDateData() {
+        let date = [];
+        for(let i=1950;i < 2017;i++){
+            let month = [];
+            for(let j = 1;j < 13;j++){
+                let day = [];
+                if(j === 2){
+                    for(let k=1;k < 29;k++){
+                        if (k < 10){
+                            day.push('0'+k+'日');
+                        }else {
+                            day.push(k+'日');
+                        }
+                    }
+                    //Leap day for years that are divisible by 4, such as 2000, 2004
+                    if(i%4 === 0){
+                        day.push(29+'日');
+                    }
+                }
+                else if(j in {1:1, 3:1, 5:1, 7:1, 8:1, 10:1, 12:1}){
+                    for(let k=1;k < 32;k++){
+                        if (k < 10){
+                            day.push('0'+k+'日');
+                        }else {
+                            day.push(k+'日');
+                        }
+                    }
+                }
+                else{
+                    for(let k=1;k < 31;k++){
+                        if (k < 10){
+                            day.push('0'+k+'日');
+                        }else {
+                            day.push(k+'日');
+                        }
+                    }
+                }
+                let _month = {};
+                _month[j+'月'] = day;
+                if (j < 10){
+                    _month['0'+j+'月'] = day;
+                }else {
+                    _month[j+'月'] = day;
+                }
+                month.push(_month);
+            }
+            let _date = {};
+            _date[i+'年'] = month;
+            date.push(_date);
+        }
+        return date;
+    }
+
+    _createAreaData() {
+        let data = [];
+        let len = area.length;
+        for(let i=0;i < len;i++){
+            let city = [];
+            for(let j=0,cityLen=area[i]['city'].length;j < cityLen;j++){
+                let _city = {};
+                _city[area[i]['city'][j]['name']] = area[i]['city'][j]['area'];
+                city.push(area[i]['city'][j]['name']);
+            }
+
+            let _data = {};
+            _data[area[i]['name']] = city;
+            data.push(_data);
+        }
+        return data;
+    }
+
+    _showDatePicker() {
+        PickerAreaDate.init({
+            pickerData: this._createDateData(),
+            pickerToolBarFontSize: 16,
+            pickerFontSize: 16,
+            selectedValue: ['2000年', '01月'],
+            pickerFontColor: [0, 0 ,255, 1],
+            pickerConfirmBtnText:"确定",
+            pickerCancelBtnText:"取消",
+            pickerTitleText:"出生日期",
+            onPickerConfirm: (pickedValue, pickedIndex) => {
+                let birthdate = pickedValue[0].substring(0, 4) + "-" + pickedValue[1].substring(0, 2) + "-" + pickedValue[2].substring(0, 2);
+                this.setState({birthdate:birthdate});
+            },
+            onPickerCancel: (pickedValue, pickedIndex) => {
+                console.log('date', pickedValue, pickedIndex);
+            },
+            onPickerSelect: (pickedValue, pickedIndex) => {
+                console.log('date', pickedValue, pickedIndex);
+            }
+        });
+        PickerAreaDate.show();
+    }
+
+    _showAreaPicker() {
+
+        PickerAreaDate.init({
+            pickerData: this._createAreaData(),
+            pickerConfirmBtnText:"确定",
+            pickerCancelBtnText:"取消",
+            pickerTitleText:"居住城市",
+            selectedValue: ['北京', '北京'],
+            onPickerConfirm: pickedValue => {
+                console.log('area', pickedValue);
+                Alert.alert("", JSON.stringify(pickedValue));
+
+                // let province = {};
+                // province[item.value + "Province"] = text;
+                // this.reqArea(item.value, this.state.area[index].id);
+                // this.setState(province);
+                //
+                // let param = {};
+                // param[item.value] = this.state.area[index].id;
+                // this.setState(param);
+
+            },
+            onPickerCancel: pickedValue => {
+                console.log('area', pickedValue);
+            },
+            onPickerSelect: pickedValue => {
+                //Picker.select(['山东', '青岛', '黄岛区'])
+                console.log('area', pickedValue);
+            }
+        });
+        PickerAreaDate.show();
     }
 
     //普通picker
@@ -195,35 +361,21 @@ class PagePerInfo extends React.Component {
             </Picker>
         }else if (item.contentKey == 3){
             ComContent = <View style={{flexDirection:"row"}}>
-                <Picker
-                    style={styles.PagePerInfo.pickerArea}
-                    selectedValue={this.state[item.value + "Province"]}
-                    mode="dropdown"
-                    onValueChange={(text, index) => {
-                        let province = {};
-                        province[item.value + "Province"] = text;
-                        this.reqArea(item.value, this.state.area[index].id);
-                        this.setState(province);
-                    }}>
-                    {that.renderAreaPickerItem()}
-                </Picker>
-                <Picker
-                    style={styles.PagePerInfo.pickerArea}
-                    selectedValue={this.state[item.value]}
-                    mode="dropdown"
-                    onValueChange={(text, index) => {
-                        let param = {};
-                        param[item.value] = this.state.area[index].id;
-                        this.setState(param);
-                    }}>
-                    {that.renderCityPickerItem((item.value))}
-                </Picker>
+                <TouchableOpacity onPress={this._showAreaPicker.bind(this)}>
+                    <Text style={styles.PagePerInfo.areaDate}>{this.state.live?this.state.live:"请选择"}</Text>
+                </TouchableOpacity>
+            </View>
+        }else if (item.contentKey == 4) {
+            ComContent = <View style={{flexDirection:"row"}}>
+                <TouchableOpacity onPress={this._showDatePicker.bind(this)}>
+                    <Text style={styles.PagePerInfo.areaDate}>{this.state.birthdate?this.state.birthdate:"请选择"}</Text>
+                </TouchableOpacity>
             </View>
         }
         return <View style={styles.PagePerInfo.flatItemView}>
             <Text style={styles.PagePerInfo.itemTitle}>{item.title}</Text>
             <TouchableOpacity>
-                <View>{ComContent}</View>
+                <View style={{paddingRight:styles.setScaleSize(10)}}>{ComContent}</View>
              </TouchableOpacity>
         </View>
     }

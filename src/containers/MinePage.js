@@ -60,13 +60,9 @@ class MinePage extends React.Component {
     }
 
     refresh(){
-        console.log('rrrrrrrrrrrrrrr');
-        requestData("http://app.jiaowangba.com/info", (res) => {
-            console.log(JSON.stringify(res));
-
+        requestData("https://app.jiaowangba.com/info", (res) => {
             if (res.status == "success"){
                 this.setState({res: res});
-                console.log(JSON.stringify(res));
             }else {
                 Alert.alert("提示", "个人信息获取失败");
             }
@@ -163,7 +159,6 @@ class MinePage extends React.Component {
                                 perInfoParams.refresh = this.refresh;
                                 this.props.navigation.navigate(item.navi, perInfoParams);
                             }else{
-                                console.log(JSON.stringify(this.state.res.code));
                                 this.props.navigation.navigate(item.navi, this.state.res.code);
                             }
                         }}>
@@ -184,19 +179,21 @@ class MinePage extends React.Component {
         if (this.state.res.code && this.state.res.code.avatar != null){
             imageSrc = {uri: 'http://cdn.jiaowangba.com/' + this.state.res.code.avatar};
         }
+        let isvip = <View/>;
+        if (this.state.res.code && (this.state.res.code.is_vip != "No")){
+            isvip = <Image style={styles.minePage.isvip} source={require('../images/isvip.png')}/>;
+        }
         return (
             <ScrollView style={styles.minePage.flex}>
                 <TouchableOpacity onPress={()=>that.openMycamera()}>
                     <View style={{alignItems: 'center', justifyContent: 'center'}}>
                         <Image resizeMode="cover" style={ styles.homePage.headImage}
                            source={imageSrc}>
-                           <View style={styles.minePage.vipView}>
-                               <Text style={styles.minePage.vipText}>VIP</Text>
-                           </View>
                             <View style={styles.minePage.nameId}>
                                 <Text style={styles.minePage.name}>{this.state.res.code ? this.state.res.code.nickname : ""}</Text>
                                 <Text style={styles.minePage.id}>ID号：{this.state.res.code ? this.state.res.code.id : ""}</Text>
                             </View>
+                            {isvip}
                         </Image>
                     </View>
                 </TouchableOpacity>

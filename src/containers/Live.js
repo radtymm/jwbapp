@@ -124,11 +124,12 @@ class Live extends React.Component {
                                 <TouchableOpacity style={styles.live.flatTouch} onPress={() => this.props.navigation.navigate('PageBaseData', item)}>
                                     <View style={styles.live.itemView}>
                                         <Image resizeMode="cover" style={styles.live.headImage}
-                                           source={{uri: 'http://cdn.jiaowangba.com/' + item.avatar}}/>
+                                           source={{uri: 'http://cdn.jiaowangba.com/' + item.avatar + '?imageView2/1/w/640/h/640/interlace/1/q/100|imageslim'}}/>
+                                       {(item.is_vip == "No")?<View/>:(<Image style={styles.live.isvip} source={require('../images/isvip.png')}/>)}
                                         <View style={styles.live.realnameView}>
                                             <Text style={styles.live.realname}>{item.nickname}</Text>
                                             <View style={styles.live.imgInnerView}>
-                                                <View style={[styles.live.innerViewAge, ]}><Text style={styles.live.innerText}>{item.age != 'Unknown'? item.age + "岁" : "100岁"}</Text></View>
+                                                {item.age != 'Unknown'?<View style={[styles.live.innerViewAge, ]}><Text style={styles.live.innerText}>{item.age + "岁"}</Text></View>:<View/>}
                                                 <View style={[styles.live.innerViewEdu, ]}><Text style={styles.live.innerText}>{item.education}</Text></View>
                                                 <View style={[styles.live.innerViewMar, ]}><Text style={styles.live.innerText}>{item.marry ? item.marry : ""}</Text></View>
                                             </View>
@@ -148,12 +149,7 @@ class Live extends React.Component {
                                 progressBackgroundColor="#ccc"
                             />
                         }
-                        ListHeaderComponent={
-                            <View style={styles.live.liveIn}>
-                                <Image style={styles.live.liveInImg} source={require('../images/livein.png')}/>
-                                <Text style={[styles.live.titleText, {fontSize:18, marginLeft:8}]}>厦门市</Text>
-                            </View>
-                        }
+
                         onEndReached={()=>this.loadMore()}
                         onEndReachedThreshold={0.1}
                     />
@@ -166,6 +162,10 @@ class Live extends React.Component {
     render() {
         return (
             <View style={{flex: 1,}}>
+                <View style={styles.live.liveIn}>
+                    <Image style={styles.live.liveInImg} source={require('../images/livein.png')}/>
+                    <Text style={[styles.live.titleText, {fontSize:18, marginLeft:8}]}>厦门市</Text>
+                </View>
                 {this.comFlatList()}
             </View>
         );

@@ -12,6 +12,7 @@ import jwbapp from './App';
 import MinePage from './MinePage';
 import styles from '../styleSheet/Styles';
 import {requestData, requestDataPost,} from '../libs/request.js';
+import Swiper from 'react-native-swiper';
 
 class PageRegister extends React.Component {
 
@@ -83,12 +84,35 @@ class PageRegister extends React.Component {
             });
     }
 
+    renderImg(){
+        let imageViews=[];
+        let srcImg = [require('../images/img0.jpg'), require('../images/img1.jpg'), require('../images/img2.jpg'), ];
+        for(let i=0;i < 3;i++){
+            imageViews.push(
+                <Image key={i} resizeMode="cover" style={{height:styles.HEIGHT, width:styles.WIDTH,}} source={srcImg[i]}/>
+            );
+        }
+        return imageViews;
+    }
+
     render() {
 
         return (
             <View style={{flex: 1, backgroundColor:"#0e6"}} >
+              <Swiper height={styles.HEIGHT} width={styles.WIDTH}
+                    loop={false}
+                    showsButtons={false}
+                    showsPagination={false}
+                    index={0}
+                    autoplayTimeout={5}
+                    autoplay={true}
+                    horizontal={true}
+                    >
+                 {this.renderImg()}
+             </Swiper>
+              <View style={styles.PageRegister.containerView}>
                 <ScrollView style={{flex: 1,}}>
-                    <View style={styles.pageLogin.container}>
+                    <View style={styles.PageRegister.container}>
                         <View style={styles.pageLogin.inputView}>
                             <TextInput onChangeText={(tel) => this.setState({tel: tel})} underlineColorAndroid="transparent"
                                placeholderTextColor="#fff" keyboardType='numeric' placeholder="手机号"
@@ -132,6 +156,7 @@ class PageRegister extends React.Component {
                         </View>
                     </View>
                 </ScrollView>
+              </View>
             </View>
         );
     }

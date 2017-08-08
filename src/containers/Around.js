@@ -65,7 +65,7 @@ class PickerTest extends Component {
             for(let j=0,cityLen=area[i]['city'].length;j < cityLen;j++){
                 let _city = {};
                 _city[area[i]['city'][j]['name']] = area[i]['city'][j]['area'];
-                city.push(_city);
+                city.push(area[i]['city'][j]['name']);
             }
 
             let _data = {};
@@ -97,7 +97,10 @@ class PickerTest extends Component {
     _showAreaPicker() {
         Picker.init({
             pickerData: this._createAreaData(),
-            selectedValue: ['河北', '唐山', '古冶区'],
+            pickerConfirmBtnText:"取消",
+            pickerCancelBtnText:"取消",
+            pickerTitleText:"取消",
+            selectedValue: ['河北', '唐山'],
             onPickerConfirm: pickedValue => {
                 console.log('area', pickedValue);
                 Alert.alert("", JSON.stringify(pickedValue));
