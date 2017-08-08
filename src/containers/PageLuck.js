@@ -3,7 +3,7 @@
  */
 import React from 'react';
 import {
-    StyleSheet, Alert, Animated,
+    StyleSheet, Alert, Animated, ActivityIndicator,
     View,
     Text,
     Button,
@@ -68,16 +68,31 @@ class PageLuck extends React.Component {
         }
         let imageSrc = {uri: 'http://cdn.jiaowangba.com/' + this.state.data.avatar};
         let imgBad = require("../images/unlike.png");
+
+        let imgLoad = <View/>;
+        if (this.state.load == 'loading') {
+            imgLoad = <ActivityIndicator size='large'/>;
+        }else if (this.state.load == 'loadSuccess') {
+            imgLoad = <View/>;
+        }else if (this.state.load == 'loadError'){
+            imgLoad = <Text>图片加载失败。。。</Text>;
+        }
+
         return (<View style={styles.pageLuck.bodyView}>
             <TouchableOpacity style={styles.pageLuck.headTouch} onPress={()=>{this.props.navigation.navigate("PageBaseData" , this.state.data)}}>
                 <View style={styles.pageLuck.contentView}>
-                    <Image style={styles.pageLuck.headImageLuck} source={imageSrc}/>
+                    <Image onLoadStart={()=>this.setState({load:'loading'})}
+                        onLoad={()=>this.setState({load:'loadSuccess'})}
+                        onError={()=>this.setState({load:'loadError'})}
+                        style={styles.pageLuck.headImageLuck} source={imageSrc}>
+                        {imgLoad}
+                    </Image>
                     {(this.state.data.is_vip == "No")?<View/>:(<Image style={styles.minePage.isvip} source={require('../images/isvip.png')}/>)}
                     <View style={styles.pageLuck.nameView}>
                         <Text style={styles.pageLuck.nameText}>{this.state.data.nickname?this.state.data.nickname:""}</Text>
                     </View>
                     <View style={styles.pageLuck.ageLiveEduView}>
-                        <View style={styles.pageLuck.ageView}><Text style={styles.pageLuck.ageLiveEdu}>{(this.state.data.age=="Unknown")?"":(this.state.data.age+'岁')}</Text></View>
+                        {(this.state.data.age=="Unknown")?<View/>:<View style={styles.pageLuck.ageView}><Text style={styles.pageLuck.ageLiveEdu}>{(this.state.data.age+'岁')}</Text></View>}
                         <View style={styles.pageLuck.liveView}><Text style={styles.pageLuck.ageLiveEdu}>{this.state.data.live}</Text></View>
                         <View style={styles.pageLuck.eduView}><Text style={styles.pageLuck.ageLiveEdu}>{this.state.data.education}</Text></View>
                     </View>

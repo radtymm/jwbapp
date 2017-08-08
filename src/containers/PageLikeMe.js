@@ -32,6 +32,7 @@ class PageLikeMe extends React.Component {
     componentDidMount() {
         this.handleRefresh();
     }
+
     componentWillUnmount(){
         this.state = null;
     }
@@ -42,6 +43,7 @@ class PageLikeMe extends React.Component {
         that.setState({isRefreshing: true});
         requestData('https://app.jiaowangba.com/belike?page=1', (res) => {
             if (res.status == 'success') {
+                console.log(JSON.stringify(res));
                 that.setState({data: res.code.data, page:1, isRefreshing:false});
             }else {
                 that.setState({page:1, isRefreshing:false});
@@ -69,24 +71,48 @@ class PageLikeMe extends React.Component {
     }
 
     // 滚动到顶部
-    scrollTotop(){
+    scrollTotop()
+    {
         this.refs.flat.scrollToIndex({viewPosition: 0, index: Number(0)});
     }
+
 
     comFlatList() {
         if (this.state.data) {
             let data = Object.assign([], this.state.data);
-
+            console.log(JSON.stringify(data));
             return (
-                <View style={styles.homePage.flatView}>
+                <View style={styles.pageLikeWho.flatView}>
                     <FlatList
                         data={data}
                         keyExtractor={(item, index) => "" + item + index}
                         ref={"flat"}
-                        onEndReachedThreshold={0.1}
-                        onEndReached={(info) => {
-                            this.loadMore();
-                        } }
+                        renderItem={({item, index})=>{
+                            if (item.users_i == null){
+                                return;
+                            }
+                            let src = require('../images/headDef.jpg');
+                            if (item.users_i.avatar){
+                                src = {uri: 'http://cdn.jiaowangba.com/' + item.users_i.avatar};
+                            }
+
+                            return (
+                                <TouchableOpacity style={styles.pageLikeWho.flatTouch} onPress={() => this.props.navigation.navigate('PageBaseData', item.users_i)}>
+                                    <View style={styles.pageLikeWho.flatItemView}>
+                                        <Image resizeMode="cover" style={ styles.pageLikeWho.heartImg}
+                                               source={src}/>
+                                        <View style={styles.pageLikeWho.itemTextView}>
+                                            <View style={{flex:1, flexDirection:"row", justifyContent:'space-between'}}>
+                                                <Text style={styles.pageLikeWho.realname}>{item.users_i.nickname}</Text>
+                                                <Text style={styles.pageLikeWho.timeago}>{item.like_time}</Text>
+                                            </View>
+                                            <Text style={styles.pageLikeWho.liveage}>{(item.users_i.age!="Unknown")?(item.users_i.age + "岁" + "&nbsp;&nbsp;"):"" }{item.users_i.live}</Text>
+                                        </View>
+                                    </View>
+                                </TouchableOpacity>
+                            );
+                            return <Text>{index}</Text>
+                        }}
                         refreshControl={
                             <RefreshControl
                                 refreshing={this.state.isRefreshing}
@@ -98,34 +124,10 @@ class PageLikeMe extends React.Component {
                                 progressBackgroundColor="#ccc"
                             />
                         }
-                        renderItem={({item , index}) => {
-                            if (item.users == null){
-                                return;
-                            }
-                            let src = require('../images/headDef.jpg');
-                            if (item.users.avatar){
-                                src = {uri: 'http://cdn.jiaowangba.com/' + item.users.avatar};
-                            }
-                            return (
-                                <TouchableOpacity style={styles.pageLikeWho.flatTouch} onPress={() => this.props.navigation.navigate('PageBaseData', item.users)}>
-                                    <View style={styles.pageLikeWho.flatItemView}>
-                                        <Image resizeMode="cover" style={ styles.pageLikeWho.heartImg}
-                                               source={src}/>
-                                        <View style={styles.pageLikeWho.itemTextView}>
-                                            <View style={{flex:1, flexDirection:"row", justifyContent:'space-between'}}>
-                                                <Text style={styles.pageLikeWho.realname}>{item.users.nickname}</Text>
-                                                <Text style={styles.pageLikeWho.timeago}>5 分钟前</Text>
-                                            </View>
-                                            <Text style={styles.pageLikeWho.liveage}>{(item.users.age!="Unknown")?(item.users.age + "岁" + "&nbsp;&nbsp;"):"" }{item.users.live}</Text>
-                                        </View>
-                                    </View>
-                                </TouchableOpacity>
-                            );
-                        }}
-                        getItemLayout={(data, index) => (
-                            // 120 是被渲染 item 的高度 ITEM_HEIGHT。
-                            {offset: 120 * index, index}
-                        )}
+                        onEndReachedThreshold={0.1}
+                        onEndReached={(info) => {
+                            this.loadMore();
+                        } }
                     />
                 </View>
             );

@@ -1,7 +1,7 @@
 
 import React from 'react';
 import {
-    StyleSheet, Alert,
+    StyleSheet, Alert, TextInput,
     View,
     Text,
     Button,
@@ -60,20 +60,33 @@ class PageVip extends React.Component {
         });
     }
 
-
-    render() {
+    renderIsVip(){
         let {params} = this.props.navigation.state;
-        console.log(JSON.stringify(params));
-        let isVipTime = params.vip_time? "您暂时未加入VIP" : params.vip_time;
-
-        return (
-            <ScrollView style={{flex: 1, backgroundColor:"#fff"}}>
-                <View style={styles.PagePerInfo.title}>
-                    <TouchableOpacity style={styles.PagePerInfo.titleBack} onPress={()=>this.props.navigation.goBack(null)}>
-                        <Text style={styles.PageBaseData.title}>&lt;</Text>
-                    </TouchableOpacity>
-                    <Text style={styles.homePage.title}>开通会员</Text>
+        let isVipTime = (params.is_vip=="No")? "您暂时未加入VIP" : params.vip_end_time;
+        if (params.is_vip=="No") {
+            return (
+                <View style={styles.pageVip.noVipView}>
+                    <View style={styles.pageVip.wechatNum}>
+                        <Text style={styles.pageVip.addQQ}>加入QQ群，免费获取会员邀请码：</Text>
+                        <Text style={styles.pageVip.qq}>158062176</Text>
+                        <View style={{flexDirection:"row", justifyContent:"center"}}>
+                            <Text style={styles.pageVip.wechatText}>办理VIP，加客服微信：</Text>
+                            <Text style={[styles.pageVip.wechatText, {color:"#000"}]}>4647352</Text>
+                        </View>
+                    </View>
+                    <View style={{width:styles.WIDTH, height:20, backgroundColor:"#eee"}}/>
+                    <View style={styles.pageVip.vipNumView}>
+                        <TextInput placeholder="输入会员邀请码" underlineColorAndroid="transparent" style={styles.pageVip.vipNumTextInp}/>
+                    </View>
+                    <View style={styles.pageVip.openView}>
+                        <TouchableOpacity style={styles.pageVip.openTouch}>
+                            <Text style={styles.pageVip.openText}>开通VIP</Text>
+                        </TouchableOpacity>
+                    </View>
                 </View>
+            );
+        }else {
+            return (
                 <View style={styles.pageVip.vipView}>
                     {/*<Image style={styles.pageVip.vipImg1} source={require("../images/card.png")}/>
                     <Image style={styles.pageVip.vipImg2} source={require("../images/card.png")}/>*/}
@@ -93,6 +106,23 @@ class PageVip extends React.Component {
                         </View>
                     </Image>
                 </View>
+            );
+        }
+    }
+
+    render() {
+        let {params} = this.props.navigation.state;
+        let isVipTime = (params.is_vip=="No")? "您暂时未加入VIP" : params.vip_end_time;
+
+        return (
+            <ScrollView style={{flex: 1, backgroundColor:"#fff"}}>
+                <View style={styles.PagePerInfo.title}>
+                    <TouchableOpacity style={styles.PagePerInfo.titleBack} onPress={()=>this.props.navigation.goBack(null)}>
+                        <View style={styles.PagePerInfo.titleBackIcon}/>
+                    </TouchableOpacity>
+                    <Text style={styles.homePage.title}>开通会员</Text>
+                </View>
+                {this.renderIsVip()}
                 <View style={styles.pageVip.titleView}>
                     <Text style={styles.pageVip.titleText}>VIP会员特权</Text>
                 </View>
