@@ -13,6 +13,7 @@ import {
 import styles from '../styleSheet/Styles';
 import {requestData} from '../libs/request.js';
 import {height, weight, } from '../libs/data.js';
+// import { MapView,  MapTypes,  Geolocation  } from 'react-native-baidu-map';
 import PickerAreaDate from 'react-native-picker';
 import area from '../libs/area.json';
 
@@ -24,7 +25,7 @@ class PagePerInfo extends React.Component {
     constructor(props, context) {
         super(props, context);
         let {params} = this.props.navigation.state;
-        console.log(JSON.stringify(params));
+        // console.log(JSON.stringify(params));
         this.state = {
             page:0,
             data:[],
@@ -70,18 +71,19 @@ class PagePerInfo extends React.Component {
         //     Alert.alert("", JSON.stringify(error));
         //     console.warn(error,'error')
         // })
-
-        navigator.geolocation.getCurrentPosition(
-         (position) => {
-           let initialPosition = JSON.stringify(position);
-             requestData(`https://app.jiaowangba.com/mine_info?lng=${initialPosition.longitude}&lat=${initialPosition.latitude}`, (res)=>{
-                 if (res.status == "success"){
-                 }
-             });
-         },
-         (error) => alert(JSON.stringify(error)),
-         {enableHighAccuracy: false, timeout: 20000, maximumAge: 1000}
-        );
+        //
+        // navigator.geolocation.getCurrentPosition(
+        //  (position) => {
+        //      Alert.alert(JSON.stringify(position));
+        //    let initialPosition = JSON.stringify(position);
+        //      requestData(`https://app.jiaowangba.com/mine_info?lng=${initialPosition.longitude}&lat=${initialPosition.latitude}`, (res)=>{
+        //          if (res.status == "success"){
+        //          }
+        //      });
+        //  },
+        //  (error) => Alert.alert(JSON.stringify(error)),
+        //  {enableHighAccuracy: false, timeout: 5000, maximumAge: 1000}
+        // );
      }
 
     reqArea(value, id){
@@ -373,7 +375,9 @@ class PagePerInfo extends React.Component {
             </View>
         }
         return <View style={styles.PagePerInfo.flatItemView}>
-            <Text style={styles.PagePerInfo.itemTitle}>{item.title}</Text>
+            <View style={styles.PagePerInfo.titleleftView}>
+                <Text style={styles.PagePerInfo.itemTitle}>{item.title}</Text>
+            </View>
             <TouchableOpacity>
                 <View style={{paddingRight:styles.setScaleSize(10)}}>{ComContent}</View>
              </TouchableOpacity>

@@ -16,6 +16,8 @@ import {
 } from 'react-navigation';
 import styles from '../styleSheet/Styles';
 import {requestData} from '../libs/request.js';
+import { createAnimatableComponent, Image as AnimatableImage} from 'react-native-animatable';
+const AnimatableView = createAnimatableComponent(View);
 
 class PageBaseData extends React.Component {
     static navigationOptions = {
@@ -158,26 +160,29 @@ class PageBaseData extends React.Component {
                     <Text style={styles.homePage.title}>{this.props.navigation.state.params.nickname}</Text>
                 </View>
                 <ScrollView style={{flex:1, }}>
+
+                    {/*<AnimatableImage animation="zoomInDown" delay={700} resizeMode="cover" style={styles.PageBaseData.headImage} source={imageSrc}>*/}
                     <Image resizeMode="cover" style={styles.PageBaseData.headImage} source={imageSrc}>
                         <View style={styles.PageBaseData.imageTextView}>
                             {/*<Text style={styles.PageBaseData.imageTextName}>{this.state.data?this.state.data.code.nickname:""}</Text>*/}
                             <Text style={styles.PageBaseData.imageTextLike}>{this.state.data?this.state.data.code.like_i_total:"0"}个人对TA心动</Text>
                         </View>
                     </Image>
-                    {this.renderIdea()}
-                     <View style={styles.PageBaseData.loveStory}><Text
-                        style={styles.PageBaseData.loveText}>基本资料</Text></View>
-                    {this.renderFlatList()}
-                    <View style={styles.PageBaseData.bottomLike}>
-                        <TouchableOpacity style={styles.PageBaseData.bottomTouch} onPress={()=>this.reqLike()}>
-                            <Image style={styles.PageBaseData.bottomImage} source={imgLike}/>
-                            <Text style={styles.PageBaseData.bottomText}>{this.state.is_like?"取消心动":"心动"}</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity style={styles.PageBaseData.bottomTouch}>
-                            <Image style={styles.PageBaseData.bottomImage} source={require('../images/chat_list.png')}/>
-                            <Text style={styles.PageBaseData.bottomText}>聊天</Text>
-                        </TouchableOpacity>
-                    </View>
+                    {/*<AnimatableView animation="bounceInUp" duration={1100} delay={1400}>*/}
+                        {this.renderIdea()}
+                         <View style={styles.PageBaseData.loveStory}><Text
+                            style={styles.PageBaseData.loveText}>基本资料</Text></View>
+                        {this.renderFlatList()}
+                        <View style={styles.PageBaseData.bottomLike}>
+                            <TouchableOpacity style={styles.PageBaseData.bottomTouch} onPress={()=>this.reqLike()}>
+                                <Image style={styles.PageBaseData.bottomImage} source={imgLike}/>
+                                <Text style={styles.PageBaseData.bottomText}>{this.state.is_like?"取消心动":"心动"}</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity style={styles.PageBaseData.bottomTouch}>
+                                <Image style={styles.PageBaseData.bottomImage} source={require('../images/chat_list.png')}/>
+                                <Text style={styles.PageBaseData.bottomText}>聊天</Text>
+                            </TouchableOpacity>
+                        </View>
                 </ScrollView>
             </View>
 

@@ -7,20 +7,17 @@
     "test": "jest"
   },
   "dependencies": {
-    "prop-types": "^15.5.10",
-    "react": "16.0.0-alpha.12",
-    "react-native": "0.45.1",
-    "react-native-image-crop-picker": "^0.14.1",
-    "react-native-image-picker": "^0.26.3",
-    "react-native-picker": "^4.0.19",
-    "react-native-pull": "^2.0.2",
-    "react-native-qiniu": "^0.3.0",
-    "react-native-swiper": "^1.5.5",
-    "react-native-video": "^1.0.0",
-    "react-navigation": "^1.0.0-beta.11",
-    "react-redux": "^5.0.5",
-    "react-timer-mixin": "^0.13.3",
-    "redux": "^3.7.1"
+      "prop-types": "^15.5.10",
+      "react": "16.0.0-alpha.12",
+      "react-native": "0.45.1",
+      "react-native-animatable": "^1.2.3",
+      "react-native-image-crop-picker": "^0.14.1",
+      "react-native-picker": "^4.0.19",
+      "react-native-pull": "^2.0.2",
+      "react-native-qiniu": "^0.3.0",
+      "react-native-swiper": "^1.5.5",
+      "react-navigation": "^1.0.0-beta.11",
+      "react-timer-mixin": "^0.13.3"
   },
   "devDependencies": {
     "babel-jest": "20.0.3",

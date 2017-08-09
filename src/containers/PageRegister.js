@@ -89,7 +89,7 @@ class PageRegister extends React.Component {
         let srcImg = [require('../images/img0.jpg'), require('../images/img1.jpg'), require('../images/img2.jpg'), ];
         for(let i=0;i < 3;i++){
             imageViews.push(
-                <Image key={i} resizeMode="cover" style={{height:styles.HEIGHT, width:styles.WIDTH,}} source={srcImg[i]}/>
+                <Image key={i} resizeMode="cover" style={{height:styles.HEIGHT, width:styles.WIDTH,}} source={srcImg[i]} />
             );
         }
         return imageViews;
@@ -99,17 +99,17 @@ class PageRegister extends React.Component {
 
         return (
             <View style={{flex: 1, backgroundColor:"#0e6"}} >
-              <Swiper height={styles.HEIGHT} width={styles.WIDTH}
-                    loop={false}
-                    showsButtons={false}
-                    showsPagination={false}
-                    index={0}
-                    autoplayTimeout={5}
-                    autoplay={true}
-                    horizontal={true}
-                    >
-                 {this.renderImg()}
-             </Swiper>
+                <Swiper height={styles.HEIGHT} width={styles.WIDTH}
+                      loop={true}
+                      showsButtons={false}
+                      showsPagination={false}
+                      index={0}
+                      autoplayTimeout={5}
+                      autoplay={true}
+                      horizontal={false}
+                      >
+                   {this.renderImg()}
+               </Swiper>
               <View style={styles.PageRegister.containerView}>
                 <ScrollView style={{flex: 1,}}>
                     <View style={styles.PageRegister.container}>

@@ -184,7 +184,8 @@ const PageRegister = StyleSheet.create({
     backLogin:{marginTop: setScaleSize(30), justifyContent: "center",  alignItems: "flex-end",},});
 const PagePerInfo = StyleSheet.create({
     title: {height: 50, justifyContent:"center", alignItems:"center", flexDirection: "row", width: WIDTH,  backgroundColor:"#e74f7b"},
-    flatItemView:{flexDirection:"row", marginLeft:setScaleSize(20), marginRight:setScaleSize(20), paddingTop:setScaleSize(40), paddingBottom:setScaleSize(40), backgroundColor:"#fff", alignItems:"center",justifyContent:"space-between", borderBottomWidth:1,borderBottomColor:"#ebebeb", },
+    flatItemView:{flexDirection:"row", marginLeft:setScaleSize(20), marginRight:setScaleSize(20),  backgroundColor:"#fff", alignItems:"center",justifyContent:"space-between", borderBottomWidth:1,borderBottomColor:"#ebebeb", },
+    titleleftView:{marginTop:setScaleSize(40), marginBottom:setScaleSize(40), },
     itemTitle: {fontSize:setScaleSize(28), color:"#333", marginLeft:setScaleSize(10)},
     itemContentText: {fontSize:15, margin:1, },
     titleBack:{position:"absolute", left:setScaleSize(30), },
@@ -197,11 +198,11 @@ const PagePerInfo = StyleSheet.create({
     introduce:{height:setScaleSize(280), flex:1, borderWidth:1, borderColor:"#ebebeb", color:"#888", alignItems:"flex-start", justifyContent:"flex-start", fontSize:setScaleSize(28)},
     footerView:{ padding:setScaleSize(20), paddingTop:setScaleSize(40), paddingBottom:setScaleSize(40),},
     footBtn:{width:setScaleSize(260), marginLeft:setScaleSize(10), marginRight:setScaleSize(10), height:setScaleSize(88), borderWidth:1, borderColor:"#E7507D", borderRadius:setScaleSize(4), justifyContent:"center", alignItems:"center",},
-    itemTextInput:{fontSize:setScaleSize(28), color:"#888", width:150, textAlign:"right", alignItems:'flex-end', height:40,  },
+    itemTextInput:{padding:0, fontSize:setScaleSize(28), height:setScaleSize(50),  color:"#888", width:150, textAlign:"right", alignItems:'flex-end', },
     areaDate:{fontSize:setScaleSize(28), color:"#888", },
-    picker:{  width:setScaleSize(28*6), height:40, flex:1, justifyContent:"flex-end", alignItems:'flex-end', },
-    pickerItem:{width:30},
-    pickerArea:{ width:120, height:40, color:"rgb(85, 85, 85)",},
+    picker:{ padding:0, color:"#888", width:100, height:setScaleSize(70),  flex:1, justifyContent:"flex-end", alignItems:'flex-end', },
+    pickerItem:{padding:0,margin:0, width:30},
+    pickerArea:{padding:0,  width:120, color:"rgb(85, 85, 85)",},
 });
 const styles = {
     PageRegister: PageRegister,

@@ -62,8 +62,8 @@ class PageVip extends React.Component {
 
     renderIsVip(){
         let {params} = this.props.navigation.state;
-        let isVipTime = (params.is_vip=="No")? "您暂时未加入VIP" : params.vip_end_time;
-        if (params.is_vip=="No") {
+        let isVipTime = (params.is_vip=="N2o")? "您暂时未加入VIP" : params.vip_end_time;
+        if (params.is_vip=="N2o") {
             return (
                 <View style={styles.pageVip.noVipView}>
                     <View style={styles.pageVip.wechatNum}>
@@ -97,6 +97,7 @@ class PageVip extends React.Component {
                                 <Text style={styles.pageVip.vipText2}>交往吧会员</Text>
                             </View>
                             <View style={styles.pageVip.vipTextRowView}>
+                                <Text style={styles.pageVip.vipText3}>会员截止时间</Text>
                                 <Text style={styles.pageVip.vipText3}>{isVipTime}</Text>
                                 <View style={{flexDirection:"row", }}>
                                     <Text style={styles.pageVip.vipText4}>{params.nickname}</Text>

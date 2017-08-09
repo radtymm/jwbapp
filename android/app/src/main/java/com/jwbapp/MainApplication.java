@@ -4,7 +4,6 @@ import android.app.Application;
 
 import com.imagepicker.ImagePickerPackage;
 import com.facebook.react.ReactApplication;
-import com.brentvatne.react.ReactVideoPackage;
 import com.beefe.picker.PickerViewPackage;
 import com.reactnative.ivpusic.imagepicker.PickerPackage;
 import com.facebook.react.ReactNativeHost;
@@ -27,7 +26,6 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
-            new ReactVideoPackage(),
             new PickerViewPackage(),
             new PickerPackage(),
           new ImagePickerPackage()
