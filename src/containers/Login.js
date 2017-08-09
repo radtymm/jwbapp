@@ -80,13 +80,13 @@ class Login extends React.Component {
         return (
           <View style={{flex:1,}}>
               <Swiper height={styles.HEIGHT} width={styles.WIDTH}
-                    loop={true}
+                    loop={styles.isIOS?false:true}
                     showsButtons={false}
                     showsPagination={false}
                     index={0}
                     autoplayTimeout={5}
                     autoplay={true}
-                    horizontal={false}
+                    horizontal={true}
                     >
                  {this.renderImg()}
              </Swiper>

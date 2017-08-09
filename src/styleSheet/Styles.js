@@ -160,7 +160,7 @@ const PageBaseData = StyleSheet.create({
     itemSeparator: {backgroundColor: "#ccc", height: 1,},
     item: {margin: 0,alignItems: "center",justifyContent: "space-between",flexDirection: "row",paddingLeft: 15,borderBottomWidth: 1,borderBottomColor: "#f7f7f7",height: 40,backgroundColor: '#fff',width: Dimensions.get('window').width,},
     scrollView: {flex: 1, backgroundColor: "#fff"},
-    headImage: {height: WIDTH, width: WIDTH,},
+    headImage: {height: WIDTH, width: WIDTH, backgroundColor:"#fff"},
     headImageLuck: { height: WIDTH-60, width: WIDTH-60,},
     content: {fontSize:17, paddingRight: 25, color:"#888"},
 });
@@ -220,5 +220,6 @@ const styles = {
     pageVip:pageVip,
     setScaleSize:setScaleSize,
     setSizeText:setSizeText,
+    isIOS:isIOS,
 };
 export default styles;

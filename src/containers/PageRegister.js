@@ -96,11 +96,10 @@ class PageRegister extends React.Component {
     }
 
     render() {
-
         return (
             <View style={{flex: 1, backgroundColor:"#0e6"}} >
                 <Swiper height={styles.HEIGHT} width={styles.WIDTH}
-                      loop={true}
+                      loop={styles.isIOS?false:true}
                       showsButtons={false}
                       showsPagination={false}
                       index={0}

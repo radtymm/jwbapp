@@ -6,6 +6,7 @@ import com.imagepicker.ImagePickerPackage;
 import com.facebook.react.ReactApplication;
 import com.beefe.picker.PickerViewPackage;
 import com.reactnative.ivpusic.imagepicker.PickerPackage;
+import com.learnium.RNDeviceInfo.RNDeviceInfo;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
 import com.facebook.react.shell.MainReactPackage;
@@ -28,6 +29,7 @@ public class MainApplication extends Application implements ReactApplication {
           new MainReactPackage(),
             new PickerViewPackage(),
             new PickerPackage(),
+            new RNDeviceInfo(),
           new ImagePickerPackage()
       );
     }

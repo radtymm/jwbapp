@@ -16,18 +16,16 @@ import {
 } from 'react-navigation';
 import styles from '../styleSheet/Styles';
 import {requestData} from '../libs/request.js';
+import DeviceInfo from 'react-native-device-info';
 import { createAnimatableComponent, Image as AnimatableImage} from 'react-native-animatable';
 const AnimatableView = createAnimatableComponent(View);
 
 class PageBaseData extends React.Component {
-    static navigationOptions = {
-        headerTitle: <Text style={{color:"#fff", fontSize:20,}}>详情</Text>,
-        headerMode:"none",
-        headerStyle:{backgroundColor:"#e74f7b", height:0, },
-        // headerRight:<TouchableOpacity onPress={()=>{Alert.alert("提示", )}}>
-        //     <Image style={{width:30, height:30, borderRadius:15, marginRight:20, }} source={require('../images/report.png')}/>
-        // </TouchableOpacity>,
-    };
+    // static navigationOptions = {
+    //     headerTitle: <Text style={{color:"#fff", fontSize:20,}}>详情</Text>,
+    //     headerMode:"none",
+    //     headerStyle:{backgroundColor:"#e74f7b", height:0, },
+    // };
 
     constructor(props, context) {
         super(props, context);
@@ -59,10 +57,6 @@ class PageBaseData extends React.Component {
                         <Text style={styles.PageBaseData.content}>{item.content}</Text>
                     </View>
                 }
-                getItemLayout={(data, index) => (
-                    // 120 是被渲染 item 的高度 ITEM_HEIGHT。
-                    {offset: 120 * index, index}
-                )}
             />
         );
     }
@@ -139,6 +133,40 @@ class PageBaseData extends React.Component {
         }
     }
 
+    renderHeadImg(){
+
+        return <Image resizeMode="cover" style={styles.PageBaseData.headImage} source={imageSrc}>
+            <View style={styles.PageBaseData.imageTextView}>
+                    {/*<Text style={styles.PageBaseData.imageTextName}>{this.state.data?this.state.data.code.nickname:""}</Text>*/}
+                <Text style={styles.PageBaseData.imageTextLike}>{this.state.data?this.state.data.code.like_i_total:"0"}个人对TA心动</Text>
+            </View>
+        </Image>
+    }
+
+    renderBaseData(){
+        let imgLike = require('../images/like_pre.png');
+        if (this.state.is_like){
+            imgLike = require('../images/liked_before.png');
+        }
+
+        return <View>
+            {this.renderIdea()}
+             <View style={styles.PageBaseData.loveStory}><Text
+                style={styles.PageBaseData.loveText}>基本资料</Text></View>
+            {this.renderFlatList()}
+            <View style={styles.PageBaseData.bottomLike}>
+                <TouchableOpacity style={styles.PageBaseData.bottomTouch} onPress={()=>this.reqLike()}>
+                    <Image style={styles.PageBaseData.bottomImage} source={imgLike}/>
+                    <Text style={styles.PageBaseData.bottomText}>{this.state.is_like?"取消心动":"心动"}</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.PageBaseData.bottomTouch}>
+                    <Image style={styles.PageBaseData.bottomImage} source={require('../images/chat_list.png')}/>
+                    <Text style={styles.PageBaseData.bottomText}>聊天</Text>
+                </TouchableOpacity>
+            </View>
+        </View>
+    }
+
     render() {
 
         let imageSrc = require("../images/headDef.jpg");
@@ -146,10 +174,20 @@ class PageBaseData extends React.Component {
             imageSrc = {uri: 'http://cdn.jiaowangba.com/' + this.props.navigation.state.params.avatar};
         }
 
-        let imgLike = require('../images/like_pre.png');
-        if (this.state.is_like){
-            imgLike = require('../images/liked_before.png');
+        let ComHeadImage;
+        let ComBaseData;
+        if (!styles.isIOS && (Number(DeviceInfo.getSystemVersion()) < 5.0)) {
+            ComHeadImage = this.renderHeadImg();
+            ComBaseData = this.renderBaseData();
+        }else {
+            ComHeadImage = <AnimatableView animation="zoomInDown" delay={700} style={{backgroundColor:"#fff"}}>
+                    {this.renderHeadImg()}
+            </AnimatableView>
+            ComBaseData = <AnimatableView animation="bounceInUp" duration={1100} delay={1400}>
+                {this.renderBaseData()}
+            </AnimatableView>
         }
+
 
         return (
             <View style={{flex:1}}>
@@ -160,29 +198,8 @@ class PageBaseData extends React.Component {
                     <Text style={styles.homePage.title}>{this.props.navigation.state.params.nickname}</Text>
                 </View>
                 <ScrollView style={{flex:1, }}>
-
-                    {/*<AnimatableImage animation="zoomInDown" delay={700} resizeMode="cover" style={styles.PageBaseData.headImage} source={imageSrc}>*/}
-                    <Image resizeMode="cover" style={styles.PageBaseData.headImage} source={imageSrc}>
-                        <View style={styles.PageBaseData.imageTextView}>
-                            {/*<Text style={styles.PageBaseData.imageTextName}>{this.state.data?this.state.data.code.nickname:""}</Text>*/}
-                            <Text style={styles.PageBaseData.imageTextLike}>{this.state.data?this.state.data.code.like_i_total:"0"}个人对TA心动</Text>
-                        </View>
-                    </Image>
-                    {/*<AnimatableView animation="bounceInUp" duration={1100} delay={1400}>*/}
-                        {this.renderIdea()}
-                         <View style={styles.PageBaseData.loveStory}><Text
-                            style={styles.PageBaseData.loveText}>基本资料</Text></View>
-                        {this.renderFlatList()}
-                        <View style={styles.PageBaseData.bottomLike}>
-                            <TouchableOpacity style={styles.PageBaseData.bottomTouch} onPress={()=>this.reqLike()}>
-                                <Image style={styles.PageBaseData.bottomImage} source={imgLike}/>
-                                <Text style={styles.PageBaseData.bottomText}>{this.state.is_like?"取消心动":"心动"}</Text>
-                            </TouchableOpacity>
-                            <TouchableOpacity style={styles.PageBaseData.bottomTouch}>
-                                <Image style={styles.PageBaseData.bottomImage} source={require('../images/chat_list.png')}/>
-                                <Text style={styles.PageBaseData.bottomText}>聊天</Text>
-                            </TouchableOpacity>
-                        </View>
+                    {ComHeadImage}
+                    {ComBaseData}
                 </ScrollView>
             </View>
 
