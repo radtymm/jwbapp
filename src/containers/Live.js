@@ -151,7 +151,7 @@ class Live extends React.Component {
                         }
 
                         onEndReached={()=>this.loadMore()}
-                        onEndReachedThreshold={0.1}
+                        onEndReachedThreshold={1}
                     />
                 </View>
             );
@@ -162,6 +162,7 @@ class Live extends React.Component {
     render() {
         return (
             <View style={{flex: 1,}}>
+                {styles.isIOS?<View style={styles.homePage.iosTab} onPress={()=>this.scrollTotop()}/>:<View/>}
                 <View style={styles.live.liveIn}>
                     <Image style={styles.live.liveInImg} source={require('../images/livein.png')}/>
                     <Text style={[styles.live.titleText, {fontSize:18, marginLeft:8}]}>厦门市</Text>

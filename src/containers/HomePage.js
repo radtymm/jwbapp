@@ -13,6 +13,7 @@ import {
 import PageBaseData from './PageBaseData';
 import styles from '../styleSheet/Styles';
 import {requestData} from '../libs/request.js';
+import comHead from '../components/comHead';
 
 let firstClick = 0;
 
@@ -140,7 +141,7 @@ class HomePage extends React.Component {
                     data={dataLeft}
                     keyExtractor = {(item, index) => ""+item+index}
                     ref={"flat"}
-                    onEndReachedThreshold={0.1}
+                    onEndReachedThreshold={1}
                     onEndReached={(info) => {
                         this.loadMore();
                     } }
@@ -176,7 +177,10 @@ class HomePage extends React.Component {
 
         return (
             <View style={styles.homePage.container}>
-                <View style={styles.homePage.centerView}><Text style={styles.homePage.title}>相遇</Text></View>
+                {styles.isIOS?<View style={styles.homePage.iosTab} onPress={()=>this.scrollTotop()}/>:<View/>}
+                <View style={styles.homePage.centerView}>
+                    <Text style={styles.homePage.title}>相遇</Text>
+                </View>
                 {this.renderFlatList()}
             </View>
         );

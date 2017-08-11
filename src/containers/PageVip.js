@@ -117,6 +117,7 @@ class PageVip extends React.Component {
 
         return (
             <ScrollView style={{flex: 1, backgroundColor:"#fff"}}>
+                {styles.isIOS?<View style={styles.homePage.iosTab}/>:<View/>}
                 <View style={styles.PagePerInfo.title}>
                     <TouchableOpacity style={styles.PagePerInfo.titleBack} onPress={()=>this.props.navigation.goBack(null)}>
                         <View style={styles.PagePerInfo.titleBackIcon}/>

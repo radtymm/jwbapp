@@ -24,6 +24,7 @@ class MyNotificationsScreen extends React.Component {
   render() {
     return (
         <View style={{flex: 1,}}>
+            {styles.isIOS?<View style={styles.homePage.iosTab}/>:<View/>}
             <View style={styles.live.messageTitleTotalView}>
                 <View style={styles.homePage.centerView}><Text style={styles.homePage.title}>消息</Text></View>
                 <View style={styles.live.message}>

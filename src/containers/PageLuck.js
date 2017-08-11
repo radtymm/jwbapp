@@ -121,6 +121,7 @@ class PageLuck extends React.Component {
             <View style={{flex:1, backgroundColor:"#f5f5f5"}}>
                 <ScrollView style={{flex:1,}}>
                     <View style={styles.PagePerInfo.title}>
+                        {styles.isIOS?<View style={styles.homePage.iosTab}/>:<View/>}
                         <TouchableOpacity style={styles.PagePerInfo.titleBack} onPress={()=>this.props.navigation.goBack(null)}>
                             <View style={styles.PagePerInfo.titleBackIcon}/>
                         </TouchableOpacity>

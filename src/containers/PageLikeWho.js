@@ -86,7 +86,7 @@ class PageLikeWho extends React.Component {
                         data={data}
                         keyExtractor={(item, index) => "" + item + index}
                         ref={"flat"}
-                        onEndReachedThreshold={0.1}
+                        onEndReachedThreshold={styles.isIOS?(-0.1):0.1}
                         onEndReached={(info) => {
                             this.loadMore();
                         } }
@@ -141,6 +141,7 @@ class PageLikeWho extends React.Component {
 
         return (
             <View style={{flex: 1,}}>
+                {styles.isIOS?<View style={styles.homePage.iosTab}/>:<View/>}
                 <View style={styles.PagePerInfo.title}>
                     <TouchableOpacity style={styles.PagePerInfo.titleBack} onPress={()=>this.props.navigation.goBack(null)}>
                         <View style={styles.PagePerInfo.titleBackIcon}/>

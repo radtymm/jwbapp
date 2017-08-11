@@ -80,7 +80,6 @@ class PageLikeMe extends React.Component {
     comFlatList() {
         if (this.state.data) {
             let data = Object.assign([], this.state.data);
-            console.log(JSON.stringify(data));
             return (
                 <View style={styles.pageLikeWho.flatView}>
                     <FlatList
@@ -124,7 +123,7 @@ class PageLikeMe extends React.Component {
                                 progressBackgroundColor="#ccc"
                             />
                         }
-                        onEndReachedThreshold={0.1}
+                        onEndReachedThreshold={styles.isIOS?(-0.1):0.1}
                         onEndReached={(info) => {
                             this.loadMore();
                         } }
@@ -140,6 +139,7 @@ class PageLikeMe extends React.Component {
 
         return (
             <View style={{flex: 1,}}>
+                {styles.isIOS?<View style={styles.homePage.iosTab}/>:<View/>}
                 <View style={styles.PagePerInfo.title}>
                     <TouchableOpacity style={styles.PagePerInfo.titleBack} onPress={()=>this.props.navigation.goBack(null)}>
                         <View style={styles.PagePerInfo.titleBackIcon}/>

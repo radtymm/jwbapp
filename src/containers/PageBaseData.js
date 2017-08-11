@@ -1,6 +1,6 @@
 import React from 'react';
 import {
-    StyleSheet, Alert, View, Text, Animated, Easing,
+    StyleSheet, Alert, View, Text, Animated, Easing, ImageBackground,
     Button,
     FlatList,
     Dimensions,
@@ -134,13 +134,16 @@ class PageBaseData extends React.Component {
     }
 
     renderHeadImg(){
-
-        return <Image resizeMode="cover" style={styles.PageBaseData.headImage} source={imageSrc}>
+        let imageSrc = require("../images/headDef.jpg");
+        if (this.props.navigation.state.params && this.props.navigation.state.params.avatar != null){
+            imageSrc = {uri: 'http://cdn.jiaowangba.com/' + this.props.navigation.state.params.avatar, cache:'force-cache'};
+        }
+        return <ImageBackground resizeMode="cover"  style={styles.PageBaseData.headImage} source={imageSrc}>
             <View style={styles.PageBaseData.imageTextView}>
                     {/*<Text style={styles.PageBaseData.imageTextName}>{this.state.data?this.state.data.code.nickname:""}</Text>*/}
                 <Text style={styles.PageBaseData.imageTextLike}>{this.state.data?this.state.data.code.like_i_total:"0"}个人对TA心动</Text>
             </View>
-        </Image>
+        </ImageBackground>
     }
 
     renderBaseData(){
@@ -169,10 +172,7 @@ class PageBaseData extends React.Component {
 
     render() {
 
-        let imageSrc = require("../images/headDef.jpg");
-        if (this.props.navigation.state.params && this.props.navigation.state.params.avatar != null){
-            imageSrc = {uri: 'http://cdn.jiaowangba.com/' + this.props.navigation.state.params.avatar};
-        }
+
 
         let ComHeadImage;
         let ComBaseData;
@@ -192,6 +192,7 @@ class PageBaseData extends React.Component {
         return (
             <View style={{flex:1}}>
                 <View style={styles.PagePerInfo.title}>
+                    {styles.isIOS?<View style={styles.homePage.iosTab}/>:<View/>}
                     <TouchableOpacity style={styles.PagePerInfo.titleBack} onPress={()=>this.props.navigation.goBack(null)}>
                         <View style={styles.PagePerInfo.titleBackIcon}/>
                     </TouchableOpacity>

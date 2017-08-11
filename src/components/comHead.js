@@ -1,36 +1,42 @@
 import React from 'react';
-import {StyleSheet, ScrollView, RefreshControl, Alert, View, Text, Button, FlatList, Dimensions, TouchableOpacity, TouchableHighlight, Image } from 'react-native';
+import {StyleSheet, ScrollView,  ViewPropTypes, RefreshControl, Alert, View, Text,  FlatList, Dimensions, TouchableOpacity, TouchableHighlight, Image } from 'react-native';
 import styles from '../styleSheet/Styles';
 import PropTypes from 'prop-types';
 
-class comHead extends React.Component {
+const propTypes = {
+  onPress: PropTypes.func,
+  disabled: PropTypes.bool,
+  style: Text.propTypes.style,
+  containerStyle: ViewPropTypes.style,
+  text: PropTypes.string,
+  activeOpacity: PropTypes.number
+};
 
-    // 定义组件使用的属性
-	static propTypes = {
-		title:PropTypes.string,
-	}
+const comHead = ({
+  onPress,
+  disabled,
+  style,
+  containerStyle,
+  text,
+  activeOpacity
+}) =>
+  (<TouchableOpacity
+    style={containerStyle}
+    onPress={onPress}
+    disabled={disabled}
+    activeOpacity={activeOpacity}
+  >
+    <Text style={style}>
+      {text}
+    </Text>
+  </TouchableOpacity>);
 
-	// 定义组件属性的默认值
-	static defaultProps = {}
+comHead.propTypes = propTypes;
 
-	// 构造函数
-	constructor(props, context) {
-		super(props, context);
-		this.state = {};
-	}
-
-    componentDidMount() {
-    }
-
-    render() {
-
-        return (
-			<View style={styles.homePage.centerView}>
-				<Text style={styles.homePage.title}>{this.props.title}</Text>
-			</View>
-        );
-    }
-}
-
+comHead.defaultProps = {
+  onPress() {},
+  disabled: false,
+  activeOpacity: 0.8
+};
 
 export default comHead;

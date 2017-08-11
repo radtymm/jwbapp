@@ -66,7 +66,7 @@ class PagePerInfo extends React.Component {
                 (data) => {
                     console.log(`https://app.jiaowangba.com/mine_info?lng=${"" + data.longitude}&lat=${"" + data.latitude}`);
                     console.log(JSON.stringify(data));
-                    Alert.alert(JSON.stringify(data));
+                    Alert.alert("", JSON.stringify(data));
                      requestData(`https://app.jiaowangba.com/mine_info?lng=${data.longitude}&lat=${data.latitude}`, (res)=>{
                          if (res.status == "success"){
                          }
@@ -395,6 +395,7 @@ class PagePerInfo extends React.Component {
         return (
             <View style={[styles.live.container, {backgroundColor:"#fff"}]}>
                 <View style={styles.PagePerInfo.title}>
+                    {styles.isIOS?<View style={styles.homePage.iosTab}/>:<View/>}
                     <TouchableOpacity style={styles.PagePerInfo.titleBack} onPress={()=>this.props.navigation.goBack(null)}>
                         <View style={styles.PagePerInfo.titleBackIcon}/>
                     </TouchableOpacity>
