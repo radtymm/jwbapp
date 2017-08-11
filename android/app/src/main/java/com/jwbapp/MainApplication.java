@@ -10,6 +10,7 @@ import com.learnium.RNDeviceInfo.RNDeviceInfo;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
 import com.facebook.react.shell.MainReactPackage;
+import org.lovebing.reactnative.baidumap.BaiduMapPackage;
 import com.facebook.soloader.SoLoader;
 
 import java.util.Arrays;
@@ -30,6 +31,7 @@ public class MainApplication extends Application implements ReactApplication {
             new PickerViewPackage(),
             new PickerPackage(),
             new RNDeviceInfo(),
+            new BaiduMapPackage(getApplicationContext()),
           new ImagePickerPackage()
       );
     }

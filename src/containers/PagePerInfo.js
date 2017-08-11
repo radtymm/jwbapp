@@ -13,7 +13,7 @@ import {
 import styles from '../styleSheet/Styles';
 import {requestData} from '../libs/request.js';
 import {height, weight, } from '../libs/data.js';
-// import { MapView,  MapTypes,  Geolocation  } from 'react-native-baidu-map';
+import { MapView,  MapTypes, MapModule,  Geolocation  } from 'react-native-baidu-map';
 import PickerAreaDate from 'react-native-picker';
 import area from '../libs/area.json';
 
@@ -49,41 +49,34 @@ class PagePerInfo extends React.Component {
     }
 
     componentDidMount() {
+        if(styles.isIOS){
+            navigator.geolocation.getCurrentPosition(
+             (position) => {
+               let initialPosition = JSON.stringify(position);
+                 requestData(`https://app.jiaowangba.com/mine_info?lng=${initialPosition.longitude}&lat=${initialPosition.latitude}`, (res)=>{
+                     if (res.status == "success"){
+                     }
+                 });
+             },
+             (error) => {console.log(JSON.stringify(error));},
+             {enableHighAccuracy: false, timeout: 5000, maximumAge: 1000}
+            );
+        }else {
+            Geolocation.getCurrentPosition().then(
+                (data) => {
+                    console.log(`https://app.jiaowangba.com/mine_info?lng=${"" + data.longitude}&lat=${"" + data.latitude}`);
+                    console.log(JSON.stringify(data));
+                    Alert.alert(JSON.stringify(data));
+                     requestData(`https://app.jiaowangba.com/mine_info?lng=${data.longitude}&lat=${data.latitude}`, (res)=>{
+                         if (res.status == "success"){
+                         }
+                     });
+                }
+            ).catch(error => {
+                console.warn(error,'error')
+            })
+        }
 
-        // Geolocation.getCurrentPosition().then(
-        //     (data) => {
-        //         console.log(JSON.stringify(data) + '--------');
-        //         Alert.alert("", JSON.stringify(data));
-        //         this.setState({
-        //             zoom:18,
-        //             markers:[{
-        //                 latitude:data.latitude,
-        //                 longitude:data.longitude,
-        //                 title:'我的位置'
-        //             }],
-        //             center:{
-        //                 latitude:data.latitude,
-        //                 longitude:data.longitude,
-        //             }
-        //         })
-        //     }
-        // ).catch(error => {
-        //     Alert.alert("", JSON.stringify(error));
-        //     console.warn(error,'error')
-        // })
-        //
-        // navigator.geolocation.getCurrentPosition(
-        //  (position) => {
-        //      Alert.alert(JSON.stringify(position));
-        //    let initialPosition = JSON.stringify(position);
-        //      requestData(`https://app.jiaowangba.com/mine_info?lng=${initialPosition.longitude}&lat=${initialPosition.latitude}`, (res)=>{
-        //          if (res.status == "success"){
-        //          }
-        //      });
-        //  },
-        //  (error) => Alert.alert(JSON.stringify(error)),
-        //  {enableHighAccuracy: false, timeout: 5000, maximumAge: 1000}
-        // );
      }
 
     reqArea(value, id){
@@ -125,8 +118,8 @@ class PagePerInfo extends React.Component {
             {title: "微信号", value:'wechat', contentKey:1},
             {title: "职业", value:'occupation', contentKey:1},
             {title: "出生日期", value:'birthdate', contentKey:4},
-            {title: "婚姻状况", value:'marry', contentKey:2, arrContent:marry},
             {title: "家乡", value:'hometown', contentKey:3, arrContent:this.state.area},
+            {title: "婚姻状况", value:'marry', contentKey:2, arrContent:marry},
             {title: "学历", value:'education', contentKey:2, arrContent:education},
             {title: "身高", value:'height', contentKey:2, arrContent:height},
             {title: "体重", value:'weight', contentKey:2, arrContent:weight},
