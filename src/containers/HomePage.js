@@ -150,7 +150,7 @@ class HomePage extends React.Component {
                             refreshing={this.state.isRefreshing}
                             onRefresh={()=>this.handleRefresh()}
                             tintColor="#ff0000"
-                            title="Loading..."
+                            title="加载中..."
                             titleColor="#00ff00"
                             colors={['#ff0000', '#00ff00', '#0000ff']}
                             progressBackgroundColor="#ccc"

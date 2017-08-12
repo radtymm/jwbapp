@@ -201,8 +201,8 @@ const PagePerInfo = StyleSheet.create({
     footBtn:{width:setScaleSize(260), marginLeft:setScaleSize(10), marginRight:setScaleSize(10), height:setScaleSize(88), borderWidth:1, borderColor:"#E7507D", borderRadius:setScaleSize(4), justifyContent:"center", alignItems:"center",},
     itemTextInput:{padding:0, fontSize:setScaleSize(28), height:setScaleSize(50),  color:"#888", width:150, textAlign:"right", alignItems:'flex-end', },
     areaDate:{fontSize:setScaleSize(28), color:"#888", },
-    picker:{ padding:0,  width:100, height:setScaleSize(70),  flex:1, justifyContent:"flex-end", alignItems:'flex-end', },
-    pickerItem:{padding:0,margin:0, width:30},
+    picker:{ padding:0,backgroundColor:"#238" , width:100, height:setScaleSize(70),  flex:1, justifyContent:"flex-end", alignItems:'flex-end', },
+    pickerItem:{padding:0,margin:0, backgroundColor:"#631", height:setScaleSize(70), },
     pickerArea:{padding:0,  width:120, color:"rgb(85, 85, 85)",},
 });
 const styles = {

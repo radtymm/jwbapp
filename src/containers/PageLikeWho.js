@@ -86,7 +86,7 @@ class PageLikeWho extends React.Component {
                         data={data}
                         keyExtractor={(item, index) => "" + item + index}
                         ref={"flat"}
-                        onEndReachedThreshold={styles.isIOS?(-0.5):0.1}
+                        onEndReachedThreshold={styles.isIOS?(-1):0.1}
                         onEndReached={(info) => {
                             this.loadMore();
                         } }
@@ -95,7 +95,7 @@ class PageLikeWho extends React.Component {
                                 refreshing={this.state.isRefreshing}
                                 onRefresh={()=>this.handleRefresh()}
                                 tintColor="#ff0000"
-                                title="Loading..."
+                                title="加载中..."
                                 titleColor="#00ff00"
                                 colors={['#ff0000', '#00ff00', '#0000ff']}
                                 progressBackgroundColor="#ccc"

@@ -105,7 +105,7 @@ class PageRegister extends React.Component {
                       index={0}
                       autoplayTimeout={5}
                       autoplay={true}
-                      horizontal={false}
+                      horizontal={true}
                       >
                    {this.renderImg()}
                </Swiper>

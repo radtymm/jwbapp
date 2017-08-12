@@ -309,7 +309,7 @@ class PagePerInfo extends React.Component {
     //普通picker
     renderPickerItem(arrContent){
         return arrContent.map((item, index)=>{
-            return <Picker.Item label={item} value={item} key={index} style={styles.PagePerInfo.pickerItem}/>
+            return <Picker.Item label={item} value={item} key={index} itemStyle={styles.PagePerInfo.pickerItem} style={styles.PagePerInfo.pickerItem}/>
         });
     }
     //省picker
@@ -346,7 +346,7 @@ class PagePerInfo extends React.Component {
             ComContent = <Picker
                 style={styles.PagePerInfo.picker}
                 selectedValue={this.state[item.value]}
-                mode="dropdown"
+                // mode="dropdown"
                 onValueChange={(text) => {
                     let param = {};
                     param[item.value] = text;
