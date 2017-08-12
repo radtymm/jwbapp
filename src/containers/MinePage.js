@@ -1,7 +1,7 @@
 import React from 'react';
 import {
     StyleSheet, ScrollView, navigator, Alert, View, Text, Button, FlatList, Dimensions, TouchableOpacity,
-    TouchableHighlight, Image, TextInput, Modal,
+    TouchableHighlight, Image, TextInput, Modal, ImageBackground,
 } from 'react-native';
 import {requestData, requestDataPost} from '../libs/request';
 import styles from '../styleSheet/Styles';
@@ -187,14 +187,14 @@ class MinePage extends React.Component {
             <ScrollView style={styles.minePage.flex}>
                 <TouchableOpacity onPress={()=>that.openMycamera()}>
                     <View style={{alignItems: 'center', justifyContent: 'center'}}>
-                        <Image resizeMode="cover" style={ styles.homePage.headImage}
+                        <ImageBackground resizeMode="cover" style={ styles.homePage.headImage}
                            source={imageSrc}>
                             <View style={styles.minePage.nameId}>
                                 <Text style={styles.minePage.name}>{this.state.res.code ? this.state.res.code.nickname : ""}</Text>
                                 <Text style={styles.minePage.id}>ID号：{this.state.res.code ? this.state.res.code.id : ""}</Text>
                             </View>
                             {isvip}
-                        </Image>
+                        </ImageBackground>
                     </View>
                 </TouchableOpacity>
                 {this.ElementText()}

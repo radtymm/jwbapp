@@ -104,8 +104,7 @@ class Live extends React.Component {
     }
 
     // 滚动到顶部
-    scrollTotop()
-    {
+    scrollTotop(){
         this.refs.flat.scrollToIndex({viewPosition: 0, index: Number(0)});
     }
 
@@ -151,7 +150,7 @@ class Live extends React.Component {
                         }
 
                         onEndReached={()=>this.loadMore()}
-                        onEndReachedThreshold={1}
+                        onEndReachedThreshold={-0.5}
                     />
                 </View>
             );
