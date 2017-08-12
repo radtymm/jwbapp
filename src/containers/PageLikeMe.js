@@ -34,7 +34,7 @@ class PageLikeMe extends React.Component {
     }
 
     componentWillUnmount(){
-        this.state = null;
+        // this.state = null;
     }
 
     //下拉刷新
@@ -123,7 +123,7 @@ class PageLikeMe extends React.Component {
                                 progressBackgroundColor="#ccc"
                             />
                         }
-                        onEndReachedThreshold={styles.isIOS?(-0.1):0.1}
+                        onEndReachedThreshold={styles.isIOS?(-0.5):0.1}
                         onEndReached={(info) => {
                             this.loadMore();
                         } }
