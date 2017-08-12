@@ -106,7 +106,7 @@ class HomePage extends React.Component {
 
     // 滚动到顶部
     scrollTotop(){
-        this.refs.flat.scrollToIndex({viewPosition: 0, index: Number(0)});
+        this.refs.flat.scrollToIndex({viewPosition: 0, index: 0});
     }
 
     renderOnePerson(item ,isRight){
@@ -141,7 +141,7 @@ class HomePage extends React.Component {
                     data={dataLeft}
                     keyExtractor = {(item, index) => ""+item+index}
                     ref={"flat"}
-                    onEndReachedThreshold={1}
+                    onEndReachedThreshold={-0.1}
                     onEndReached={(info) => {
                         this.loadMore();
                     } }
@@ -167,6 +167,9 @@ class HomePage extends React.Component {
                         </View>
                         }
                     }
+                    getItemLayout={(data,index)=>(
+                        {length: (styles.WIDTH/2 + styles.setScaleSize(95)), offset: (styles.WIDTH/2 + styles.setScaleSize(95)) * index, index}
+                    )}
                 />
             </View>
         }

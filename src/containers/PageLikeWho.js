@@ -86,7 +86,7 @@ class PageLikeWho extends React.Component {
                         data={data}
                         keyExtractor={(item, index) => "" + item + index}
                         ref={"flat"}
-                        onEndReachedThreshold={styles.isIOS?(-0.1):0.1}
+                        onEndReachedThreshold={styles.isIOS?(-0.5):0.1}
                         onEndReached={(info) => {
                             this.loadMore();
                         } }
@@ -127,7 +127,7 @@ class PageLikeWho extends React.Component {
                         }}
                         getItemLayout={(data, index) => (
                             // 120 是被渲染 item 的高度 ITEM_HEIGHT。
-                            {offset: 120 * index, index}
+                            {length: (1 + styles.setScaleSize(290)), offset: 120 * index, index}
                         )}
                     />
                 </View>

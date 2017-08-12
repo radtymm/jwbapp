@@ -34,7 +34,7 @@ class PageLikeMe extends React.Component {
     }
 
     componentWillUnmount(){
-        // this.state = null;
+        this.state = null;
     }
 
     //下拉刷新
@@ -43,7 +43,7 @@ class PageLikeMe extends React.Component {
         that.setState({isRefreshing: true});
         requestData('https://app.jiaowangba.com/belike?page=1', (res) => {
             if (res.status == 'success') {
-                console.log(JSON.stringify(res));
+                // console.log(JSON.stringify(res));
                 that.setState({data: res.code.data, page:1, isRefreshing:false});
             }else {
                 that.setState({page:1, isRefreshing:false});
@@ -127,6 +127,10 @@ class PageLikeMe extends React.Component {
                         onEndReached={(info) => {
                             this.loadMore();
                         } }
+                        getItemLayout={(data, index) => (
+                            // 120 是被渲染 item 的高度 ITEM_HEIGHT。
+                            {length: (1 + styles.setScaleSize(290)), offset: 120 * index, index}
+                        )}
                     />
                 </View>
             );
