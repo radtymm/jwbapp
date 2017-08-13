@@ -116,7 +116,7 @@ class HomePage extends React.Component {
             <View style={[styles.homePage.flatViewOne,]}>
                 <View>
                     <Image style={styles.homePage.flatViewImage}
-                           source={{uri: 'http://cdn.jiaowangba.com/' + item.avatar + '?imageView2/1/w/250/h/250/interlace/1/q/96|imageslim'}}/>
+                           source={{uri: 'https://cdn.jiaowangba.com/' + item.avatar + '?imageView2/1/w/250/h/250/interlace/1/q/96|imageslim'}}/>
                     {(item.is_vip == "No")?<View/>:(<Image style={styles.homePage.isvip} source={require('../images/isvip.png')}/>)}
                     <Image style={styles.homePage.livein} source={require('../images/livein.png')}/>
                     <Text style={styles.homePage.liveCity}>{item.live?item.live:""}</Text>

@@ -123,7 +123,7 @@ class Live extends React.Component {
                                 <TouchableOpacity style={styles.live.flatTouch} onPress={() => this.props.navigation.navigate('PageBaseData', item)}>
                                     <View style={styles.live.itemView}>
                                         <Image resizeMode="cover" style={styles.live.headImage}
-                                           source={{uri: 'http://cdn.jiaowangba.com/' + item.avatar + '?imageView2/1/w/640/h/640/interlace/1/q/100|imageslim'}}/>
+                                           source={{uri: 'https://cdn.jiaowangba.com/' + item.avatar + '?imageView2/1/w/640/h/640/interlace/1/q/100|imageslim'}}/>
                                        {(item.is_vip == "No")?<View/>:(<Image style={styles.live.isvip} source={require('../images/isvip.png')}/>)}
                                         <View style={styles.live.realnameView}>
                                             <Text style={styles.live.realname}>{item.nickname}</Text>

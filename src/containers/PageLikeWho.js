@@ -107,7 +107,7 @@ class PageLikeWho extends React.Component {
                             }
                             let src = require('../images/headDef.jpg');
                             if (item.users.avatar){
-                                src = {uri: 'http://cdn.jiaowangba.com/' + item.users.avatar};
+                                src = {uri: 'https://cdn.jiaowangba.com/' + item.users.avatar};
                             }
                             return (
                                 <TouchableOpacity style={styles.pageLikeWho.flatTouch} onPress={() => this.props.navigation.navigate('PageBaseData', item.users)}>

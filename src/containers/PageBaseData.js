@@ -136,7 +136,7 @@ class PageBaseData extends React.Component {
     renderHeadImg(){
         let imageSrc = require("../images/headDef.jpg");
         if (this.props.navigation.state.params && this.props.navigation.state.params.avatar != null){
-            imageSrc = {uri: 'http://cdn.jiaowangba.com/' + this.props.navigation.state.params.avatar, cache:'force-cache'};
+            imageSrc = {uri: 'https://cdn.jiaowangba.com/' + this.props.navigation.state.params.avatar, cache:'force-cache'};
         }
         return <ImageBackground resizeMode="cover"  style={styles.PageBaseData.headImage} source={imageSrc}>
             <View style={styles.PageBaseData.imageTextView}>

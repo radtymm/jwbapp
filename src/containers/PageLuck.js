@@ -66,7 +66,7 @@ class PageLuck extends React.Component {
         if (!this.state.data) {
             return;
         }
-        let imageSrc = {uri: 'http://cdn.jiaowangba.com/' + this.state.data.avatar};
+        let imageSrc = {uri: 'https://cdn.jiaowangba.com/' + this.state.data.avatar};
         let imgBad = require("../images/unlike.png");
 
         let imgLoad = <View/>;

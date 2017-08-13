@@ -64,16 +64,16 @@ class PagePerInfo extends React.Component {
         }else {
             Geolocation.getCurrentPosition().then(
                 (data) => {
-                    console.log(`https://app.jiaowangba.com/mine_info?lng=${"" + data.longitude}&lat=${"" + data.latitude}`);
-                    console.log(JSON.stringify(data));
-                    Alert.alert("", JSON.stringify(data));
+                    // console.log(`https://app.jiaowangba.com/mine_info?lng=${"" + data.longitude}&lat=${"" + data.latitude}`);
+                    // console.log(JSON.stringify(data));
+                    // Alert.alert("", JSON.stringify(data));
                      requestData(`https://app.jiaowangba.com/mine_info?lng=${data.longitude}&lat=${data.latitude}`, (res)=>{
                          if (res.status == "success"){
                          }
                      });
                 }
             ).catch(error => {
-                console.warn(error,'error')
+                console.log(error,'error');
             })
         }
 
