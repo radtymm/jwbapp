@@ -1,6 +1,6 @@
 import React from 'react';
 import {
-    StyleSheet, ScrollView, RefreshControl, Alert, Picker, TextInput,
+    StyleSheet, ScrollView, RefreshControl, Alert, Picker, TextInput, KeyboardAvoidingView,
     View,
     Text,
     Button,
@@ -12,15 +12,12 @@ import {
 } from 'react-native';
 import styles from '../styleSheet/Styles';
 import {requestData} from '../libs/request.js';
-import {height, weight, } from '../libs/data.js';
+import {height, weight, date} from '../libs/data.js';
 import { MapView,  MapTypes, MapModule,  Geolocation  } from 'react-native-baidu-map';
 import PickerAreaDate from 'react-native-picker';
 import area from '../libs/area.json';
 
 class PagePerInfo extends React.Component {
-    static navigationOptions = {
-        headerStyle: styles.homePage.headerStyle,
-    };
 
     constructor(props, context) {
         super(props, context);
@@ -113,12 +110,12 @@ class PagePerInfo extends React.Component {
         }
 
         return [
-            {title: "居住城市", value:'live', contentKey:3, arrContent:this.state.area},
+            {title: "居住城市", value:'live', contentKey:3, arrContent:this._createAreaData()},
             {title: "昵称", value:'nickname', contentKey:1},
             {title: "微信号", value:'wechat', contentKey:1},
             {title: "职业", value:'occupation', contentKey:1},
-            {title: "出生日期", value:'birthdate', contentKey:4},
-            {title: "家乡", value:'hometown', contentKey:3, arrContent:this.state.area},
+            {title: "出生日期", value:'birthdate', contentKey:4, arrContent:date},
+            {title: "家乡", value:'hometown', contentKey:3, arrContent:this._createAreaData()},
             {title: "婚姻状况", value:'marry', contentKey:2, arrContent:marry},
             {title: "学历", value:'education', contentKey:2, arrContent:education},
             {title: "身高", value:'height', contentKey:2, arrContent:height},
@@ -178,59 +175,6 @@ class PagePerInfo extends React.Component {
         });
     }
 
-    _createDateData() {
-        let date = [];
-        for(let i=1950;i < 2017;i++){
-            let month = [];
-            for(let j = 1;j < 13;j++){
-                let day = [];
-                if(j === 2){
-                    for(let k=1;k < 29;k++){
-                        if (k < 10){
-                            day.push('0'+k+'日');
-                        }else {
-                            day.push(k+'日');
-                        }
-                    }
-                    //Leap day for years that are divisible by 4, such as 2000, 2004
-                    if(i%4 === 0){
-                        day.push(29+'日');
-                    }
-                }
-                else if(j in {1:1, 3:1, 5:1, 7:1, 8:1, 10:1, 12:1}){
-                    for(let k=1;k < 32;k++){
-                        if (k < 10){
-                            day.push('0'+k+'日');
-                        }else {
-                            day.push(k+'日');
-                        }
-                    }
-                }
-                else{
-                    for(let k=1;k < 31;k++){
-                        if (k < 10){
-                            day.push('0'+k+'日');
-                        }else {
-                            day.push(k+'日');
-                        }
-                    }
-                }
-                let _month = {};
-                _month[j+'月'] = day;
-                if (j < 10){
-                    _month['0'+j+'月'] = day;
-                }else {
-                    _month[j+'月'] = day;
-                }
-                month.push(_month);
-            }
-            let _date = {};
-            _date[i+'年'] = month;
-            date.push(_date);
-        }
-        return date;
-    }
-
     _createAreaData() {
         let data = [];
         let len = area.length;
@@ -249,19 +193,18 @@ class PagePerInfo extends React.Component {
         return data;
     }
 
-    _showDatePicker() {
+    _showPicker(data, selectedValue, title, callback) {
         PickerAreaDate.init({
-            pickerData: this._createDateData(),
+            pickerData: data,
             pickerToolBarFontSize: 16,
             pickerFontSize: 16,
-            selectedValue: ['2000年', '01月'],
+            selectedValue: selectedValue,
             pickerFontColor: [0, 0 ,255, 1],
             pickerConfirmBtnText:"确定",
             pickerCancelBtnText:"取消",
-            pickerTitleText:"出生日期",
+            pickerTitleText:title,
             onPickerConfirm: (pickedValue, pickedIndex) => {
-                let birthdate = pickedValue[0].substring(0, 4) + "-" + pickedValue[1].substring(0, 2) + "-" + pickedValue[2].substring(0, 2);
-                this.setState({birthdate:birthdate});
+                callback(pickedValue, pickedIndex);
             },
             onPickerCancel: (pickedValue, pickedIndex) => {
                 console.log('date', pickedValue, pickedIndex);
@@ -273,108 +216,85 @@ class PagePerInfo extends React.Component {
         PickerAreaDate.show();
     }
 
-    _showAreaPicker() {
-
-        PickerAreaDate.init({
-            pickerData: this._createAreaData(),
-            pickerConfirmBtnText:"确定",
-            pickerCancelBtnText:"取消",
-            pickerTitleText:"居住城市",
-            selectedValue: ['北京', '北京'],
-            onPickerConfirm: pickedValue => {
-                console.log('area', pickedValue);
-                Alert.alert("", JSON.stringify(pickedValue));
-
-                // let province = {};
-                // province[item.value + "Province"] = text;
-                // this.reqArea(item.value, this.state.area[index].id);
-                // this.setState(province);
-                //
-                // let param = {};
-                // param[item.value] = this.state.area[index].id;
-                // this.setState(param);
-
-            },
-            onPickerCancel: pickedValue => {
-                console.log('area', pickedValue);
-            },
-            onPickerSelect: pickedValue => {
-                //Picker.select(['山东', '青岛', '黄岛区'])
-                console.log('area', pickedValue);
-            }
-        });
-        PickerAreaDate.show();
-    }
-
-    //普通picker
-    renderPickerItem(arrContent){
-        return arrContent.map((item, index)=>{
-            return <Picker.Item label={item} value={item} key={index} itemStyle={styles.PagePerInfo.pickerItem} style={styles.PagePerInfo.pickerItem}/>
-        });
-    }
-    //省picker
-    renderAreaPickerItem(){
-        return this.state.area.map((item, index)=>{
-            return <Picker.Item label={item.area} value={item.area} key={index} style={styles.PagePerInfo.pickerItem}/>
-        });
-    }
-    //市picker
-    renderCityPickerItem(cityDif){
-        if (!this.state[cityDif + "city"]) return;
-        return this.state[cityDif + "city"].map((item, index)=>{
-            return <Picker.Item label={item.area} value={item.area} key={index} style={styles.PagePerInfo.pickerItem}/>
-        });
-    }
-
     renderFlatItem(item){
         let that = this;
         let {params} = this.props.navigation.state;
         let ComContent = <View/>;
+
         if (item.contentKey == 1){
-            ComContent = <TextInput
-                style={styles.PagePerInfo.itemTextInput}
-                onChangeText={(text) => {
-                    let param = {};
-                    param[item.value] = text;
-                    this.setState(param);
-                }}
-                placeholder={"请选择"}
-                value={this.state[item.value]}
-                underlineColorAndroid='transparent'
-            />
+            ComContent = <View style={styles.PagePerInfo.flatItemView}>
+                <View style={styles.PagePerInfo.titleleftView}>
+                    <Text style={styles.PagePerInfo.itemTitle}>{item.title}</Text>
+                </View>
+                <View style={{paddingRight:styles.setScaleSize(10)}}>
+                    <TextInput
+                        style={styles.PagePerInfo.itemTextInput}
+                        onChangeText={(text) => {
+                            let param = {};
+                            param[item.value] = text;
+                            this.setState(param);
+                        }}
+                        placeholder={"请输入"}
+                        value={this.state[item.value]}
+                        underlineColorAndroid='transparent'
+                    />
+                </View>
+            </View>
         }else if(item.contentKey == 2){
-            ComContent = <Picker
-                style={styles.PagePerInfo.picker}
-                selectedValue={this.state[item.value]}
-                // mode="dropdown"
-                onValueChange={(text) => {
+            //普通picker
+            ComContent = <TouchableOpacity onPress={()=>this._showPicker(item.arrContent, [this.state[item.value]], item.title, (pickedValue, pickedIndex)=>{
                     let param = {};
-                    param[item.value] = text;
+                    param[item.value] = pickedValue[0];
                     this.setState(param);
-                }}>
-                {that.renderPickerItem(item.arrContent)}
-            </Picker>
+                })}>
+                <View style={styles.PagePerInfo.flatItemView}>
+                    <View style={styles.PagePerInfo.titleleftView}>
+                        <Text style={styles.PagePerInfo.itemTitle}>{item.title}</Text>
+                    </View>
+                    <View style={{paddingRight:styles.setScaleSize(10)}}>
+                        <View style={{flexDirection:"row"}}>
+                            <Text style={styles.PagePerInfo.areaDate}>{this.state[item.value]?this.state[item.value]:"请选择"}</Text>
+                        </View>
+                    </View>
+                </View>
+            </TouchableOpacity>
+
         }else if (item.contentKey == 3){
-            ComContent = <View style={{flexDirection:"row"}}>
-                <TouchableOpacity onPress={this._showAreaPicker.bind(this)}>
-                    <Text style={styles.PagePerInfo.areaDate}>{this.state.live?this.state.live:"请选择"}</Text>
-                </TouchableOpacity>
-            </View>
+            //地区
+            ComContent = <TouchableOpacity onPress={()=>this._showPicker(item.arrContent, ['北京', '北京'], item.title, (pickedValue, pickedIndex)=>{
+                    Alert.alert("", JSON.stringify(pickedValue))
+                })}>
+                <View style={styles.PagePerInfo.flatItemView}>
+                    <View style={styles.PagePerInfo.titleleftView}>
+                        <Text style={styles.PagePerInfo.itemTitle}>{item.title}</Text>
+                    </View>
+                    <View style={{paddingRight:styles.setScaleSize(10)}}>
+                        <View style={{flexDirection:"row"}}>
+                            <Text style={styles.PagePerInfo.areaDate}>{this.state[item.value]?this.state[item.value]:"请选择"}</Text>
+                        </View>
+                    </View>
+                </View>
+            </TouchableOpacity>
         }else if (item.contentKey == 4) {
-            ComContent = <View style={{flexDirection:"row"}}>
-                <TouchableOpacity onPress={this._showDatePicker.bind(this)}>
-                    <Text style={styles.PagePerInfo.areaDate}>{this.state.birthdate?this.state.birthdate:"请选择"}</Text>
-                </TouchableOpacity>
-            </View>
+            //日期
+            ComContent = <TouchableOpacity onPress={()=>this._showPicker(item.arrContent, ['2000年', '01月'], item.title, (pickedValue, pickedIndex)=>{
+                    let birthdate = pickedValue[0].substring(0, 4) + "-" + pickedValue[1].substring(0, 2) + "-" + pickedValue[2].substring(0, 2);
+                    this.setState({birthdate:birthdate});
+                    })}>
+                <View style={styles.PagePerInfo.flatItemView}>
+                    <View style={styles.PagePerInfo.titleleftView}>
+                        <Text style={styles.PagePerInfo.itemTitle}>{item.title}</Text>
+                    </View>
+                    <View style={{paddingRight:styles.setScaleSize(10)}}>
+                        <View style={{flexDirection:"row"}}>
+                            <Text style={styles.PagePerInfo.areaDate}>{this.state[item.value]?this.state[item.value]:"请选择"}</Text>
+                        </View>
+                    </View>
+                </View>
+            </TouchableOpacity>
+
         }
-        return <View style={styles.PagePerInfo.flatItemView}>
-            <View style={styles.PagePerInfo.titleleftView}>
-                <Text style={styles.PagePerInfo.itemTitle}>{item.title}</Text>
-            </View>
-            <TouchableOpacity>
-                <View style={{paddingRight:styles.setScaleSize(10)}}>{ComContent}</View>
-             </TouchableOpacity>
-        </View>
+        return ComContent;
     }
 
     renderFlatList(){
@@ -407,17 +327,20 @@ class PagePerInfo extends React.Component {
                 <ScrollView style={{flex:1}}>
                     {this.renderFlatList()}
                     <View style={styles.PagePerInfo.footerView}>
-                        <TextInput
-                            style={styles.PagePerInfo.introduce}
-                            onChangeText={(text)=>{
-                                this.setState({idea: text});
-                            }}
-                            numberOfLines={8}
-                            multiline={true}
-                            underlineColorAndroid='transparent'
-                            defaultValue={this.state.idea}
-                        />
-                    <View style={styles.PagePerInfo.footView}>
+
+                        <KeyboardAvoidingView behavior="height">
+                            <TextInput
+                                style={styles.PagePerInfo.introduce}
+                                onChangeText={(text)=>{
+                                    this.setState({idea: text});
+                                }}
+                                numberOfLines={8}
+                                multiline={true}
+                                underlineColorAndroid='transparent'
+                                defaultValue={this.state.idea}
+                            />
+                        </KeyboardAvoidingView>
+                        <View style={styles.PagePerInfo.footView}>
                             <TouchableOpacity>
                                 <View style={styles.PagePerInfo.footBtn}><Text style={styles.PagePerInfo.footBtnText}>修改密码</Text></View>
                             </TouchableOpacity>

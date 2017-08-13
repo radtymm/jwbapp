@@ -1,15 +1,6 @@
 /**
  * Created by Administrator on 2017/7/22/022.
  */
-let age = [];
-for (let i=18; i < 80; i++ ){
-    let strAge = i + "岁";
-    age.push(strAge);
-}
-
-let marry = ["未婚", "离异", "丧偶", ];
-
-let education = ["其他", "大专", "本科", "硕士", "博士"];
 
 let height = [];
 for (let i=140; i < 210; i++ ){
@@ -23,26 +14,56 @@ for (let i=40; i < 100; i++ ){
     weight.push(strHeight);
 }
 
-// let year = [];
-// for (let i=1950; i < 2010; i++ ){
-//     let strHeight = i ;
-//     year.push(strHeight);
-// }
-//
-// let mouth = [];
-// for (let i=1; i < 13; i++ ){
-//     let strHeight = i ;
-//     mouth.push(strHeight);
-// }
-//
-// let day = [];
-// for (let i=1950; i < 2010; i++ ){
-//     let strHeight = i ;
-//     day.push(strHeight);
-// }
+let date = [];
+for(let i=1950;i < 2017;i++){
+    let month = [];
+    for(let j = 1;j < 13;j++){
+        let day = [];
+        if(j === 2){
+            for(let k=1;k < 29;k++){
+                if (k < 10){
+                    day.push('0'+k+'日');
+                }else {
+                    day.push(k+'日');
+                }
+            }
+            //Leap day for years that are divisible by 4, such as 2000, 2004
+            if(i%4 === 0){
+                day.push(29+'日');
+            }
+        }
+        else if(j in {1:1, 3:1, 5:1, 7:1, 8:1, 10:1, 12:1}){
+            for(let k=1;k < 32;k++){
+                if (k < 10){
+                    day.push('0'+k+'日');
+                }else {
+                    day.push(k+'日');
+                }
+            }
+        }
+        else{
+            for(let k=1;k < 31;k++){
+                if (k < 10){
+                    day.push('0'+k+'日');
+                }else {
+                    day.push(k+'日');
+                }
+            }
+        }
+        let _month = {};
+        _month[j+'月'] = day;
+        if (j < 10){
+            _month['0'+j+'月'] = day;
+        }else {
+            _month[j+'月'] = day;
+        }
+        month.push(_month);
+    }
+    let _date = {};
+    _date[i+'年'] = month;
+    date.push(_date);
+}
 
-let income = ["1千-5千/月", "5千-1万/月", "1万-2万/月", "2万-3万/月", "3万-5万/月", "5万以上/月"];
 
-let house = ["租房", "已购房", "单位宿舍", "和家人同住", ];
 
-export {age, marry, education, height, weight, income, house, };
+export {height, weight, date, };
