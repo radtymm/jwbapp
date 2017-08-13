@@ -130,7 +130,8 @@ class PageRegister extends React.Component {
                         <View style={styles.PageRegister.sexBtnView}>
                             <TouchableOpacity style={{flex:1}} onPress={() => this.handleAnimate("1")}>
                                 <View style={ [styles.PageRegister.boyView, {
-                                    backgroundColor: this.state.sex == "1"?"blue":"transparent"
+                                    backgroundColor: this.state.sex == "1"?"blue":"transparent",
+                                    borderColor: this.state.sex == "1"?"blue":"#FFF",
                                 }]}>
                                     <Text style={styles.PageRegister.sexText}>男</Text>
                                 </View>
@@ -138,7 +139,8 @@ class PageRegister extends React.Component {
                             <View style={{width:styles.setScaleSize(20)}}/>
                             <TouchableOpacity style={{flex:1}} onPress={() => this.handleAnimate("0")}>
                                 <View style={ [styles.PageRegister.boyView, {
-                                    backgroundColor: this.state.sex == "0"?"red":"transparent"
+                                    backgroundColor: this.state.sex == "0"?"red":"transparent",
+                                    borderColor: this.state.sex == "0"?"red":"#FFF",
                                 }]}>
                                     <Text style={styles.PageRegister.sexText}>女</Text>
                                 </View>
