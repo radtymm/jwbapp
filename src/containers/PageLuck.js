@@ -3,7 +3,7 @@
  */
 import React from 'react';
 import {
-    StyleSheet, Alert, Animated, ActivityIndicator,
+    StyleSheet, Alert, Animated, ActivityIndicator, ImageBackground,
     View,
     Text,
     Button,
@@ -71,22 +71,22 @@ class PageLuck extends React.Component {
 
         let imgLoad = <View/>;
         if (this.state.load == 'loading') {
-            imgLoad = <ActivityIndicator size='large'/>;
+            imgLoad = <View style={[styles.pageLuck.headImageLuck, {backgroundColor:"#fff"}]}><ActivityIndicator size='large'/></View>;
         }else if (this.state.load == 'loadSuccess') {
             imgLoad = <View/>;
         }else if (this.state.load == 'loadError'){
-            imgLoad = <Text>图片加载失败。。。</Text>;
+            imgLoad = <View style={[styles.pageLuck.headImageLuck, {backgroundColor:"#fff"}]}><Text>图片加载失败。。。</Text></View>;
         }
 
         return (<View style={styles.pageLuck.bodyView}>
             <TouchableOpacity style={styles.pageLuck.headTouch} onPress={()=>{this.props.navigation.navigate("PageBaseData" , this.state.data)}}>
                 <View style={styles.pageLuck.contentView}>
-                    <Image onLoadStart={()=>this.setState({load:'loading'})}
+                    <ImageBackground onLoadStart={()=>this.setState({load:'loading'})}
                         onLoad={()=>this.setState({load:'loadSuccess'})}
                         onError={()=>this.setState({load:'loadError'})}
                         style={styles.pageLuck.headImageLuck} source={imageSrc}>
                         {imgLoad}
-                    </Image>
+                    </ImageBackground>
                     {(this.state.data.is_vip == "No")?<View/>:(<Image style={styles.minePage.isvip} source={require('../images/isvip.png')}/>)}
                     <View style={styles.pageLuck.nameView}>
                         <Text style={styles.pageLuck.nameText}>{this.state.data.nickname?this.state.data.nickname:""}</Text>

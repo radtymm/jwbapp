@@ -76,6 +76,10 @@ class PagePerInfo extends React.Component {
 
      }
 
+    componentWillUnmount(){
+        clearInterval(this.interval);
+    }
+
     reqArea(value, id){
         requestData("https://app.jiaowangba.com/area?id="+id, (res)=>{
             if (res.status == "success") {
@@ -324,32 +328,33 @@ class PagePerInfo extends React.Component {
                         <View><Text style={styles.homePage.title}>保存</Text></View>
                     </TouchableOpacity>
                 </View>
-                <ScrollView style={{flex:1}}>
+                <KeyboardAvoidingView style={{flex:1}} behavior="padding">
+                <ScrollView style={{flex:1}} ref="scro">
                     {this.renderFlatList()}
                     <View style={styles.PagePerInfo.footerView}>
-
-                        <KeyboardAvoidingView behavior="height">
-                            <TextInput
-                                style={styles.PagePerInfo.introduce}
-                                onChangeText={(text)=>{
-                                    this.setState({idea: text});
-                                }}
-                                numberOfLines={8}
-                                multiline={true}
-                                underlineColorAndroid='transparent'
-                                defaultValue={this.state.idea}
-                            />
-                        </KeyboardAvoidingView>
+                        <TextInput
+                            style={styles.PagePerInfo.introduce}
+                            onChangeText={(text)=>{
+                                this.setState({idea: text});
+                            }}
+                            onFocus={()=>{this.timeout = styles.isIOS?setTimeout(()=>this.refs.scro.scrollToEnd({animated: false}), 100):null;}}
+                            onBlur={()=>{this.timeout = styles.isIOS?setTimeout(()=>this.refs.scro.scrollToEnd({animated: false}), 100):null;}}
+                            numberOfLines={8}
+                            multiline={true}
+                            underlineColorAndroid='transparent'
+                            defaultValue={this.state.idea}
+                        />
                         <View style={styles.PagePerInfo.footView}>
                             <TouchableOpacity>
                                 <View style={styles.PagePerInfo.footBtn}><Text style={styles.PagePerInfo.footBtnText}>修改密码</Text></View>
                             </TouchableOpacity>
-                            <TouchableOpacity onPress={()=>{Alert.alert("提示", "请加客服微信：5941589");}}>
+                            {/*<TouchableOpacity onPress={()=>{Alert.alert("提示", "请加客服微信：5941589");}}>
                                 <View style={styles.PagePerInfo.footBtn}><Text style={styles.PagePerInfo.footBtnText}>注销账户</Text></View>
-                            </TouchableOpacity>
+                            </TouchableOpacity>*/}
                         </View>
                     </View>
                 </ScrollView>
+                </KeyboardAvoidingView>
             </View>
         );
     }

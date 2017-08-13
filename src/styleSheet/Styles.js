@@ -167,8 +167,8 @@ const PageBaseData = StyleSheet.create({
 });
 const pageLogin = StyleSheet.create({
     container: {width: WIDTH, height:HEIGHT, paddingTop:setScaleSize(234), paddingLeft: setScaleSize(85), paddingRight: setScaleSize(85), justifyContent: 'flex-start',  backgroundColor: "rgba(0, 0, 0, 0.4)",  position:'absolute', top:0, },
-    input: {height:setScaleSize(34), fontSize: setScaleSize(30), color: "#fff", padding: 0,},
-    inputView:{borderBottomWidth: 1, borderBottomColor: '#fff', paddingBottom:setScaleSize(20), },
+    input: {height:setScaleSize(75), fontSize: setScaleSize(35), color: "#fff", padding: setScaleSize(20), paddingLeft:0, },
+    inputView:{borderBottomWidth: 1, borderBottomColor: '#fff',  },
     icon: {width: 26, height: 26,},
     submit: {marginTop: setScaleSize(100),borderRadius:setScaleSize(2), borderWidth: 1,borderColor: "#fff",height: setScaleSize(90),justifyContent: "center",alignItems: "center",},
     submitText: {textAlign: "center", color: "#fff", fontSize: setScaleSize(34),},
@@ -196,7 +196,7 @@ const PagePerInfo = StyleSheet.create({
     footView:{marginTop:setScaleSize(40), flexDirection:"row", justifyContent:"center"},
     footBtnText:{fontSize:setScaleSize(24), color:"#E7507D",},
     areaProView:{width:69, justifyContent:"center", alignItems:"center", backgroundColor:"#f5f5f5", padding:5, margin:1, },
-    introduce:{height:setScaleSize(280), flex:1, borderWidth:1, borderColor:"#ebebeb", color:"#888", alignItems:"flex-start", justifyContent:"flex-start", fontSize:setScaleSize(28)},
+    introduce:{paddingLeft:setScaleSize(20),height:setScaleSize(280), flex:1, borderWidth:1, borderColor:"#ebebeb", color:"#888", alignItems:"flex-start", justifyContent:"flex-start", fontSize:setScaleSize(28)},
     footerView:{ padding:setScaleSize(20), paddingTop:setScaleSize(40), paddingBottom:setScaleSize(40),},
     footBtn:{width:setScaleSize(260), marginLeft:setScaleSize(10), marginRight:setScaleSize(10), height:setScaleSize(88), borderWidth:1, borderColor:"#E7507D", borderRadius:setScaleSize(4), justifyContent:"center", alignItems:"center",},
     itemTextInput:{padding:0, fontSize:setScaleSize(28), height:setScaleSize(50),  color:"#888", width:150, textAlign:"right", alignItems:'flex-end', },
