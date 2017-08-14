@@ -171,16 +171,16 @@ const pageLogin = StyleSheet.create({
     inputView:{borderBottomWidth: 1, borderBottomColor: '#fff', paddingBottom:setScaleSize(20), },
     icon: {width: 26, height: 26,},
     submit: {marginTop: setScaleSize(100),borderRadius:setScaleSize(2), borderWidth: 1,borderColor: "#fff",height: setScaleSize(90),justifyContent: "center",alignItems: "center",},
-    submitText: {textAlign: "center", color: "#fff", fontSize: setScaleSize(34),},
+    submitText: {textAlign: "center", color: "#fff", fontSize: setScaleSize(35),},
     forgetpwd: {flexDirection: "row", justifyContent: "space-between", marginTop: setScaleSize(30),},
-    forgetpwdText:{fontSize:setScaleSize(22), color:"#fff", },
+    forgetpwdText:{fontSize:setScaleSize(28), color:"#fff", },
 });
 const PageRegister = StyleSheet.create({
     containerView: {width: WIDTH, height:HEIGHT, justifyContent: 'flex-start',  backgroundColor: "rgba(0, 0, 0, 0.4)",  position:'absolute', top:0, },
     container: {flex:1, paddingTop:setScaleSize(234), paddingLeft: setScaleSize(85), paddingRight: setScaleSize(85), justifyContent: 'flex-start',},
     sexBtnView: {height: setScaleSize(90), flexDirection: "row",  marginTop: setScaleSize(50)},
     sexText: {textAlign: "center", alignItems: "center", color:'#fff', fontSize:setScaleSize(30)},
-    submitText: {textAlign: "center", color: "#fff", fontSize: setScaleSize(24),},
+    submitText: {textAlign: "center", color: "#fff", fontSize: setScaleSize(28),},
     boyView: {flex:1, borderWidth:1, borderColor:"#fff", borderRadius:2, alignItems: "center", justifyContent: "center"},
     backLogin:{marginTop: setScaleSize(30), justifyContent: "center",  alignItems: "flex-end",},});
 const PagePerInfo = StyleSheet.create({
