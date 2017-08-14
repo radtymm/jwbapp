@@ -160,7 +160,7 @@ class Login extends React.Component {
               <View style={styles.pageLogin.inputView}>
                   <TextInput onChangeText={(tel)=>this.setState({tel:tel})} underlineColorAndroid="transparent" placeholderTextColor="#fff" keyboardType='numeric' placeholder="手机号" style={styles.pageLogin.input} />
               </View>
-              <View style={[styles.pageLogin.inputView, {marginTop:styles.setScaleSize(50)}]}>
+              <View style={[styles.pageLogin.inputView, {marginTop:styles.setScaleSize(30)}]}>
                   <TextInput onChangeText={(pwd)=>this.setState({pwd:pwd})} secureTextEntry={true} underlineColorAndroid="transparent" placeholderTextColor="#fff" placeholder="密码" style={styles.pageLogin.input} />
               </View>
               <TouchableOpacity onPress={()=>this.handleLogin()} style={styles.pageLogin.submit}>
