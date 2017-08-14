@@ -46,7 +46,6 @@ class MinePage extends React.Component {
             modalVisible:false,
             res: {}
         };
-
         this.refresh = this.refresh.bind(this);
     }
 
@@ -96,15 +95,12 @@ class MinePage extends React.Component {
 
     openMycamera(){
         this.pickSingle();
-        // Alert.alert("", "", [
-        //     {text:"拍照", }
-        // ])
+
     }
 
     pickSingleWithCamera() {
         ImageCropPicker.openCamera({
             cropping: true,
-            // includeBase64:true,
             width: styles.WIDTH,
             height: styles.WIDTH,
         }).then(image => {
@@ -136,19 +132,18 @@ class MinePage extends React.Component {
 
     ElementText() {
         let arrMine = [
-            {image: require('../images/info.png'), title: "个人资料", navi: "PagePerInfo",},
-            {image: require('../images/good.png'), title: "我喜欢谁", navi: "PageLikeWho",},
-            {image: require('../images/whogood.png'), title: "谁喜欢我", navi: "PageLikeMe",},
-            {image: require('../images/lucky1.png'), title: "遇见缘分", navi: "PageLuck",},
-            {image: require('../images/vip.png'), title: "会员中心", navi: "PageVip",},
-            {image: require('../images/out.png'), title: "退出登录", navi: "",},
+            {image: require('../images/perinfo.png'), title: "个人资料", navi: "PagePerInfo",},
+            {image: require('../images/ilikewho.png'), title: "我喜欢谁", navi: "PageLikeWho",},
+            {image: require('../images/wholikeme.png'), title: "谁喜欢我", navi: "PageLikeMe",},
+            {image: require('../images/luck.png'), title: "遇见缘分", navi: "PageLuck",},
+            {image: require('../images/vipcenter.png'), title: "会员中心", navi: "PageVip",},
+            {image: require('../images/loginout.png'), title: "退出登录", navi: "",},
         ];
 
         return arrMine.map((item, index) => {
 
             return (
-                <View style={styles.minePage.arrMine} key={index}>
-                    <View style={{flex:1,backgroundColor: '#f5f5f5',height:1,}}/>
+                <View style={[styles.minePage.arrMine, {paddingTop:index==0?styles.setScaleSize(40):styles.setScaleSize(0)}]} key={index}>
                     <TouchableOpacity onPress={()=>{
                             if (item.title == "退出登录"){
                                     requestData("https://app.jiaowangba.com/login_out", (res)=>{});
@@ -162,12 +157,13 @@ class MinePage extends React.Component {
                                 this.props.navigation.navigate(item.navi, this.state.res.code);
                             }
                         }}>
-                        <View style={{flex:1, flexDirection: 'row', padding:10, alignItems:"center", }}>
-                            <Image style={{width:27,height:27,marginLeft:10, marginRight:20 }}
+                        <View style={styles.minePage.oneLineView}>
+                            <Image style={styles.minePage.iconImg} resizeMode="contain"
                                    source={item.image}/>
-                               <Text style={{fontSize:20, color:'#3a3a3a'}}>{item.title}</Text>
+                               <Text style={{fontSize:styles.setScaleSize(30), color:'#444'}}>{item.title}</Text>
                         </View>
                     </TouchableOpacity>
+                    {index==2?<View style={styles.minePage.spare}/>:<View/>}
                 </View>
             );
         });
@@ -186,17 +182,18 @@ class MinePage extends React.Component {
         return (
             <ScrollView style={styles.minePage.flex}>
                 <TouchableOpacity onPress={()=>that.openMycamera()}>
-                    <View style={{alignItems: 'center', justifyContent: 'center'}}>
-                        <ImageBackground resizeMode="cover" style={ styles.homePage.headImage}
+                    <View style={{alignItems: 'flex-start', justifyContent: 'center'}}>
+                        <Image resizeMode="cover" style={ styles.homePage.headImage}
                            source={imageSrc}>
-                            <View style={styles.minePage.nameId}>
-                                <Text style={styles.minePage.name}>{this.state.res.code ? this.state.res.code.nickname : ""}</Text>
-                                <Text style={styles.minePage.id}>ID号：{this.state.res.code ? this.state.res.code.id : ""}</Text>
-                            </View>
                             {isvip}
-                        </ImageBackground>
+                        </Image>
                     </View>
-                </TouchableOpacity>
+                    </TouchableOpacity>
+                    <View style={styles.minePage.nameId}>
+                        <Text style={styles.minePage.name}>{this.state.res.code ? this.state.res.code.nickname : ""}</Text>
+                        <Text style={styles.minePage.id}>ID号：{this.state.res.code ? this.state.res.code.id : ""}</Text>
+                    </View>
+                    <View style={styles.minePage.spare}/>
                 {this.ElementText()}
             </ScrollView>
         );

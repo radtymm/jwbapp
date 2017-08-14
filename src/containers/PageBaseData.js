@@ -10,10 +10,6 @@ import {
     Image
 } from 'react-native';
 
-import {
-    StackNavigator,
-    TabNavigator
-} from 'react-navigation';
 import styles from '../styleSheet/Styles';
 import {requestData} from '../libs/request.js';
 import DeviceInfo from 'react-native-device-info';
@@ -21,11 +17,6 @@ import { createAnimatableComponent, Image as AnimatableImage} from 'react-native
 const AnimatableView = createAnimatableComponent(View);
 
 class PageBaseData extends React.Component {
-    // static navigationOptions = {
-    //     headerTitle: <Text style={{color:"#fff", fontSize:20,}}>详情</Text>,
-    //     headerMode:"none",
-    //     headerStyle:{backgroundColor:"#e74f7b", height:0, },
-    // };
 
     constructor(props, context) {
         super(props, context);
@@ -63,13 +54,13 @@ class PageBaseData extends React.Component {
 
     renderFlatList() {
         if (this.state.data) {
-
+            console.log(JSON.stringify(this.state.data.code));
             let params = this.state.data.code;
             let data1 = [
-                {title: 'ID号：', content: params.id},
-                {title: '昵称：', content: params.nickname},
-                {title: '性别：', content: params.gender == "1" ? '男' : '女'},
-                {title: '年龄：', content: params.age, },
+                {title: '出生年月', content: params.birthdate},
+                {title: '工作类型', content: "工作类型？？"},
+                {title: '是否购房', content: "购房？？"},
+                {title: '是否购车', content: "购车？？？", },
             ];
             let data2 = [
                 {title: '微信：', content: params.wechat,},
@@ -87,8 +78,10 @@ class PageBaseData extends React.Component {
             ];
             return (
                 <View style={styles.PageBaseData.flatView}>
-                    {this.renderFlatListItem(data1)}
-                    <View style={{marginTop:20}}>
+                    <View style={styles.PageBaseData.oneFlatView}>
+                        {this.renderFlatListItem(data1)}
+                    </View>
+                    <View style={styles.PageBaseData.oneFlatView}>
                         {this.renderFlatListItem(data2)}
                     </View>
                 </View>
@@ -109,7 +102,7 @@ class PageBaseData extends React.Component {
                         <Text style={styles.PageBaseData.loveText}>爱情宣言</Text>
                     </View>
                     <View style={styles.PageBaseData.loveStoryContent}>
-                        <Text style={styles.PageBaseData.loveText}>{this.state.data.code.idea}</Text>
+                        <Text style={styles.PageBaseData.loveStoryText}>{this.state.data.code.idea}</Text>
                     </View>
                 </View>;
             }
@@ -134,16 +127,38 @@ class PageBaseData extends React.Component {
     }
 
     renderHeadImg(){
+        let code = this.state.data?this.state.data.code:{};
+        let {params} = this.props.navigation.state;
         let imageSrc = require("../images/headDef.jpg");
-        if (this.props.navigation.state.params && this.props.navigation.state.params.avatar != null){
-            imageSrc = {uri: 'https://cdn.jiaowangba.com/' + this.props.navigation.state.params.avatar, cache:'force-cache'};
+        if (params && params.avatar != null){
+            imageSrc = {uri: 'https://cdn.jiaowangba.com/' + params.avatar, cache:'force-cache'};
         }
-        return <ImageBackground resizeMode="cover"  style={styles.PageBaseData.headImage} source={imageSrc}>
-            <View style={styles.PageBaseData.imageTextView}>
-                    {/*<Text style={styles.PageBaseData.imageTextName}>{this.state.data?this.state.data.code.nickname:""}</Text>*/}
-                <Text style={styles.PageBaseData.imageTextLike}>{this.state.data?this.state.data.code.like_i_total:"0"}个人对TA心动</Text>
+
+        let isvip = <View/>;
+        if (params && (params.is_vip != "No")){
+            isvip = <Image style={styles.PageBaseData.isvip} source={require('../images/isvip.png')}/>;
+        }
+
+        let imgLike = require('../images/likeother.png');
+        if (this.state.is_like){
+            imgLike = require('../images/liked_before.png');
+        }
+
+        return <View style={styles.PageBaseData.headView}>
+            <Image resizeMode="cover"  style={styles.PageBaseData.headImage} source={imageSrc}/>
+            {isvip}
+            <View style={styles.PageBaseData.nameIdView}>
+                <Text style={styles.PageBaseData.nicknameText}>{this.state.data?code.nickname:""}</Text>
+                <View style={styles.PageBaseData.topCenterView}>
+                    <Text style={styles.PageBaseData.imageTextLike}>{this.state.data?((code.age!="Unknown"?(code.age+"岁 · "):"")+(code.height!="null"?(code.height+"cm · "):"")+code.education):""}</Text>
+                    <Text style={styles.PageBaseData.imageTextLike}>{this.state.data?this.state.data.code.like_i_total:"0"}个人心动</Text>
+                </View>
+                <Text style={styles.PageBaseData.imageTextLike}>ID: {params.id}</Text>
             </View>
-        </ImageBackground>
+            <TouchableOpacity style={styles.PageBaseData.likeBtn} onPress={()=>this.reqLike()}>
+                <Image resizeMode="contain" style={styles.PageBaseData.likeImg} source={imgLike}/>
+            </TouchableOpacity>
+        </View>;
     }
 
     renderBaseData(){
@@ -152,42 +167,16 @@ class PageBaseData extends React.Component {
             imgLike = require('../images/liked_before.png');
         }
 
-        return <View>
-            {this.renderIdea()}
-             <View style={styles.PageBaseData.loveStory}><Text
-                style={styles.PageBaseData.loveText}>基本资料</Text></View>
-            {this.renderFlatList()}
-            <View style={styles.PageBaseData.bottomLike}>
-                <TouchableOpacity style={styles.PageBaseData.bottomTouch} onPress={()=>this.reqLike()}>
-                    <Image style={styles.PageBaseData.bottomImage} source={imgLike}/>
-                    <Text style={styles.PageBaseData.bottomText}>{this.state.is_like?"取消心动":"心动"}</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.PageBaseData.bottomTouch}>
-                    <Image style={styles.PageBaseData.bottomImage} source={require('../images/chat_list.png')}/>
-                    <Text style={styles.PageBaseData.bottomText}>聊天</Text>
-                </TouchableOpacity>
+        return <View style={styles.PageBaseData.contentView}>
+            <View style={styles.PageBaseData.loveStory}>
+                <Text style={styles.PageBaseData.loveText}>基本资料</Text>
             </View>
+            {this.renderFlatList()}
+            {this.renderIdea()}
         </View>
     }
 
     render() {
-
-
-
-        let ComHeadImage;
-        let ComBaseData;
-        if (!styles.isIOS && (Number(DeviceInfo.getSystemVersion()) < 5.0)) {
-            ComHeadImage = this.renderHeadImg();
-            ComBaseData = this.renderBaseData();
-        }else {
-            ComHeadImage = <AnimatableView animation="zoomInDown" delay={700} style={{backgroundColor:"#fff"}}>
-                    {this.renderHeadImg()}
-            </AnimatableView>
-            ComBaseData = <AnimatableView animation="bounceInUp" duration={1100} delay={1400}>
-                {this.renderBaseData()}
-            </AnimatableView>
-        }
-
 
         return (
             <View style={{flex:1}}>
@@ -199,9 +188,17 @@ class PageBaseData extends React.Component {
                     <Text style={styles.homePage.title}>{this.props.navigation.state.params.nickname}</Text>
                 </View>
                 <ScrollView style={{flex:1, }}>
-                    {ComHeadImage}
-                    {ComBaseData}
+                    {this.renderHeadImg()}
+                    {this.renderBaseData()}
                 </ScrollView>
+                <View style={styles.PageBaseData.bottomBtn}>
+                    <TouchableOpacity style={styles.PageBaseData.bottomTouch}>
+                        <Image style={styles.PageBaseData.bottomImage} resizeMode="contain" source={require('../images/chartother.png')}/>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={styles.PageBaseData.bottomTouch}>
+                        <Image style={styles.PageBaseData.bottomImage} resizeMode="contain" source={require('../images/wetchatother.png')}/>
+                    </TouchableOpacity>
+                </View>
             </View>
 
         );
