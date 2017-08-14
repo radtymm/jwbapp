@@ -13,9 +13,9 @@ import {
 import styles from '../styleSheet/Styles';
 import {requestData} from '../libs/request.js';
 import {height, weight, date} from '../libs/data.js';
-import { MapView,  MapTypes, MapModule,  Geolocation  } from 'react-native-baidu-map';
 import PickerAreaDate from 'react-native-picker';
 import area from '../libs/area.json';
+import {Geolocation} from 'react-native-baidu-map';
 
 class PagePerInfo extends React.Component {
 

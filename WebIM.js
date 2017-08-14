@@ -20,6 +20,7 @@ WebIM.conn = new WebIM.connection({
   isMultiLoginSessions: WebIM.config.isMultiLoginSessions,
   https: WebIM.config.https,
   url: WebIM.config.xmppURL,
+  isDebug:WebIM.config.isDebug,
   isAutoLogin: true,
   heartBeatWait: WebIM.config.heartBeatWait,
   autoReconnectNumMax: WebIM.config.autoReconnectNumMax,
