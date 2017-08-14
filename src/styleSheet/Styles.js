@@ -196,7 +196,7 @@ const PagePerInfo = StyleSheet.create({
     titleleftView:{marginTop:setScaleSize(40), marginBottom:setScaleSize(40), },
     itemTitle: {fontSize:setScaleSize(28), color:"#333", marginLeft:setScaleSize(10)},
     itemContentText: {fontSize:15, margin:1, },
-    titleBack:{position:"absolute", left:setScaleSize(30), },
+    titleBack:{position:"absolute", left:setScaleSize(30), paddingVertical:setScaleSize(15), width:setScaleSize(80),},
     titleRight:{position:"absolute", right:setScaleSize(30), },
     titleBackIcon:{marginLeft:setScaleSize(10), height:setScaleSize(30), width:setScaleSize(30), borderColor:"#fff", borderBottomWidth:3, borderLeftWidth:3, transform:[{rotateZ:'45deg'}]},
     // areaView:{borderWidth:2, borderColor:"#ccc", position:'absolute', top:100, left: 20, maxWidth: WIDTH - 40, backgroundColor:"#fff",},

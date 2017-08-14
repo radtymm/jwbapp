@@ -56,7 +56,7 @@ class PageVip extends React.Component {
         let {params} = this.props.navigation.state;
         return (
             <View style={styles.pageVip.vipView}>
-                <Image resizeMode="stretch" style={styles.pageVip.vipImg} source={require("../images/vipcard.png")}>
+                <ImageBackground resizeMode="stretch" style={styles.pageVip.vipImg} source={require("../images/vipcard.png")}>
                     <View style={styles.pageVip.vipTextRowView}>
                         <View>
                             <Text style={styles.pageVip.vipTextName}>{params.nickname}</Text>
@@ -67,7 +67,7 @@ class PageVip extends React.Component {
                     <View style={[styles.pageVip.vipTextRowView, { paddingTop:styles.setScaleSize(130),}]}>
                         <Text style={styles.pageVip.vipText3}>会员到期时间:{params.vip_end_time}</Text>
                     </View>
-                </Image>
+                </ImageBackground>
             </View>
         );
     }
@@ -75,7 +75,7 @@ class PageVip extends React.Component {
     render() {
 
         return (
-            <ScrollView style={{flex: 1, backgroundColor:"#fff"}}>
+            <View style={{flex: 1, backgroundColor:"#fff"}}>
                 {styles.isIOS?<View style={styles.homePage.iosTab}/>:<View/>}
                 <View style={styles.PagePerInfo.title}>
                     <TouchableOpacity style={styles.PagePerInfo.titleBack} onPress={()=>this.props.navigation.goBack(null)}>
@@ -83,12 +83,14 @@ class PageVip extends React.Component {
                     </TouchableOpacity>
                     <Text style={styles.homePage.title}>开通会员</Text>
                 </View>
-                {this.renderIsVip()}
-                <View style={styles.pageVip.titleView}>
-                    <Text style={styles.pageVip.titleText}>VIP会员特权</Text>
-                </View>
-                {this.renderDetail()}
-            </ScrollView>
+                <ScrollView style={{flex: 1, backgroundColor:"#fff"}}>
+                    {this.renderIsVip()}
+                    <View style={styles.pageVip.titleView}>
+                        <Text style={styles.pageVip.titleText}>VIP会员特权</Text>
+                    </View>
+                    {this.renderDetail()}
+                </ScrollView>
+            </View>
         );
     }
 }

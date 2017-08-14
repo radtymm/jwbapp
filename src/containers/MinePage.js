@@ -173,7 +173,7 @@ class MinePage extends React.Component {
         let that = this;
         let imageSrc = require("../images/headDef.jpg");
         if (this.state.res.code && this.state.res.code.avatar != null){
-            imageSrc = {uri: 'http://cdn.jiaowangba.com/' + this.state.res.code.avatar};
+            imageSrc = {uri: 'https://cdn.jiaowangba.com/' + this.state.res.code.avatar};
         }
         let isvip = <View/>;
         if (this.state.res.code && (this.state.res.code.is_vip != "No")){
@@ -183,10 +183,10 @@ class MinePage extends React.Component {
             <ScrollView style={styles.minePage.flex}>
                 <TouchableOpacity onPress={()=>that.openMycamera()}>
                     <View style={{alignItems: 'flex-start', justifyContent: 'center'}}>
-                        <Image resizeMode="cover" style={ styles.homePage.headImage}
+                        <ImageBackground resizeMode="cover" style={ styles.homePage.headImage}
                            source={imageSrc}>
                             {isvip}
-                        </Image>
+                        </ImageBackground>
                     </View>
                     </TouchableOpacity>
                     <View style={styles.minePage.nameId}>
