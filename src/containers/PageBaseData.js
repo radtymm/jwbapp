@@ -1,6 +1,6 @@
 import React from 'react';
 import {
-    StyleSheet, Alert, View, Text, Animated, Easing, ImageBackground,
+    StyleSheet, Alert, View, Text, Animated, Easing, ImageBackground, Modal, Clipboard,
     Button,
     FlatList,
     Dimensions,
@@ -21,7 +21,7 @@ class PageBaseData extends React.Component {
     constructor(props, context) {
         super(props, context);
         this.state = {
-
+            isVisibleModal:false,
         };
     }
 
@@ -176,6 +176,35 @@ class PageBaseData extends React.Component {
         </View>
     }
 
+    copyStr(string){
+      Clipboard.setString(string);
+    }
+
+    renderModal(){
+        let {params} = this.props.navigation.state;
+        let imageSrc = require("../images/headDef.jpg");
+        if (params && params.avatar != null){
+            imageSrc = {uri: 'https://cdn.jiaowangba.com/' + params.avatar, cache:'force-cache'};
+        }
+        return <Modal transparent={true} animationType="slide" visible={this.state.isVisibleModal} onRequestClose={()=>this.setState({isVisibleModal:false})}>
+            <View style={styles.PageBaseData.modalView}>
+                <View style={styles.PageBaseData.modalContent}>
+                    <View style={styles.PageBaseData.modalHead}>
+                        <Image style={styles.PageBaseData.modalHeadImg} source={imageSrc}/>
+                        <Text style={styles.PageBaseData.modalClose} onPress={()=>this.setState({isVisibleModal:false})}>×</Text>
+                    </View>
+                    <View style={styles.PageBaseData.modalWechatView}>
+                        <Text style={styles.PageBaseData.modalName}>{params.nickname}的微信号</Text>
+                        <Text style={styles.PageBaseData.modalWechat}>{params.wechat?params.wechat:"该用户未提交微信号"}</Text>
+                        <TouchableOpacity onPress={()=>this.copyStr(params.wechat)} style={styles.PageBaseData.modalCopyTouch}>
+                            <Text style={styles.PageBaseData.modalCopy}>复制微信号</Text>
+                        </TouchableOpacity>
+                    </View>
+                </View>
+            </View>
+        </Modal>
+    }
+
     render() {
 
         return (
@@ -195,10 +224,11 @@ class PageBaseData extends React.Component {
                     <TouchableOpacity style={styles.PageBaseData.bottomTouch}>
                         <Image style={styles.PageBaseData.bottomImage} resizeMode="contain" source={require('../images/chartother.png')}/>
                     </TouchableOpacity>
-                    <TouchableOpacity style={styles.PageBaseData.bottomTouch}>
+                    <TouchableOpacity style={styles.PageBaseData.bottomTouch} onPress={()=>{this.setState({isVisibleModal:true});}}>
                         <Image style={styles.PageBaseData.bottomImage} resizeMode="contain" source={require('../images/wetchatother.png')}/>
                     </TouchableOpacity>
                 </View>
+                {this.renderModal()}
             </View>
 
         );

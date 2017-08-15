@@ -12,10 +12,12 @@ import {
 } from 'react-native';
 import styles from '../styleSheet/Styles';
 import {requestData} from '../libs/request.js';
-import {height, weight, date} from '../libs/data.js';
+import {height, weight, date1} from '../libs/data.js';
 import PickerAreaDate from 'react-native-picker';
 import area from '../libs/area.json';
 import {Geolocation} from 'react-native-baidu-map';
+
+let date = date1;
 
 class PagePerInfo extends React.Component {
 
@@ -77,7 +79,7 @@ class PagePerInfo extends React.Component {
      }
 
     componentWillUnmount(){
-        clearInterval(this.interval);
+        PickerAreaDate.hide();
     }
 
     reqArea(value, id){
@@ -163,11 +165,14 @@ class PagePerInfo extends React.Component {
             }
         }
 
+        let liveParam = this.state.liveid?`&live=${this.state.liveid}`:"";
+        let hometownParam = this.state.hometownid?`&hometown=${this.state.hometownid}`:"";
+
         let weight = this.state.weight?this.state.weight.substring(0, this.state.weight.length-2):null;
         let height = this.state.height?this.state.height.substring(0, this.state.height.length-2):null;
 
-        console.log(`https://app.jiaowangba.com/mine_info?nickname=${this.state.nickname}&live=${this.state.live}&hometown=${this.state.hometown}&wechat=${this.state.wechat}&marry=${marry}&occupation=${this.state.occupation}&education=${education}&height=${height}&weight=${weight}&income=${income}&house=${house}&idea=${this.state.idea}`);
-        requestData(`https://app.jiaowangba.com/mine_info?birthdate=${this.state.birthdate}&nickname=${this.state.nickname}&wechat=${this.state.wechat}&marry=${marry}&occupation=${this.state.occupation}&education=${education}&height=${height}&weight=${weight}&income=${income}&house=${house}&idea=${this.state.idea}`, (res)=>{
+        console.log(`--birthdate=${this.state.birthdate}${liveParam}${hometownParam}&nickname=${this.state.nickname}&wechat=${this.state.wechat}&marry=${marry}&occupation=${this.state.occupation}&education=${education}&height=${height}&weight=${weight}&income=${income}&house=${house}&idea=${this.state.idea}`);
+        requestData(`https://app.jiaowangba.com/mine_info?birthdate=${this.state.birthdate}${liveParam}${hometownParam}&nickname=${this.state.nickname}&wechat=${this.state.wechat}&marry=${marry}&occupation=${this.state.occupation}&education=${education}&height=${height}&weight=${weight}&income=${income}&house=${house}&idea=${this.state.idea}`, (res)=>{
             if (res.status == "success"){
                 Alert.alert("提示", "保存个人信息成功", [{text:"确定", onPress:()=>{
                     this.props.navigation.state.params.refresh();
@@ -238,6 +243,7 @@ class PagePerInfo extends React.Component {
                             param[item.value] = text;
                             this.setState(param);
                         }}
+                        onFocus={()=>PickerAreaDate.hide()}
                         placeholder={"请输入"}
                         value={this.state[item.value]}
                         underlineColorAndroid='transparent'
@@ -266,7 +272,10 @@ class PagePerInfo extends React.Component {
         }else if (item.contentKey == 3){
             //地区
             ComContent = <TouchableOpacity onPress={()=>this._showPicker(item.arrContent, ['北京', '北京'], item.title, (pickedValue, pickedIndex)=>{
-                    Alert.alert("", JSON.stringify(pickedValue))
+                    let param = {};
+                    param[item.value+"id"] = area[pickedIndex[0]].city[pickedIndex[1]].name;
+                    param[item.value] = area[pickedIndex[0]].city[pickedIndex[1]].name;
+                    this.setState(param);
                 })}>
                 <View style={styles.PagePerInfo.flatItemView}>
                     <View style={styles.PagePerInfo.titleleftView}>
@@ -328,7 +337,6 @@ class PagePerInfo extends React.Component {
                         <View><Text style={styles.homePage.title}>保存</Text></View>
                     </TouchableOpacity>
                 </View>
-                <KeyboardAvoidingView style={{flex:1}} behavior="padding">
                 <ScrollView style={{flex:1}} ref="scro">
                     {this.renderFlatList()}
                     <View style={styles.PagePerInfo.footerView}>
@@ -345,7 +353,7 @@ class PagePerInfo extends React.Component {
                             defaultValue={this.state.idea}
                         />
                         <View style={styles.PagePerInfo.footView}>
-                            <TouchableOpacity>
+                            <TouchableOpacity onPress={()=>{this.props.navigation.navigate('PageChangePwd');}}>
                                 <View style={styles.PagePerInfo.footBtn}><Text style={styles.PagePerInfo.footBtnText}>修改密码</Text></View>
                             </TouchableOpacity>
                             {/*<TouchableOpacity onPress={()=>{Alert.alert("提示", "请加客服微信：5941589");}}>
@@ -354,7 +362,6 @@ class PagePerInfo extends React.Component {
                         </View>
                     </View>
                 </ScrollView>
-                </KeyboardAvoidingView>
             </View>
         );
     }

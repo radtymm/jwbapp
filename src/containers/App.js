@@ -23,6 +23,7 @@ import PageLikeWho from './PageLikeWho';
 import PageLikeMe from './PageLikeMe';
 import PageVip from './PageVip';
 import PagePerInfo from './PagePerInfo';
+import PageChangePwd from './PageChangePwd';
 
 const Tab = TabNavigator({
       HomePage: {
@@ -54,7 +55,7 @@ const App = StackNavigator({
     Login: { screen: Login },
     Tab: { screen: Tab },
     PageRegister: {screen: PageRegister},
-
+    PageChangePwd:{screen: PageChangePwd},
     PageBaseData: {screen: PageBaseData},
     PageLuck: {screen: PageLuck},
     PageLikeWho: {screen:PageLikeWho},

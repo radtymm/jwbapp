@@ -41,14 +41,33 @@ class Login extends React.Component {
                 // 则无需调用conn.setPresence();
                 console.log("onOpened");
             },
-            onError: function ( message ) {console.log("onError-------"); },          //失败回调
+            onError: (error) => {
+              console.log(error)
+              // 16: server-side close the websocket connection
+              if (error.type == WebIM.statusCode.WEBIM_CONNCTION_DISCONNECTED) {
+                console.log('WEBIM_CONNCTION_DISCONNECTED');
+
+                Alert.alert('Error', 'server-side close the websocket connection')
+                return;
+              }
+              // 8: offline by multi login
+              if (error.type == WebIM.statusCode.WEBIM_CONNCTION_SERVER_ERROR) {
+                console.log('WEBIM_CONNCTION_SERVER_ERROR');
+                Alert.alert('Error', 'offline by multi login')
+                return;
+              }
+              if (error.type == 1) {
+                let data = error.data ? error.data.data : ''
+                data && Alert.alert('Error', data)
+              }
+            },
         });
         console.log(WebIM.config.apiURL);
         console.log(WebIM.config.appkey);
         var options = {
           apiUrl: WebIM.config.apiURL,
-          user: 'username',
-          pwd: 'password',
+          user: 'ymm',
+          pwd: '123456',
           appKey: WebIM.config.appkey
         };
         WebIM.conn.open(options);

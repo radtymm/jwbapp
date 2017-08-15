@@ -171,6 +171,16 @@ const PageBaseData = StyleSheet.create({
     headImage: {height: WIDTH-setScaleSize(40), width: WIDTH-setScaleSize(40), borderRadius:setScaleSize(12), },
     headImageLuck: { height: WIDTH-60, width: WIDTH-60,},
     content: {fontSize:setScaleSize(26), paddingRight: setScaleSize(10), color:"#888"},
+    modalView:{backgroundColor:"#0005",  flex:1, justifyContent:"center", alignItems:"center", },
+    modalContent:{backgroundColor:"#fff", borderRadius:setScaleSize(10),  width:setScaleSize(600), height:setScaleSize(740), },
+    modalHead:{borderTopLeftRadius:setScaleSize(10), borderTopRightRadius:setScaleSize(10), backgroundColor:"#FF5D62", width:setScaleSize(600), height:setScaleSize(250), alignItems:'center', justifyContent:"center", },
+    modalHeadImg:{width:setScaleSize(134), height:setScaleSize(134), borderRadius:setScaleSize(67), borderWidth:2, borderColor:"#FFF"},
+    modalClose:{position:'absolute', right:setScaleSize(25), top:setScaleSize(5), color:"#FFF", fontSize:setScaleSize(50)},
+    modalWechatView:{justifyContent:"space-around", alignItems:"center", flex:1,},
+    modalName:{fontSize:setScaleSize(30), color:"#222"},
+    modalWechat:{fontSize:setScaleSize(45), color:"#111"},
+    modalCopyTouch:{width:setScaleSize(216), borderRadius:setScaleSize(8), height:setScaleSize(66), justifyContent:"center", alignItems:"center", backgroundColor:"#ff4f66"},
+    modalCopy:{fontSize:setScaleSize(25), color:"#fff"},
 });
 const pageLogin = StyleSheet.create({
     container: {width: WIDTH, height:HEIGHT, paddingTop:setScaleSize(234), paddingLeft: setScaleSize(85), paddingRight: setScaleSize(85), justifyContent: 'flex-start',  backgroundColor: "rgba(0, 0, 0, 0.4)",  position:'absolute', top:0, },
@@ -212,6 +222,12 @@ const PagePerInfo = StyleSheet.create({
     pickerItem:{padding:0,margin:0, backgroundColor:"#631", height:setScaleSize(70), },
     pickerArea:{padding:0,  width:120, color:"rgb(85, 85, 85)",},
 });
+const pageChangePwd = StyleSheet.create({
+    changeView:{padding:setScaleSize(40), paddingTop:setScaleSize(35), flex:1, justifyContent:"flex-start"},
+    changeText:{color:"#333", paddingVertical:setScaleSize(24), paddingLeft:setScaleSize(18), fontSize:setScaleSize(34), marginBottom:setScaleSize(40), backgroundColor:"#e5e5e5"},
+    submitTouch:{borderRadius:setScaleSize(8), height:setScaleSize(94), backgroundColor:"#2FB9C3", justifyContent:"center", alignItems:"center"},
+    submitText:{color:"#fff", fontSize:setScaleSize(30)},
+});
 const styles = {
     PageRegister: PageRegister,
     PagePerInfo:PagePerInfo,
@@ -221,6 +237,7 @@ const styles = {
     minePage: minePage,
     live: live,
     tabbar: tabbar,
+    pageChangePwd: pageChangePwd,
     WIDTH: WIDTH,
     HEIGHT: HEIGHT,
     pageLuck:pageLuck,

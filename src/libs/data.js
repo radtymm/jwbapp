@@ -14,8 +14,8 @@ for (let i=40; i < 100; i++ ){
     weight.push(strHeight);
 }
 
-let date = [];
-for(let i=1950;i < 2017;i++){
+let date1 = [];
+for(let i=1970;i < 2010;i++){
     let month = [];
     for(let j = 1;j < 13;j++){
         let day = [];
@@ -61,9 +61,9 @@ for(let i=1950;i < 2017;i++){
     }
     let _date = {};
     _date[i+'年'] = month;
-    date.push(_date);
+    date1.push(_date);
 }
 
 
 
-export {height, weight, date, };
+export {height, weight, date1, };
