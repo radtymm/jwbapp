@@ -51,11 +51,7 @@ class MinePage extends React.Component {
 
     componentDidMount() {
         this.refresh();
-        requestData("https://app.jiaowangba.com/area", (res)=>{
-            if (res.status == "success") {
-                this.setState({area:res.code});
-            }
-        });
+
     }
 
     refresh(){
@@ -150,7 +146,6 @@ class MinePage extends React.Component {
                                     this.props.navigation.navigate("Login");
                             }else if (item.title == "个人资料") {
                                 let perInfoParams = Object.assign({}, this.state.res.code);
-                                perInfoParams.area = this.state.area;
                                 perInfoParams.refresh = this.refresh;
                                 this.props.navigation.navigate(item.navi, perInfoParams);
                             }else{
