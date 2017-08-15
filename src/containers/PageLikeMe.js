@@ -70,13 +70,6 @@ class PageLikeMe extends React.Component {
         });
     }
 
-    // 滚动到顶部
-    scrollTotop()
-    {
-        this.refs.flat.scrollToIndex({viewPosition: 0, index: Number(0)});
-    }
-
-
     comFlatList() {
         if (this.state.data) {
             let data = Object.assign([], this.state.data);

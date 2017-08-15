@@ -58,21 +58,15 @@ class PageBaseData extends React.Component {
             let params = this.state.data.code;
             let data1 = [
                 {title: '出生年月', content: params.birthdate},
-                {title: '工作类型', content: "工作类型？？"},
-                {title: '是否购房', content: "购房？？"},
-                {title: '是否购车', content: "购车？？？", },
-            ];
-            let data2 = [
-                {title: '微信：', content: params.wechat,},
-                // {title: '手机：', content: params.telephone,},
-                {title: '婚况：', content: params.marry,},
                 {title: '居住：', content: params.live,},
-                {title: '家乡：', content: params.hometown,},
-                {title: '学历：', content: params.education,},
-                {title: '身高：', content: params.height?params.height + '厘米':"",},
-                {title: '体重：', content: params.weight?params.weight + '公斤':"",},
                 {title: '职业：', content: params.occupation,},
                 {title: '收入：', content: params.income,},
+
+            ];
+            let data2 = [
+                {title: '婚况：', content: params.marry,},
+                {title: '身高：', content: params.height?params.height + '厘米':"",},
+                {title: '体重：', content: params.weight?params.weight + '公斤':"",},
                 {title: '住房：', content: params.house,},
                 {title: '上线时间：', content: params.time,},
             ];
@@ -205,12 +199,19 @@ class PageBaseData extends React.Component {
         </Modal>
     }
 
-    render() {
+    handleWetchat(){
+        if (this.state.data.code.is_vip == "No") {
+            Alert.alert("提示", "VIP用户可查看微信号");
+        }else {
+            this.setState({isVisibleModal:true});
+        }
+    }
 
+    render() {
         return (
             <View style={{flex:1}}>
+                {styles.isIOS?<View style={styles.homePage.iosTab}/>:<View/>}
                 <View style={styles.PagePerInfo.title}>
-                    {styles.isIOS?<View style={styles.homePage.iosTab}/>:<View/>}
                     <TouchableOpacity style={styles.PagePerInfo.titleBack} onPress={()=>this.props.navigation.goBack(null)}>
                         <View style={styles.PagePerInfo.titleBackIcon}/>
                     </TouchableOpacity>
@@ -221,10 +222,10 @@ class PageBaseData extends React.Component {
                     {this.renderBaseData()}
                 </ScrollView>
                 <View style={styles.PageBaseData.bottomBtn}>
-                    <TouchableOpacity style={styles.PageBaseData.bottomTouch}>
+                    <TouchableOpacity style={styles.PageBaseData.bottomTouch} onPress={()=>{this.props.navigation.navigate("ChatScreen");}}>
                         <Image style={styles.PageBaseData.bottomImage} resizeMode="contain" source={require('../images/chartother.png')}/>
                     </TouchableOpacity>
-                    <TouchableOpacity style={styles.PageBaseData.bottomTouch} onPress={()=>{this.setState({isVisibleModal:true});}}>
+                    <TouchableOpacity style={styles.PageBaseData.bottomTouch} onPress={()=>{this.handleWetchat();}}>
                         <Image style={styles.PageBaseData.bottomImage} resizeMode="contain" source={require('../images/wetchatother.png')}/>
                     </TouchableOpacity>
                 </View>

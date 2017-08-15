@@ -43,7 +43,7 @@ class PagePerInfo extends React.Component {
             birthdate:params.birthdate,
             house:params.house,
             idea:params.idea,
-            area:params.area,
+            // area:params.area,
         };
     }
 
@@ -80,16 +80,6 @@ class PagePerInfo extends React.Component {
 
     componentWillUnmount(){
         PickerAreaDate.hide();
-    }
-
-    reqArea(value, id){
-        requestData("https://app.jiaowangba.com/area?id="+id, (res)=>{
-            if (res.status == "success") {
-                let city = {};
-                city[value + "city"] = res.code;
-                this.setState(city);
-            }
-        });
     }
 
     perInfo(){
@@ -213,13 +203,17 @@ class PagePerInfo extends React.Component {
             pickerCancelBtnText:"取消",
             pickerTitleText:title,
             onPickerConfirm: (pickedValue, pickedIndex) => {
-                callback(pickedValue, pickedIndex);
+                console.log(JSON.stringify(pickedValue));
+                console.log(JSON.stringify(pickedIndex));
+                // callback(pickedValue, pickedIndex);
             },
             onPickerCancel: (pickedValue, pickedIndex) => {
-                console.log('date', pickedValue, pickedIndex);
+                console.log(JSON.stringify(pickedValue));
+                console.log(JSON.stringify(pickedIndex));
             },
             onPickerSelect: (pickedValue, pickedIndex) => {
-                console.log('date', pickedValue, pickedIndex);
+                console.log(JSON.stringify(pickedValue));
+                console.log(JSON.stringify(pickedIndex));
             }
         });
         PickerAreaDate.show();
@@ -273,6 +267,9 @@ class PagePerInfo extends React.Component {
             //地区
             ComContent = <TouchableOpacity onPress={()=>this._showPicker(item.arrContent, ['北京', '北京'], item.title, (pickedValue, pickedIndex)=>{
                     let param = {};
+                    console.log(pickedIndex[0]);
+                    console.log(JSON.stringify(pickedIndex));
+                    console.log(area[pickedIndex[0]]);
                     param[item.value+"id"] = area[pickedIndex[0]].city[pickedIndex[1]].name;
                     param[item.value] = area[pickedIndex[0]].city[pickedIndex[1]].name;
                     this.setState(param);
@@ -323,12 +320,48 @@ class PagePerInfo extends React.Component {
             </View>
     }
 
+    renderContent(){
+        let ComContent = (
+            <ScrollView style={{flex:1}} ref="scro">
+                {this.renderFlatList()}
+                <View style={styles.PagePerInfo.footerView}>
+                    <TextInput
+                        style={styles.PagePerInfo.introduce}
+                        onChangeText={(text)=>{
+                            this.setState({idea: text});
+                        }}
+                        onFocus={()=>{this.timeout = styles.isIOS?setTimeout(()=>this.refs.scro.scrollToEnd({animated: false}), 100):null;}}
+                        onBlur={()=>{this.timeout = styles.isIOS?setTimeout(()=>this.refs.scro.scrollToEnd({animated: false}), 100):null;}}
+                        numberOfLines={8}
+                        multiline={true}
+                        underlineColorAndroid='transparent'
+                        defaultValue={this.state.idea}
+                    />
+                    <View style={styles.PagePerInfo.footView}>
+                        <TouchableOpacity onPress={()=>{this.props.navigation.navigate('PageChangePwd');}}>
+                            <View style={styles.PagePerInfo.footBtn}><Text style={styles.PagePerInfo.footBtnText}>修改密码</Text></View>
+                        </TouchableOpacity>
+                        {/*<TouchableOpacity onPress={()=>{Alert.alert("提示", "请加客服微信：5941589");}}>
+                            <View style={styles.PagePerInfo.footBtn}><Text style={styles.PagePerInfo.footBtnText}>注销账户</Text></View>
+                        </TouchableOpacity>*/}
+                    </View>
+                </View>
+            </ScrollView>
+        );
+        if (styles.isIOS) {
+            return <KeyboardAvoidingView style={{flex:1}} behavior="padding">
+                {ComContent}
+            </KeyboardAvoidingView>;
+        }
+        return ComContent;
+    }
+
     render() {
 
         return (
             <View style={[styles.live.container, {backgroundColor:"#fff"}]}>
+                {styles.isIOS?<View style={styles.homePage.iosTab}/>:<View/>}
                 <View style={styles.PagePerInfo.title}>
-                    {styles.isIOS?<View style={styles.homePage.iosTab}/>:<View/>}
                     <TouchableOpacity style={styles.PagePerInfo.titleBack} onPress={()=>this.props.navigation.goBack(null)}>
                         <View style={styles.PagePerInfo.titleBackIcon}/>
                     </TouchableOpacity>
@@ -337,31 +370,8 @@ class PagePerInfo extends React.Component {
                         <View><Text style={styles.homePage.title}>保存</Text></View>
                     </TouchableOpacity>
                 </View>
-                <ScrollView style={{flex:1}} ref="scro">
-                    {this.renderFlatList()}
-                    <View style={styles.PagePerInfo.footerView}>
-                        <TextInput
-                            style={styles.PagePerInfo.introduce}
-                            onChangeText={(text)=>{
-                                this.setState({idea: text});
-                            }}
-                            onFocus={()=>{this.timeout = styles.isIOS?setTimeout(()=>this.refs.scro.scrollToEnd({animated: false}), 100):null;}}
-                            onBlur={()=>{this.timeout = styles.isIOS?setTimeout(()=>this.refs.scro.scrollToEnd({animated: false}), 100):null;}}
-                            numberOfLines={8}
-                            multiline={true}
-                            underlineColorAndroid='transparent'
-                            defaultValue={this.state.idea}
-                        />
-                        <View style={styles.PagePerInfo.footView}>
-                            <TouchableOpacity onPress={()=>{this.props.navigation.navigate('PageChangePwd');}}>
-                                <View style={styles.PagePerInfo.footBtn}><Text style={styles.PagePerInfo.footBtnText}>修改密码</Text></View>
-                            </TouchableOpacity>
-                            {/*<TouchableOpacity onPress={()=>{Alert.alert("提示", "请加客服微信：5941589");}}>
-                                <View style={styles.PagePerInfo.footBtn}><Text style={styles.PagePerInfo.footBtnText}>注销账户</Text></View>
-                            </TouchableOpacity>*/}
-                        </View>
-                    </View>
-                </ScrollView>
+                {this.renderContent()}
+
             </View>
         );
     }

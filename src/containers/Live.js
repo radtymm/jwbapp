@@ -105,7 +105,7 @@ class Live extends React.Component {
 
     // 滚动到顶部
     scrollTotop(){
-        this.refs.flat.scrollToIndex({viewPosition: 0, index: 0});
+        this.refs.flat.scrollToOffset({x: 0, y: 0, animated: true});
     }
 
     comFlatList() {
@@ -152,7 +152,7 @@ class Live extends React.Component {
                             {length: (styles.WIDTH + styles.setScaleSize(78)), offset: (styles.WIDTH + styles.setScaleSize(78)) * index, index}
                         )}
                         onEndReached={()=>this.loadMore()}
-                        onEndReachedThreshold={-0.5}
+                        onEndReachedThreshold={styles.isIOS?(-0.5):0.5}
                     />
                 </View>
             );

@@ -3,13 +3,7 @@ import {
     StyleSheet, ScrollView, navigator, Alert, View, Text, Button, FlatList, Dimensions, TouchableOpacity,
     TouchableHighlight, Image, TextInput, Animated, Easing,
 } from 'react-native';
-import {
-    StackNavigator,
-    TabNavigator
-} from 'react-navigation';
-import PageBaseData from './PageBaseData';
-import jwbapp from './App';
-import MinePage from './MinePage';
+
 import styles from '../styleSheet/Styles';
 import {requestData, requestDataPost,} from '../libs/request.js';
 import Swiper from 'react-native-swiper';
@@ -97,7 +91,7 @@ class PageRegister extends React.Component {
 
     render() {
         return (
-            <View style={{flex: 1, backgroundColor:"#0e6"}} >
+            <View style={{flex: 1,}} >
                 <Swiper height={styles.HEIGHT} width={styles.WIDTH}
                       loop={styles.isIOS?false:true}
                       showsButtons={false}
