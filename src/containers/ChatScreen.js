@@ -12,7 +12,7 @@ class ChatScreen extends React.Component {
     constructor(props, context) {
         super(props, context);
         this.state = {
-
+            isRefreshing:false
         };
     }
 
@@ -21,30 +21,36 @@ class ChatScreen extends React.Component {
     }
 
     handleRefresh() {
-      this.setState({isRefreshing: true})
-      // this.props.getContacts()
-      setTimeout(() => {
-        this.setState({isRefreshing: false})
-      }, 1000)
+        this.setState({isRefreshing: true})
+        setTimeout(() => {
+          ()=>this.setState({isRefreshing: false})
+        }, 1000);
     }
 
     renderItem(item, index){
 
         return (
-            <View>
-                <Text>{item.message}</Text>
+            <View style={[styles.chatScreen.itemView, {justifyContent:!item.isOther?'flex-end':'flex-start'}]}>
+                {item.isOther?<Image style={styles.chatScreen.headImg} source={item.headImage}></Image>:<View/>}
+                <Text style={[styles.chatScreen.msgText, {textAlign:!item.isOther?'right':'left'}]}>{item.message}</Text>
+                {!item.isOther?<Image style={styles.chatScreen.headImg} source={item.headImage}></Image>:<View/>}
             </View>
         );
     }
 
+
     render() {
         let data = [
-            {headImage:require('../images/home.png'), message:"asdasdasd", isMe:true},
-            {headImage:require('../images/home.png'), message:"asdasdasd", isMe:true},
-            {headImage:require('../images/home.png'), message:"asdasdasd", isMe:true},
+            {headImage:require('../images/home.png'), message:"asdasdasdsdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasd", isOther:true},
+            {headImage:require('../images/home.png'), message:"asdasdasd", isOther:false},
+            {headImage:require('../images/home.png'), message:"asdasdasd", isOther:true},
+            {headImage:require('../images/home.png'), message:"asdasdasd", isOther:true},
+            {headImage:require('../images/home.png'), message:"asdasdasd", isOther:true},
+            {headImage:require('../images/home.png'), message:"asdasdasd", isOther:false},
+            {headImage:require('../images/home.png'), message:"asdasdasd", isOther:true},
         ];
         return (
-            <View style={{flex: 1, backgroundColor:"#268"}} >
+            <View style={{flex: 1, backgroundColor:"#f5f5f5"}} >
                 <FlatList
                     data={data}
                     keyExtractor = {(item, index) => ""+index}
@@ -61,8 +67,8 @@ class ChatScreen extends React.Component {
                         />
                     }
                     renderItem={({item, index}) => this.renderItem(item, index)}
-
                 />
+
             </View>
         );
     }

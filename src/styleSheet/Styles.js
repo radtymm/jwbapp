@@ -228,6 +228,11 @@ const pageChangePwd = StyleSheet.create({
     submitTouch:{borderRadius:setScaleSize(8), height:setScaleSize(94), backgroundColor:"#2FB9C3", justifyContent:"center", alignItems:"center"},
     submitText:{color:"#fff", fontSize:setScaleSize(30)},
 });
+const chatScreen = StyleSheet.create({
+    itemView:{minHeight:setScaleSize(80), flexDirection:"row", alignItems:"center",  margin:setScaleSize(20),},
+    headImg:{width:setScaleSize(50), height:setScaleSize(50), marginHorizontal:setScaleSize(20)},
+    msgText:{backgroundColor:"#fff", maxWidth:WIDTH/2, fontSize:setScaleSize(25), color:"#333", textAlign:'right', padding:setScaleSize(8), borderRadius:setScaleSize(18), borderWidth:1, borderColor:"#333"},
+});
 const styles = {
     PageRegister: PageRegister,
     PagePerInfo:PagePerInfo,
@@ -243,6 +248,7 @@ const styles = {
     pageLuck:pageLuck,
     pageLikeWho:pageLikeWho,
     pageVip:pageVip,
+    chatScreen:chatScreen,
     setScaleSize:setScaleSize,
     setSizeText:setSizeText,
     isIOS:isIOS,
