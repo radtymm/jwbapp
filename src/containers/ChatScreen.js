@@ -1,11 +1,12 @@
 import React from 'react';
 import {
     StyleSheet, ScrollView, navigator, Alert, View, Text, Button, FlatList, Dimensions, TouchableOpacity,
-    TouchableHighlight, Image, TextInput, Animated, Easing, RefreshControl,
+    TouchableHighlight, Image, TextInput, Animated, Easing, RefreshControl, KeyboardAvoidingView,
 } from 'react-native';
 
 import styles from '../styleSheet/Styles';
 import {requestData, requestDataPost,} from '../libs/request.js';
+import WebIM from '../../WebIM';
 
 class ChatScreen extends React.Component {
 
@@ -17,7 +18,7 @@ class ChatScreen extends React.Component {
     }
 
     componentDidMount() {
-
+        console.log(JSON.stringify());
     }
 
     handleRefresh() {
@@ -41,12 +42,17 @@ class ChatScreen extends React.Component {
     }
 
     renderItem(item, index){
+        let {params} = this.props.navigation.state;
+        let headImage = {uri: 'https://cdn.jiaowangba.com/' + params.avatar, cache:'force-cache'};
+        if (!item.isOther) {
+            headImage = {uri: 'https://cdn.jiaowangba.com/' + global.perInfo.avatar, cache:'force-cache'};
+        }
 
         return (
             <View style={[styles.chatScreen.itemView, {justifyContent:!item.isOther?'flex-end':'flex-start'}]}>
-                {item.isOther?<Image style={styles.chatScreen.headImg} source={item.headImage}></Image>:<View/>}
+                {item.isOther?<Image style={styles.chatScreen.headImg} source={headImage}></Image>:<View/>}
                 <Text style={[styles.chatScreen.msgText, {textAlign:!item.isOther?'right':'left'}]}>{item.message}</Text>
-                {!item.isOther?<Image style={styles.chatScreen.headImg} source={item.headImage}></Image>:<View/>}
+                {!item.isOther?<Image style={styles.chatScreen.headImg} source={headImage}></Image>:<View/>}
             </View>
         );
     }
@@ -59,7 +65,9 @@ class ChatScreen extends React.Component {
             <TextInput style={styles.chatScreen.msgTextIpt} underlineColorAndroid="transparent"
                 numberOfLines={3} multiple={true}
                 onChangeText={(text)=>this.handleChangeText(text)}
-                onFocus={()=>this.handleFocus()}
+                onFocus={()=>{this.timeout = styles.isIOS?setTimeout(()=>this.refs.flat.scrollToEnd({animated: false}), 100):null;}}
+                onBlur={()=>{this.timeout = styles.isIOS?setTimeout(()=>this.refs.flat.scrollToEnd({animated: false}), 100):null;}}
+
                 onSubmitEditing={()=>this.handleSendMessage()}
             />
             <TouchableOpacity style={styles.chatScreen.emojiView}>
@@ -71,7 +79,10 @@ class ChatScreen extends React.Component {
         </View>;
     }
 
-    render() {
+    renderFlatList(){
+        let {params} = this.props.navigation.state;
+        let headImage = {uri: 'https://cdn.jiaowangba.com/' + params.avatar, cache:'force-cache'};
+
         let data = [
             {headImage:require('../images/home.png'), message:"asdasdasdsdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasd", isOther:true},
             {headImage:require('../images/home.png'), message:"asdasdasdsdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasd", isOther:true},
@@ -83,15 +94,10 @@ class ChatScreen extends React.Component {
             {headImage:require('../images/home.png'), message:"asdasdasd", isOther:false},
             {headImage:require('../images/home.png'), message:"asdasdasd", isOther:true},
         ];
-        return (
-            <View style={{flex: 1, backgroundColor:"#f5f5f5"}} >
-                {styles.isIOS?<View style={styles.homePage.iosTab}/>:<View/>}
-                <View style={styles.PagePerInfo.title}>
-                    <TouchableOpacity style={styles.PagePerInfo.titleBack} onPress={()=>this.props.navigation.goBack(null)}>
-                        <View style={styles.PagePerInfo.titleBackIcon}/>
-                    </TouchableOpacity>
-                    <Text style={styles.homePage.title}>{"this.props.navigation.state.params.nickname"}</Text>
-                </View>
+
+
+        let ComFlat = (
+            <View style={{flex:1}}>
                 <FlatList
                     data={data}
                     keyExtractor = {(item, index) => ""+index}
@@ -110,6 +116,30 @@ class ChatScreen extends React.Component {
                     renderItem={({item, index}) => this.renderItem(item, index)}
                 />
                 {this.renderBar()}
+            </View>
+        );
+
+        if (styles.isIOS) {
+            return <KeyboardAvoidingView style={{flex:1}} behavior="padding">
+                {ComFlat}
+            </KeyboardAvoidingView>;
+        }
+        return ComFlat;
+    }
+
+    render() {
+
+        return (
+            <View style={{flex: 1, backgroundColor:"#f5f5f5"}} >
+                {styles.isIOS?<View style={styles.homePage.iosTab}/>:<View/>}
+                <View style={styles.PagePerInfo.title}>
+                    <TouchableOpacity style={styles.PagePerInfo.titleBack} onPress={()=>this.props.navigation.goBack(null)}>
+                        <View style={styles.PagePerInfo.titleBackIcon}/>
+                    </TouchableOpacity>
+                    <Text style={styles.homePage.title}>{this.props.navigation.state.params.nickname}</Text>
+                </View>
+                {this.renderFlatList()}
+
             </View>
         );
     }

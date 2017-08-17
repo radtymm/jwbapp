@@ -25,6 +25,7 @@ import PageVip from './PageVip';
 import PagePerInfo from './PagePerInfo';
 import PageChangePwd from './PageChangePwd';
 
+
 const Tab = TabNavigator({
       HomePage: {
         screen: HomePage,

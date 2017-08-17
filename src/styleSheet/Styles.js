@@ -221,6 +221,8 @@ const PagePerInfo = StyleSheet.create({
     picker:{ padding:0,backgroundColor:"#238" , width:100, height:setScaleSize(70),  flex:1, justifyContent:"flex-end", alignItems:'flex-end', },
     pickerItem:{padding:0,margin:0, backgroundColor:"#631", height:setScaleSize(70), },
     pickerArea:{padding:0,  width:120, color:"rgb(85, 85, 85)",},
+    modalView:{ alignItems: 'center',justifyContent:'center', borderRadius:setScaleSize(5), borderWidth:1, borderColor:"#888", backgroundColor:"#fff",height:setScaleSize(60), width:WIDTH/2, },
+    submitIOSDate:{color:"blue", fontSize:setScaleSize(30), },
 });
 const pageChangePwd = StyleSheet.create({
     changeView:{padding:setScaleSize(40), paddingTop:setScaleSize(35), flex:1, justifyContent:"flex-start"},
@@ -230,7 +232,7 @@ const pageChangePwd = StyleSheet.create({
 });
 const chatScreen = StyleSheet.create({
     itemView:{minHeight:setScaleSize(80), flexDirection:"row", alignItems:"center",  margin:setScaleSize(20),},
-    headImg:{width:setScaleSize(50), height:setScaleSize(50), marginHorizontal:setScaleSize(20)},
+    headImg:{borderRadius:setScaleSize(25), width:setScaleSize(50), height:setScaleSize(50), marginHorizontal:setScaleSize(20)},
     msgText:{backgroundColor:"#fff", maxWidth:WIDTH/2, fontSize:setScaleSize(25), color:"#333", textAlign:'right', padding:setScaleSize(8), borderRadius:setScaleSize(18), borderWidth:1, borderColor:"#333"},
     barView:{flexDirection:"row", justifyContent:"space-around", alignItems:"center", backgroundColor:"#f6f3fa", height:setScaleSize(116), width:WIDTH, borderBottomWidth:1, borderTopWidth:1, borderColor:"#dbdbdb", },
     voiceImg:{width:setScaleSize(66), height:setScaleSize(66), },

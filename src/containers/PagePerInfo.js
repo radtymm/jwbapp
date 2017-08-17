@@ -1,7 +1,7 @@
 import React from 'react';
 import {
     StyleSheet, ScrollView, RefreshControl, Alert, Picker, TextInput, KeyboardAvoidingView,
-    View, DatePickerAndroid,
+    View, DatePickerAndroid, DatePickerIOS, Modal,
     Text,
     Button,
     FlatList,
@@ -43,7 +43,8 @@ class PagePerInfo extends React.Component {
             birthdate:params.birthdate,
             house:params.house,
             idea:params.idea,
-            // area:params.area,
+            isVisibleModal:false,
+            date:new Date(params.birthdate)
         };
     }
 
@@ -222,7 +223,7 @@ class PagePerInfo extends React.Component {
 
     async _showDatePicker(){
         if (styles.isIOS) {
-
+            this.setState({isVisibleModal:true});
         }else {
             try {
               const {action, year, month, day} = await DatePickerAndroid.open({
@@ -241,6 +242,32 @@ class PagePerInfo extends React.Component {
               console.warn('Cannot open date picker', message);
             }
         }
+    }
+
+    handleIOSDateChange(){
+        let date = this.state.date;
+        let birthdate = date.getFullYear() + "-" + (date.getUTCMonth() + 1) + "-" + date.getDate();
+        this.setState({isVisibleModal:false, birthdate:birthdate});
+    }
+
+    renderDateIOS(){
+        if (this.state.isVisibleModal) {
+            return (
+                <View>
+                    <DatePickerIOS
+                      date={this.state.date}
+                      mode="date"
+                      onDateChange={(date)=>{this.setState({date:date});}}
+                      />
+                      <View style={{alignItems:"center", paddingBottom:2}}>
+                          <TouchableOpacity onPress={()=>this.handleIOSDateChange()} style={styles.PagePerInfo.modalView}>
+                            <Text style={styles.PagePerInfo.submitIOSDate}>确定</Text>
+                          </TouchableOpacity>
+                      </View>
+                </View>
+            );
+        }
+        return;
     }
 
     renderFlatItem(item){
@@ -392,7 +419,7 @@ class PagePerInfo extends React.Component {
                     </TouchableOpacity>
                 </View>
                 {this.renderContent()}
-
+                {this.renderDateIOS()}
             </View>
         );
     }

@@ -1,18 +1,11 @@
 import React from 'react';
 import {StyleSheet, ScrollView, navigator, Alert, View, Text, Button, FlatList, Dimensions, TouchableOpacity,
     TouchableHighlight, Image, TextInput, } from 'react-native';
-import {
-    StackNavigator,
-    TabNavigator
-} from 'react-navigation';
-import PageBaseData from './PageBaseData';
-import jwbapp from './App';
+
 import styles from '../styleSheet/Styles';
 import {requestData, requestDataPost,} from '../libs/request.js';
 import Swiper from 'react-native-swiper';
 import WebIM from '../../WebIM';
-
-
 
 class Login extends React.Component {
 
@@ -62,9 +55,7 @@ class Login extends React.Component {
               }
             },
         });
-        console.log(WebIM.config.apiURL);
-        console.log(WebIM.config.appkey);
-        var options = {
+        let options = {
           apiUrl: WebIM.config.apiURL,
           user: 'ymm',
           pwd: '123456',
