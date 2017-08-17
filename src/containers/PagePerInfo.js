@@ -220,18 +220,22 @@ class PagePerInfo extends React.Component {
         PickerAreaDate.show();
     }
 
-    _showDatePicker(){
+    async _showDatePicker(){
         if (styles.isIOS) {
 
         }else {
             try {
-              const {action, year, month, day} = DatePickerAndroid.open({
+              const {action, year, month, day} = await DatePickerAndroid.open({
                 // 要设置默认值为今天的话，使用`new Date()`即可。
                 // 下面显示的会是2020年5月25日。月份是从0开始算的。
-                date: new Date(2020, 4, 25)
+                date: new Date(2000, 0, 2),
+                maxDate: new Date(),
+                mode:'spinner',
               });
               if (action !== DatePickerAndroid.dismissedAction) {
                 // 这里开始可以处理用户选好的年月日三个参数：year, month (0-11), day
+                let birthdate = year + "-" + (month + 1) + "-" + day;
+                this.setState({birthdate:birthdate});
               }
             } catch ({code, message}) {
               console.warn('Cannot open date picker', message);
@@ -307,10 +311,7 @@ class PagePerInfo extends React.Component {
             </TouchableOpacity>
         }else if (item.contentKey == 4) {
             //日期
-            ComContent = <TouchableOpacity onPress={()=>this._showPicker(item.arrContent, ['2000年', '01月'], item.title, (pickedValue, pickedIndex)=>{
-                    let birthdate = pickedValue[0].substring(0, 4) + "-" + pickedValue[1].substring(0, 2) + "-" + pickedValue[2].substring(0, 2);
-                    this.setState({birthdate:birthdate});
-                    })}>
+            ComContent = <TouchableOpacity onPress={()=>this._showDatePicker()}>
                 <View style={styles.PagePerInfo.flatItemView}>
                     <View style={styles.PagePerInfo.titleleftView}>
                         <Text style={styles.PagePerInfo.itemTitle}>{item.title}</Text>

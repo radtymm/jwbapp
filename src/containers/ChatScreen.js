@@ -27,6 +27,19 @@ class ChatScreen extends React.Component {
         }, 1000);
     }
 
+    handleFocus(){
+        console.log("12");
+        setTimeout(()=>this.refs.flat.scrollToEnd({animated:false}), 2000);
+    }
+
+    handleSendMessage(){
+        console.log();
+    }
+
+    handleChangeText(text){
+        this.setState({message:text});
+    }
+
     renderItem(item, index){
 
         return (
@@ -38,11 +51,32 @@ class ChatScreen extends React.Component {
         );
     }
 
+    renderBar(){
+        return <View style={styles.chatScreen.barView}>
+            <TouchableOpacity style={styles.chatScreen.voiceTouch}>
+                <Image resizeMode="contain" style={styles.chatScreen.voiceImg} source={require('../images/home.png')}/>
+            </TouchableOpacity>
+            <TextInput style={styles.chatScreen.msgTextIpt} underlineColorAndroid="transparent"
+                numberOfLines={3} multiple={true}
+                onChangeText={(text)=>this.handleChangeText(text)}
+                onFocus={()=>this.handleFocus()}
+                onSubmitEditing={()=>this.handleSendMessage()}
+            />
+            <TouchableOpacity style={styles.chatScreen.emojiView}>
+                <Image resizeMode="contain" style={styles.chatScreen.voiceImg} source={require('../images/home.png')}/>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.chatScreen.otherTouch}>
+                <Image resizeMode="contain" style={styles.chatScreen.voiceImg} source={require('../images/home.png')}/>
+            </TouchableOpacity>
+        </View>;
+    }
 
     render() {
         let data = [
             {headImage:require('../images/home.png'), message:"asdasdasdsdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasd", isOther:true},
+            {headImage:require('../images/home.png'), message:"asdasdasdsdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasd", isOther:true},
             {headImage:require('../images/home.png'), message:"asdasdasd", isOther:false},
+            {headImage:require('../images/home.png'), message:"asdasdasd", isOther:true},
             {headImage:require('../images/home.png'), message:"asdasdasd", isOther:true},
             {headImage:require('../images/home.png'), message:"asdasdasd", isOther:true},
             {headImage:require('../images/home.png'), message:"asdasdasd", isOther:true},
@@ -51,6 +85,13 @@ class ChatScreen extends React.Component {
         ];
         return (
             <View style={{flex: 1, backgroundColor:"#f5f5f5"}} >
+                {styles.isIOS?<View style={styles.homePage.iosTab}/>:<View/>}
+                <View style={styles.PagePerInfo.title}>
+                    <TouchableOpacity style={styles.PagePerInfo.titleBack} onPress={()=>this.props.navigation.goBack(null)}>
+                        <View style={styles.PagePerInfo.titleBackIcon}/>
+                    </TouchableOpacity>
+                    <Text style={styles.homePage.title}>{"this.props.navigation.state.params.nickname"}</Text>
+                </View>
                 <FlatList
                     data={data}
                     keyExtractor = {(item, index) => ""+index}
@@ -68,7 +109,7 @@ class ChatScreen extends React.Component {
                     }
                     renderItem={({item, index}) => this.renderItem(item, index)}
                 />
-
+                {this.renderBar()}
             </View>
         );
     }

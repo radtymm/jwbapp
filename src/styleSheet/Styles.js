@@ -232,6 +232,9 @@ const chatScreen = StyleSheet.create({
     itemView:{minHeight:setScaleSize(80), flexDirection:"row", alignItems:"center",  margin:setScaleSize(20),},
     headImg:{width:setScaleSize(50), height:setScaleSize(50), marginHorizontal:setScaleSize(20)},
     msgText:{backgroundColor:"#fff", maxWidth:WIDTH/2, fontSize:setScaleSize(25), color:"#333", textAlign:'right', padding:setScaleSize(8), borderRadius:setScaleSize(18), borderWidth:1, borderColor:"#333"},
+    barView:{flexDirection:"row", justifyContent:"space-around", alignItems:"center", backgroundColor:"#f6f3fa", height:setScaleSize(116), width:WIDTH, borderBottomWidth:1, borderTopWidth:1, borderColor:"#dbdbdb", },
+    voiceImg:{width:setScaleSize(66), height:setScaleSize(66), },
+    msgTextIpt:{width:setScaleSize(466), height:setScaleSize(80), backgroundColor:"#fcfcfc", borderColor:"#dce5de", borderWidth:1, borderRadius:setScaleSize(8), },
 });
 const styles = {
     PageRegister: PageRegister,
