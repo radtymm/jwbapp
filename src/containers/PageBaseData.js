@@ -54,29 +54,25 @@ class PageBaseData extends React.Component {
 
     renderFlatList() {
         if (this.state.data) {
-            console.log(JSON.stringify(this.state.data.code));
             let params = this.state.data.code;
             let data1 = [
                 {title: '出生年月', content: params.birthdate},
                 {title: '居住：', content: params.live,},
                 {title: '职业：', content: params.occupation,},
                 {title: '收入：', content: params.income,},
-
-            ];
-            let data2 = [
                 {title: '婚况：', content: params.marry,},
                 {title: '身高：', content: params.height?params.height + '厘米':"",},
                 {title: '体重：', content: params.weight?params.weight + '公斤':"",},
                 {title: '住房：', content: params.house,},
                 {title: '上线时间：', content: params.time,},
             ];
+            let data2 = [
+
+            ];
             return (
                 <View style={styles.PageBaseData.flatView}>
                     <View style={styles.PageBaseData.oneFlatView}>
                         {this.renderFlatListItem(data1)}
-                    </View>
-                    <View style={styles.PageBaseData.oneFlatView}>
-                        {this.renderFlatListItem(data2)}
                     </View>
                 </View>
             );
@@ -160,6 +156,7 @@ class PageBaseData extends React.Component {
         if (this.state.is_like){
             imgLike = require('../images/liked_before.png');
         }
+
 
         return <View style={styles.PageBaseData.contentView}>
             <View style={styles.PageBaseData.loveStory}>

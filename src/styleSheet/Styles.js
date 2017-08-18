@@ -184,8 +184,8 @@ const PageBaseData = StyleSheet.create({
 });
 const pageLogin = StyleSheet.create({
     container: {width: WIDTH, height:HEIGHT, paddingTop:setScaleSize(234), paddingLeft: setScaleSize(85), paddingRight: setScaleSize(85), justifyContent: 'flex-start',  backgroundColor: "rgba(0, 0, 0, 0.4)",  position:'absolute', top:0, },
-    input: {height:setScaleSize(75), fontSize: setScaleSize(35), color: "#fff", paddingBottom: setScaleSize(20), paddingLeft:0, },
-    inputView:{borderBottomWidth: 1, borderBottomColor: '#fff',  },
+    input: { height:setScaleSize(80), fontSize: setScaleSize(35), color: "#fff", paddingVertical: setScaleSize(20), paddingLeft:0, },
+    inputView:{borderBottomWidth: 1, borderBottomColor: '#fff', },
     icon: {width: 26, height: 26,},
     submit: {marginTop: setScaleSize(100),borderRadius:setScaleSize(2), borderWidth: 1,borderColor: "#fff",height: setScaleSize(90),justifyContent: "center",alignItems: "center",},
     submitText: {textAlign: "center", color: "#fff", fontSize: setScaleSize(35),},
@@ -236,7 +236,7 @@ const chatScreen = StyleSheet.create({
     msgText:{backgroundColor:"#fff", maxWidth:WIDTH/2, fontSize:setScaleSize(25), color:"#333", textAlign:'right', padding:setScaleSize(8), borderRadius:setScaleSize(18), borderWidth:1, borderColor:"#333"},
     barView:{flexDirection:"row", justifyContent:"space-around", alignItems:"center", backgroundColor:"#f6f3fa", height:setScaleSize(116), width:WIDTH, borderBottomWidth:1, borderTopWidth:1, borderColor:"#dbdbdb", },
     voiceImg:{width:setScaleSize(66), height:setScaleSize(66), },
-    msgTextIpt:{width:setScaleSize(466), height:setScaleSize(80), backgroundColor:"#fcfcfc", borderColor:"#dce5de", borderWidth:1, borderRadius:setScaleSize(8), },
+    msgTextIpt:{width:setScaleSize(466), height:setScaleSize(80), backgroundColor:"#fcfcfc", padding:0, borderColor:"#dce5de", borderWidth:1, borderRadius:setScaleSize(8), },
 });
 const styles = {
     PageRegister: PageRegister,

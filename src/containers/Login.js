@@ -1,6 +1,6 @@
 import React from 'react';
 import {StyleSheet, ScrollView, navigator, Alert, View, Text, Button, FlatList, Dimensions, TouchableOpacity,
-    TouchableHighlight, Image, TextInput, } from 'react-native';
+    TouchableHighlight, Image, TextInput, BackHandler, ToastAndroid } from 'react-native';
 
 import styles from '../styleSheet/Styles';
 import {requestData, requestDataPost,} from '../libs/request.js';
@@ -24,7 +24,26 @@ class Login extends React.Component {
                 return;
             }
         });
+
+        // 添加返回键监听
+        BackHandler.addEventListener('hardwareBackPress', this.onBackHandler);
+
     }
+
+    componentWillUnmount(){
+         // 移除返回键监听
+         BackHandler.removeEventListener('hardwareBackPress', this.onBackHandler);
+    }
+
+    onBackHandler = () => {
+        if (this.lastBackPressed && this.lastBackPressed + 2000 >= Date.now()) {
+            //最近2秒内按过back键，可以退出应用。
+            return false;
+        }
+        this.lastBackPressed = Date.now();
+        ToastAndroid.show('再按一次退出应用', 2000);
+        return true;
+    };
 
     webIMConnection(){
         WebIM.conn.listen({
@@ -57,57 +76,57 @@ class Login extends React.Component {
         });
         let options = {
           apiUrl: WebIM.config.apiURL,
-          user: 'ymm',
-          pwd: '123456',
+          user: 'radtymm2',
+          pwd: '1314520',
           appKey: WebIM.config.appkey
         };
         WebIM.conn.open(options);
     }
 
-      handleLogin(){
-          let that = this;
-          if (!this.state.tel || this.state.tel=="") {
-              Alert.alert('提示', '手机号码不能为空，请重新填写',
-                  [{text: 'OK', onPress: () => null},],
-                  { cancelable: false }
-              )
-              return;
-          }
-          if (!this.state.pwd || this.state.pwd=="") {
-              Alert.alert('提示', '密码不能为空，请重新填写',
-                  [{text: 'OK', onPress: () => null},],
-                  { cancelable: false }
-              )
-              return;
-          }
-          requestData(`https://app.jiaowangba.com/login?telephone=${this.state.tel}&password=${this.state.pwd}`, (res)=>{
-              if (res.status != "error") {
-                  that.props.navigation.navigate('Tab');
-                  return;
-              }
-              Alert.alert('提示', res.msg,
-                  [{text: 'OK', onPress: () => null},],
-                  { cancelable: false }
-              );
-          });
-      }
+    handleLogin(){
+        let that = this;
+        if (!this.state.tel || this.state.tel=="") {
+            Alert.alert('提示', '手机号码不能为空，请重新填写',
+                [{text: 'OK', onPress: () => null},],
+                { cancelable: false }
+            )
+            return;
+        }
+        if (!this.state.pwd || this.state.pwd=="") {
+            Alert.alert('提示', '密码不能为空，请重新填写',
+            [{text: 'OK', onPress: () => null},],
+            { cancelable: false }
+        )
+        return;
+        }
+        requestData(`https://app.jiaowangba.com/login?telephone=${this.state.tel}&password=${this.state.pwd}`, (res)=>{
+            if (res.status != "error") {
+                that.props.navigation.navigate('Tab');
+                return;
+            }
+            Alert.alert('提示', res.msg,
+                [{text: 'OK', onPress: () => null},],
+                { cancelable: false }
+            );
+        });
+    }
 
-      renderImg(){
-          let imageViews=[];
-          let srcImg = [require('../images/img0.jpg'), require('../images/img1.jpg'), require('../images/img2.jpg'), ];
-          for(let i=0;i < 3;i++){
-              imageViews.push(
-                  <Image key={i} resizeMode="cover" style={{height:styles.HEIGHT, width:styles.WIDTH,}} source={srcImg[i]} />
-              );
-          }
-          return imageViews;
-      }
+    renderImg(){
+        let imageViews=[];
+        let srcImg = [require('../images/img0.jpg'), require('../images/img1.jpg'), require('../images/img2.jpg'), ];
+        for(let i=0;i < 3;i++){
+            imageViews.push(
+                <Image key={i} resizeMode="cover" style={{height:styles.HEIGHT, width:styles.WIDTH,}} source={srcImg[i]} />
+            );
+        }
+        return imageViews;
+    }
 
-      render() {
+    render() {
 
         return (
-          <View style={{flex:1,}}>
-              <Swiper height={styles.HEIGHT} width={styles.WIDTH}
+            <View style={{flex:1,}}>
+                <Swiper height={styles.HEIGHT} width={styles.WIDTH}
                     loop={styles.isIOS?false:true}
                     showsButtons={false}
                     showsPagination={false}
@@ -116,26 +135,26 @@ class Login extends React.Component {
                     autoplay={true}
                     horizontal={true}
                     >
-                 {this.renderImg()}
-             </Swiper>
-            <View style={styles.pageLogin.container}>
-              <View style={styles.pageLogin.inputView}>
-                  <TextInput onChangeText={(tel)=>this.setState({tel:tel})} underlineColorAndroid="transparent" placeholderTextColor="#fff" keyboardType='numeric' placeholder="手机号" style={styles.pageLogin.input} />
-              </View>
-              <View style={[styles.pageLogin.inputView, {marginTop:styles.setScaleSize(30)}]}>
-                  <TextInput onChangeText={(pwd)=>this.setState({pwd:pwd})} secureTextEntry={true} underlineColorAndroid="transparent" placeholderTextColor="#fff" placeholder="密码" style={styles.pageLogin.input} />
-              </View>
-              <TouchableOpacity onPress={()=>this.handleLogin()} style={styles.pageLogin.submit}>
-                <View><Text style={styles.pageLogin.submitText}>登录</Text></View>
-              </TouchableOpacity>
-                <View style={styles.pageLogin.forgetpwd}>
-                    <Text style={styles.pageLogin.forgetpwdText} onPress={()=>Alert.alert("提示", "请加客服微信:hunlian21", [{text:"OK", onPress:()=>null}])}>忘记密码</Text>
-                    <Text style={styles.pageLogin.forgetpwdText} onPress={()=>{this.props.navigation.navigate("PageRegister")}}>用户注册</Text>
+                    {this.renderImg()}
+                </Swiper>
+                <View style={styles.pageLogin.container}>
+                    <View style={styles.pageLogin.inputView}>
+                        <TextInput onChangeText={(tel)=>this.setState({tel:tel})} underlineColorAndroid="transparent" placeholderTextColor="#fff" keyboardType='numeric' placeholder="手机号" style={styles.pageLogin.input} />
+                    </View>
+                    <View style={[styles.pageLogin.inputView, {marginTop:styles.setScaleSize(30)}]}>
+                        <TextInput onChangeText={(pwd)=>this.setState({pwd:pwd})} secureTextEntry={true} underlineColorAndroid="transparent" placeholderTextColor="#fff" placeholder="密码" style={styles.pageLogin.input} />
+                    </View>
+                    <TouchableOpacity onPress={()=>this.handleLogin()} style={styles.pageLogin.submit}>
+                        <View><Text style={styles.pageLogin.submitText}>登录</Text></View>
+                    </TouchableOpacity>
+                    <View style={styles.pageLogin.forgetpwd}>
+                        <Text style={styles.pageLogin.forgetpwdText} onPress={()=>Alert.alert("提示", "请加客服微信:hunlian21", [{text:"OK", onPress:()=>null}])}>忘记密码</Text>
+                        <Text style={styles.pageLogin.forgetpwdText} onPress={()=>{this.props.navigation.navigate("PageRegister")}}>用户注册</Text>
+                    </View>
                 </View>
             </View>
-          </View>
         );
-      }
+    }
 }
 
 

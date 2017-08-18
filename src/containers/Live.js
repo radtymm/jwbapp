@@ -1,6 +1,6 @@
 import React from 'react';
 import {
-    StyleSheet, Alert, RefreshControl,
+    StyleSheet, Alert, RefreshControl, BackHandler, ToastAndroid,
     View,
     Text,
     Button,
@@ -53,12 +53,24 @@ class Live extends React.Component {
     componentDidMount() {
         this.handleRefresh();
         this.props.navigation.state.param = this.handleDoublePressTab; //({navigatePress :this.handleDoublePressTab, title:"live"})
+        BackHandler.addEventListener('hardwareBackPress', this.onBackHandler);
     }
 
     componentWillUnmount(){
+        BackHandler.removeEventListener('hardwareBackPress', this.onBackHandler);
         firstClick = null;
     }
 
+    onBackHandler = () => {
+        if (this.lastBackPressed && this.lastBackPressed + 2000 >= Date.now()) {
+            //最近2秒内按过back键，可以退出应用。
+            BackHandler.exitApp();
+            return false;
+        }
+        this.lastBackPressed = Date.now();
+        ToastAndroid.show('再按一次退出应用', 2000);
+        return true;
+    };
 
     handleDoublePressTab(){
         let timestamp = (new Date()).valueOf();

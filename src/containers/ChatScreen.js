@@ -15,10 +15,20 @@ class ChatScreen extends React.Component {
         this.state = {
             isRefreshing:false
         };
+        this.webIMConnection();
     }
 
     componentDidMount() {
         console.log(JSON.stringify());
+    }
+
+    webIMConnection(){
+        WebIM.conn.listen({
+            onTextMessage: function ( message ) {},    //收到文本消息
+            onEmojiMessage: function ( message ) {},   //收到表情消息
+            onPictureMessage: function ( message ) {}, //收到图片消息
+            onAudioMessage: function ( message ) {},   //收到音频消息
+        });
     }
 
     handleRefresh() {
@@ -30,11 +40,29 @@ class ChatScreen extends React.Component {
 
     handleFocus(){
         console.log("12");
-        setTimeout(()=>this.refs.flat.scrollToEnd({animated:false}), 2000);
+        setTimeout(()=>this.handleScrollToEnd(), 2000);
+    }
+
+    handleScrollToEnd(){
+        this.refs.flat.scrollToEnd({animated:true});
     }
 
     handleSendMessage(){
-        console.log();
+        let id = WebIM.conn.getUniqueId();                 // 生成本地消息id
+        let msg = new WebIM.message('txt', id);      // 创建文本消息
+        msg.set({
+            msg: this.state.message,                  // 消息内容
+            to: '13003995110',                          // 接收消息对象（用户id）
+            roomType: false,
+            success: function (id, serverMsgId) {
+                console.log('send private text Success');
+            },
+            fail: function(e){
+                console.log("Send private text error");
+            }
+        });
+        msg.body.chatType = 'singleChat';
+        WebIM.conn.send(msg.body);
     }
 
     handleChangeText(text){
@@ -84,15 +112,15 @@ class ChatScreen extends React.Component {
         let headImage = {uri: 'https://cdn.jiaowangba.com/' + params.avatar, cache:'force-cache'};
 
         let data = [
-            {headImage:require('../images/home.png'), message:"asdasdasdsdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasd", isOther:true},
-            {headImage:require('../images/home.png'), message:"asdasdasdsdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasd", isOther:true},
-            {headImage:require('../images/home.png'), message:"asdasdasd", isOther:false},
-            {headImage:require('../images/home.png'), message:"asdasdasd", isOther:true},
-            {headImage:require('../images/home.png'), message:"asdasdasd", isOther:true},
-            {headImage:require('../images/home.png'), message:"asdasdasd", isOther:true},
-            {headImage:require('../images/home.png'), message:"asdasdasd", isOther:true},
-            {headImage:require('../images/home.png'), message:"asdasdasd", isOther:false},
-            {headImage:require('../images/home.png'), message:"asdasdasd", isOther:true},
+            {message:"asdasdasdsdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasd", isOther:true},
+            {message:"asdasdasdsdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasd", isOther:true},
+            {message:"asdasdasd", isOther:false},
+            {message:"asdasdasd", isOther:true},
+            {message:"asdasdasd", isOther:true},
+            {message:"asdasdasd", isOther:true},
+            {message:"asdasdasd", isOther:true},
+            {message:"asdasdasd", isOther:false},
+            {message:"asdasdasd", isOther:true},
         ];
 
 
