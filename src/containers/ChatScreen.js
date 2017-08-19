@@ -1,13 +1,14 @@
 import React from 'react';
 import {
     StyleSheet, ScrollView, navigator, Alert, View, Text, Button, FlatList, Dimensions, TouchableOpacity,
-    TouchableHighlight, Image, TextInput, Animated, Easing, RefreshControl, KeyboardAvoidingView, AsyncStorage,
+    TouchableWithoutFeedback, Image, TextInput, Animated, Easing, RefreshControl, KeyboardAvoidingView, AsyncStorage,
 } from 'react-native';
 
 import styles from '../styleSheet/Styles';
 import {requestData, requestDataPost,} from '../libs/request.js';
 import WebIM from '../../WebIM';
 import storage from '../libs/storage';
+import EmojiPicker, { EmojiOverlay } from 'react-native-emoji-picker';
 
 class ChatScreen extends React.Component {
 
@@ -17,12 +18,17 @@ class ChatScreen extends React.Component {
         this.state = {
             isRefreshing:false,
             msgData:[],
+            message:"",
         };
         this.webIMConnection();
     }
 
     componentDidMount() {
         this._get(this.storageKey);
+    }
+
+    componentWillUnmount(){
+        clearTimeout(this.timeout);
     }
 
     webIMConnection(){
@@ -76,7 +82,7 @@ class ChatScreen extends React.Component {
     handleSendMessage(message){
         let id = WebIM.conn.getUniqueId();                 // 生成本地消息id
         let msg = new WebIM.message('txt', id);      // 创建文本消息
-
+        this.setState({message:"", showPicker:false});
         this.handleRefreshMessage(message, false);
         msg.set({
             msg: message,                  // 消息内容
@@ -95,9 +101,28 @@ class ChatScreen extends React.Component {
 
     handleChangeText(text){
         if(this.state.msgData.length == 0){
-            return
+            return;
         }
         this.setState({message:text});
+    }
+
+    handleEmojiSelected(emoji){
+        this.setState({message:this.state.message + emoji});
+    }
+
+    handleShowEmoji(){
+        this.refs.textMsg.blur();
+        this.setState({showPicker: true});
+    }
+
+    handleFocus(){
+        clearTimeout(this.timeout);
+        this.timeout = styles.isIOS?setTimeout(()=>this.refs.flat.scrollToEnd({animated: false}), 100):null;
+    }
+
+    handleBlur(){
+        clearTimeout(this.timeout);
+        this.timeout = styles.isIOS?setTimeout(()=>this.refs.flat.scrollToEnd({animated: false}), 100):null;
     }
 
     renderItem(item, index){
@@ -110,7 +135,7 @@ class ChatScreen extends React.Component {
         return (
             <View style={[styles.chatScreen.itemView, {justifyContent:!item.isOther?'flex-end':'flex-start'}]}>
                 {item.isOther?<Image style={styles.chatScreen.headImg} source={headImage}></Image>:<View/>}
-                <Text style={[styles.chatScreen.msgText, {textAlign:!item.isOther?'right':'left'}]}>{item.message}</Text>
+                <Text style={[styles.chatScreen.msgText, {textAlign:!item.isOther?'left':'left'}]}>{item.message}</Text>
                 {!item.isOther?<Image style={styles.chatScreen.headImg} source={headImage}></Image>:<View/>}
             </View>
         );
@@ -122,13 +147,14 @@ class ChatScreen extends React.Component {
                 <Image resizeMode="contain" style={styles.chatScreen.voiceImg} source={require('../images/home.png')}/>
             </TouchableOpacity>
             <TextInput style={styles.chatScreen.msgTextIpt} underlineColorAndroid="transparent"
-                numberOfLines={3} multiple={true}
+                numberOfLines={3} multiple={true} ref="textMsg"
+                defaultValue={this.state.message}
                 onChangeText={(text)=>this.handleChangeText(text)}
-                onFocus={()=>{this.timeout = styles.isIOS?setTimeout(()=>this.refs.flat.scrollToEnd({animated: false}), 100):null;}}
-                onBlur={()=>{this.timeout = styles.isIOS?setTimeout(()=>this.refs.flat.scrollToEnd({animated: false}), 100):null;}}
+                onFocus={()=>this.handleFocus()}
+                onBlur={()=>this.handleBlur()}
                 onSubmitEditing={()=>this.handleSendMessage(this.state.message)}
             />
-            <TouchableOpacity style={styles.chatScreen.emojiView}>
+            <TouchableOpacity style={styles.chatScreen.emojiView} onPress={() => this.handleShowEmoji()}>
                 <Image resizeMode="contain" style={styles.chatScreen.voiceImg} source={require('../images/home.png')}/>
             </TouchableOpacity>
             <TouchableOpacity style={styles.chatScreen.otherTouch}>
@@ -143,26 +169,19 @@ class ChatScreen extends React.Component {
 
         let ComFlat = (
             <View style={{flex:1}}>
+            <TouchableWithoutFeedback onPress={()=>this.setState({showPicker:false})}>
                 <FlatList
                     data={this.state.msgData}
                     keyExtractor = {(item, index) => ""+index}
                     ref={"flat"}
-                    refreshControl={
-                        <RefreshControl
-                            refreshing={this.state.isRefreshing}
-                            onRefresh={()=>this.handleRefresh()}
-                            tintColor="#ff0000"
-                            title="加载中..."
-                            titleColor="#00ff00"
-                            colors={['#ff0000', '#00ff00', '#0000ff']}
-                            progressBackgroundColor="#ccc"
-                        />
-                    }
+                    keyboardDismissMode="on-drag"
+
                     getItemLayout={(data,index)=>(
-                        {length: (styles.WIDTH + styles.setScaleSize(78)), offset: (styles.WIDTH + styles.setScaleSize(78)) * index, index}
+                        {length: (styles.setScaleSize(125)), offset: (styles.setScaleSize(125)) * index, index}
                     )}
                     renderItem={({item, index}) => this.renderItem(item, index)}
                 />
+                </TouchableWithoutFeedback>
                 {this.renderBar()}
             </View>
         );
@@ -187,7 +206,17 @@ class ChatScreen extends React.Component {
                     <Text style={styles.homePage.title}>{this.props.navigation.state.params.nickname}</Text>
                 </View>
                 {this.renderFlatList()}
-
+                <View style={{height: this.state.showPicker?150:0, }} >
+                    <EmojiPicker
+                      style={{
+                        height: 150,
+                        backgroundColor: '#f4f4f4'
+                      }}
+                      hideClearButton={true}
+                      horizontal={true}
+                      onEmojiSelected={(emoji)=>this.handleEmojiSelected(emoji)}
+                      />
+                  </View>
             </View>
         );
     }
