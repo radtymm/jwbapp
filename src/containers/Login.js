@@ -7,6 +7,8 @@ import {requestData, requestDataPost,} from '../libs/request.js';
 import Swiper from 'react-native-swiper';
 import WebIM from '../../WebIM';
 
+global.WebIM = WebIM;
+
 class Login extends React.Component {
 
     constructor(props, context) {
@@ -46,13 +48,14 @@ class Login extends React.Component {
     };
 
     webIMConnection(){
-        WebIM.conn.listen({
+        global.WebIM.conn.listen({
             onOpened: function ( message ) {          //连接成功回调
                 // 如果isAutoLogin设置为false，那么必须手动设置上线，否则无法收消息
                 // 手动上线指的是调用conn.setPresence(); 如果conn初始化时已将isAutoLogin设置为true
                 // 则无需调用conn.setPresence();
                 console.log("onOpened");
             },
+
             onError: (error) => {
               console.log(error)
               // 16: server-side close the websocket connection
@@ -75,12 +78,12 @@ class Login extends React.Component {
             },
         });
         let options = {
-          apiUrl: WebIM.config.apiURL,
+          apiUrl: global.WebIM.config.apiURL,
           user: 'radtymm2',
           pwd: '1314520',
-          appKey: WebIM.config.appkey
+          appKey: global.WebIM.config.appkey
         };
-        WebIM.conn.open(options);
+        global.WebIM.conn.open(options);
     }
 
     handleLogin(){
