@@ -9,6 +9,7 @@ import {requestData, requestDataPost,} from '../libs/request.js';
 import WebIM from '../../WebIM';
 import storage from '../libs/storage';
 import EmojiPicker, { EmojiOverlay } from 'react-native-emoji-picker';
+import CachedImage from 'react-native-cached-image';
 
 class ChatScreen extends React.Component {
 
@@ -134,9 +135,9 @@ class ChatScreen extends React.Component {
 
         return (
             <View style={[styles.chatScreen.itemView, {justifyContent:!item.isOther?'flex-end':'flex-start'}]}>
-                {item.isOther?<Image style={styles.chatScreen.headImg} source={headImage}></Image>:<View/>}
+                {item.isOther?<CachedImage style={styles.chatScreen.headImg} source={headImage}/>:<View/>}
                 <Text style={[styles.chatScreen.msgText, {textAlign:!item.isOther?'left':'left'}]}>{item.message}</Text>
-                {!item.isOther?<Image style={styles.chatScreen.headImg} source={headImage}></Image>:<View/>}
+                {!item.isOther?<CachedImage style={styles.chatScreen.headImg} source={headImage}/>:<View/>}
             </View>
         );
     }
