@@ -15,6 +15,17 @@ window.DOMParser = xmldom.DOMParser
 // 模拟document对象
 let document = window.document = new DOMParser().parseFromString("<?xml version='1.0'?>\n", 'text/xml')
 
+WebIM.Emoji = {
+    path: 'src/images/wechatemoji/'  /*表情包路径*/
+    , map: {
+        '[:e100]': '100.gif',
+        '[:D]': 'ee_2.png',
+        '[;)]': 'ee_3.png',
+        '[:-o]': 'ee_4.png',
+        '[:p]': 'ee_5.png'
+    }
+};
+
 // 建立连接
 WebIM.conn = new WebIM.connection({
   isMultiLoginSessions: WebIM.config.isMultiLoginSessions,

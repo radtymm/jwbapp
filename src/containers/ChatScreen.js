@@ -70,7 +70,7 @@ class ChatScreen extends React.Component {
     }
 
     handleScrollToEnd(){
-        this.refs.flat.scrollToEnd({animated:true});
+        this.refs.flat.scrollToEnd({animated: false})
     }
 
     handleSendMessage(message){
@@ -94,6 +94,9 @@ class ChatScreen extends React.Component {
     }
 
     handleChangeText(text){
+        if(this.state.msgData.length == 0){
+            return
+        }
         this.setState({message:text});
     }
 
