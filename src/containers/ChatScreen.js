@@ -1,6 +1,6 @@
 import React from 'react';
 import {
-    StyleSheet, ScrollView, navigator, Alert, View, Text, Button, FlatList, Dimensions, TouchableOpacity,
+    StyleSheet, ScrollView, navigator, Alert, View, Text, Button, FlatList, Dimensions, TouchableOpacity, Platform,
     TouchableWithoutFeedback, Image, TextInput, Animated, Easing, RefreshControl, KeyboardAvoidingView, AsyncStorage,
 } from 'react-native';
 
@@ -10,6 +10,8 @@ import WebIM from '../../WebIM';
 import storage from '../libs/storage';
 import EmojiPicker, { EmojiOverlay } from 'react-native-emoji-picker';
 import CachedImage from 'react-native-cached-image';
+import {AudioRecorder, AudioUtils} from 'react-native-audio';
+import Sound from 'react-native-sound';
 
 class ChatScreen extends React.Component {
 
@@ -21,12 +23,38 @@ class ChatScreen extends React.Component {
             msgData:[],
             message:"",
             showAudio:false,
+            currentTime: 0.0,                                                   //开始录音到现在的持续时间
+            recording: false,                                                   //是否正在录音
+            stoppedRecording: false,                                            //是否停止了录音
+            finished: false,                                                    //是否完成录音
+            audioPath: AudioUtils.DocumentDirectoryPath + '/test.aac',          //路径下的文件名
+            hasPermission: undefined,                                           //是否获取权限
         };
         this.webIMConnection();
     }
 
     componentDidMount() {
         this._get(this.storageKey);
+        // 页面加载完成后获取权限
+        this.checkPermission().then((hasPermission) => {
+          this.setState({ hasPermission });
+
+          //如果未授权, 则执行下面的代码
+          if (!hasPermission) return;
+          this.prepareRecordingPath(this.state.audioPath);
+
+          AudioRecorder.onProgress = (data) => {
+            this.setState({currentTime: Math.floor(data.currentTime)});
+          };
+
+          AudioRecorder.onFinished = (data) => {
+            if (Platform.OS === 'ios') {
+              this.finishRecording(data.status === "OK", data.audioFileURL);
+            }
+          };
+
+        })
+
     }
 
     componentWillUnmount(){
@@ -46,7 +74,117 @@ class ChatScreen extends React.Component {
         });
     }
 
-    // 获取
+    // 录音
+    prepareRecordingPath(audioPath){
+        AudioRecorder.prepareRecordingAtPath(audioPath, {
+          SampleRate: 22050,
+          Channels: 1,
+          AudioQuality: "Low",            //录音质量
+          AudioEncoding: "aac",           //录音格式
+          AudioEncodingBitRate: 32000     //比特率
+        });
+    }
+
+    checkPermission() {
+        if (styles.isIOS ) {
+          return Promise.resolve(true);
+        }
+
+        const rationale = {
+          'title': '获取录音权限',
+          'message': 'XXX正请求获取麦克风权限用于录音,是否准许'
+        };
+
+        return PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.RECORD_AUDIO, rationale)
+          .then((result) => {
+            // alert(result);     //结果: granted ,    PermissionsAndroid.RESULTS.GRANTED 也等于 granted
+            return (result === true || PermissionsAndroid.RESULTS.GRANTED)
+          })
+    }
+
+    async record() {
+        // 如果正在录音
+        if (this.state.recording) {
+          alert('正在录音中!');
+          return;
+        }
+
+        //如果没有获取权限
+        if (!this.state.hasPermission) {
+          alert('没有获取录音权限!');
+          return;
+        }
+
+        //如果暂停获取停止了录音
+        if(this.state.stoppedRecording){
+          this.prepareRecordingPath(this.state.audioPath);
+        }
+        console.log("alsdjas");
+        this.prepareRecordingPath(this.state.audioPath);
+        this.setState({recording: true});
+
+        try {
+          const filePath = await AudioRecorder.startRecording();
+        } catch (error) {
+          console.error(error);
+        }
+    }
+
+    async stopRecord() {
+        // 如果没有在录音
+        if (!this.state.recording) {
+          alert('没有录音, 无需停止!');
+          return;
+        }
+
+        this.setState({stoppedRecording: true, recording: false});
+
+        try {
+          const filePath = await AudioRecorder.stopRecording();
+
+          if (Platform.OS === 'android') {
+            this.finishRecording(true, filePath);
+          }
+          return filePath;
+        } catch (error) {
+          console.error(error);
+        }
+
+    }
+
+    async play() {
+        // 如果在录音 , 执行停止按钮
+        if (this.state.recording) {
+          await this.stopRecord();
+        }
+
+        // 使用 setTimeout 是因为, 为避免发生一些问题 react-native-sound中
+        setTimeout(() => {
+          var sound = new Sound(this.state.audioPath, '', (error) => {
+            if (error) {
+              console.log('failed to load the sound', error);
+            }
+          });
+
+          setTimeout(() => {
+            sound.play((success) => {
+              if (success) {
+                console.log('successfully finished playing');
+              } else {
+                console.log('playback failed due to audio decoding errors');
+              }
+            });
+          }, 100);
+        }, 100);
+    }
+
+    finishRecording(didSucceed, filePath) {
+      this.setState({ finished: didSucceed });
+      console.log(`Finished recording of duration ${this.state.currentTime} seconds at path: ${filePath}`);
+    }
+
+
+    // 获取本地聊天记录
     async _get(key) {
         try {// try catch 捕获异步执行的异常
             var value = await AsyncStorage.getItem(key);
@@ -150,8 +288,8 @@ class ChatScreen extends React.Component {
         let ComIsAudio = <View/>
         if (this.state.showAudio) {
             ComIsAudio = <TouchableOpacity style={styles.chatScreen.audioTouch}
-                onPressOut={()=>console.log("onPressOut")}
-                onPressIn={()=>console.log("pressin")}
+                onPressOut={()=>this.stopRecord()}
+                onPressIn={()=>this.record()}
                 onPress={()=>console.log("onPress")}>
                     <Text>按住说话</Text>
                 </TouchableOpacity>;
@@ -174,7 +312,7 @@ class ChatScreen extends React.Component {
             <TouchableOpacity style={styles.chatScreen.emojiView} onPress={() => this.handleShowEmoji()}>
                 <Image resizeMode="contain" style={styles.chatScreen.voiceImg} source={require('../images/home.png')}/>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.chatScreen.otherTouch}>
+            <TouchableOpacity style={styles.chatScreen.otherTouch} onPress={()=>this.play()}>
                 <Image resizeMode="contain" style={styles.chatScreen.voiceImg} source={require('../images/home.png')}/>
             </TouchableOpacity>
         </View>;
