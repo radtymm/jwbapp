@@ -20,6 +20,7 @@ class ChatScreen extends React.Component {
             isRefreshing:false,
             msgData:[],
             message:"",
+            showAudio:false,
         };
         this.webIMConnection();
     }
@@ -112,6 +113,9 @@ class ChatScreen extends React.Component {
     }
 
     handleShowEmoji(){
+        if (this.state.showAudio) {
+            return;
+        }
         this.refs.textMsg.blur();
         this.setState({showPicker: true});
     }
@@ -143,11 +147,16 @@ class ChatScreen extends React.Component {
     }
 
     renderBar(){
-        return <View style={styles.chatScreen.barView}>
-            <TouchableOpacity style={styles.chatScreen.voiceTouch}>
-                <Image resizeMode="contain" style={styles.chatScreen.voiceImg} source={require('../images/home.png')}/>
-            </TouchableOpacity>
-            <TextInput style={styles.chatScreen.msgTextIpt} underlineColorAndroid="transparent"
+        let ComIsAudio = <View/>
+        if (this.state.showAudio) {
+            ComIsAudio = <TouchableOpacity style={styles.chatScreen.audioTouch}
+                onPressOut={()=>console.log("onPressOut")}
+                onPressIn={()=>console.log("pressin")}
+                onPress={()=>console.log("onPress")}>
+                    <Text>按住说话</Text>
+                </TouchableOpacity>;
+        }else {
+            ComIsAudio = <TextInput style={styles.chatScreen.msgTextIpt} underlineColorAndroid="transparent"
                 numberOfLines={3} multiple={true} ref="textMsg"
                 defaultValue={this.state.message}
                 onChangeText={(text)=>this.handleChangeText(text)}
@@ -155,6 +164,13 @@ class ChatScreen extends React.Component {
                 onBlur={()=>this.handleBlur()}
                 onSubmitEditing={()=>this.handleSendMessage(this.state.message)}
             />
+        }
+        return <View style={styles.chatScreen.barView}>
+            <TouchableOpacity style={styles.chatScreen.voiceTouch}
+                onPress={()=>this.setState({showAudio:!this.state.showAudio})}>
+                <Image resizeMode="contain" style={styles.chatScreen.voiceImg} source={require('../images/home.png')}/>
+            </TouchableOpacity>
+            {ComIsAudio}
             <TouchableOpacity style={styles.chatScreen.emojiView} onPress={() => this.handleShowEmoji()}>
                 <Image resizeMode="contain" style={styles.chatScreen.voiceImg} source={require('../images/home.png')}/>
             </TouchableOpacity>

@@ -219,7 +219,7 @@ class PageBaseData extends React.Component {
                     {this.renderBaseData()}
                 </ScrollView>
                 <View style={styles.PageBaseData.bottomBtn}>
-                    <TouchableOpacity style={styles.PageBaseData.bottomTouch} onPress={()=>{global.perInfo.id?this.props.navigation.navigate("ChatScreen", this.state.data.code):null;}}>
+                    <TouchableOpacity style={styles.PageBaseData.bottomTouch} onPress={()=>{(global.perInfo && this.state.data)?this.props.navigation.navigate("ChatScreen", this.state.data.code):null;}}>
                         <Image style={styles.PageBaseData.bottomImage} resizeMode="contain" source={require('../images/chartother.png')}/>
                     </TouchableOpacity>
                     <TouchableOpacity style={styles.PageBaseData.bottomTouch} onPress={()=>{this.handleWetchat();}}>

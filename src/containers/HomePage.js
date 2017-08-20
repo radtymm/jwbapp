@@ -111,7 +111,7 @@ class HomePage extends React.Component {
 
     renderOnePerson(item ,isRight){
         return <TouchableOpacity style={[styles.homePage.flatViewTouch, isRight?{paddingRight:styles.setScaleSize(20), paddingLeft:styles.setScaleSize(22)}:{paddingLeft:styles.setScaleSize(20)}]} onPress={() => {
-            this.props.navigation.navigate("PageBaseData", item)
+            item.id?this.props.navigation.navigate("PageBaseData", item):null;
         }}>
             <View style={[styles.homePage.flatViewOne,]}>
                 <View>
