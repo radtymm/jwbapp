@@ -2,7 +2,6 @@ package com.jwbapp;
 
 import android.app.Application;
 
-import com.imagepicker.ImagePickerPackage;
 import com.facebook.react.ReactApplication;
 import com.zmxv.RNSound.RNSoundPackage;
 import com.rnim.rn.audio.ReactNativeAudioPackage;
@@ -37,8 +36,7 @@ public class MainApplication extends Application implements ReactApplication {
             new PickerViewPackage(),
             new PickerPackage(),
             new RNDeviceInfo(),
-            new BaiduMapPackage(getApplicationContext()),
-          new ImagePickerPackage()
+            new BaiduMapPackage(getApplicationContext())
       );
     }
   };
