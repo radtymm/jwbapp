@@ -12,6 +12,8 @@ import EmojiPicker, { EmojiOverlay } from 'react-native-emoji-picker';
 import CachedImage from 'react-native-cached-image';
 import {AudioRecorder, AudioUtils} from 'react-native-audio';
 import Sound from 'react-native-sound';
+import ImageCropPicker from 'react-native-image-crop-picker';
+
 
 class ChatScreen extends React.Component {
 
@@ -72,6 +74,59 @@ class ChatScreen extends React.Component {
             onPictureMessage: function ( message ) {}, //收到图片消息
             onAudioMessage: function ( message ) {},   //收到音频消息
         });
+    }
+
+    pickSingle( circular=false) {
+        ImageCropPicker.openPicker({
+            width: styles.WIDTH + 500,
+            height: styles.WIDTH + 500,
+            // compressImageQuality:1,
+            hideBottomControls: false,
+            cropping: true,
+        }).then(image => {
+            this.sendImage(image);
+        }).catch(e => {
+            console.log(e);
+        });
+    }
+
+    sendImage(response){
+        // console.log(WebIM.utils);
+        var id = WebIM.conn.getUniqueId();                   // 生成本地消息id
+        var msg = new WebIM.message('img', id);        // 创建图片消息
+
+        let source = null;
+        if (Platform.OS === 'ios') {
+          source = {path: response.path.replace('file://', ''), isStatic: true};
+        } else {
+          source = {path: response.path, isStatic: true};
+        }
+        response.path = source.path;
+
+        var option = {
+            apiUrl: WebIM.config.apiURL,
+            file: {
+              data: {
+                uri: response.path, type: 'application/octet-stream', name: response.filename
+              }
+            },
+            to: '13003995110',                       // 接收消息对象
+            roomType: false,
+            chatType: 'singleChat',
+            onFileUploadError: function (e) {      // 消息上传失败
+                console.log(e);
+                console.log('onFileUploadError');
+            },
+            onFileUploadComplete: function () {   // 消息上传成功
+                console.log('onFileUploadComplete');
+            },
+            success: function () {                // 消息发送成功
+                console.log('Success');
+            },
+            flashUpload: WebIM.flashUpload
+        };
+        msg.set(option);
+        WebIM.conn.send(msg.body);
     }
 
     // 录音
@@ -312,7 +367,7 @@ class ChatScreen extends React.Component {
             <TouchableOpacity style={styles.chatScreen.emojiView} onPress={() => this.handleShowEmoji()}>
                 <Image resizeMode="contain" style={styles.chatScreen.voiceImg} source={require('../images/home.png')}/>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.chatScreen.otherTouch} onPress={()=>this.play()}>
+            <TouchableOpacity style={styles.chatScreen.otherTouch} onPress={()=>this.pickSingle()}>
                 <Image resizeMode="contain" style={styles.chatScreen.voiceImg} source={require('../images/home.png')}/>
             </TouchableOpacity>
         </View>;
