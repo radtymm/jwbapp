@@ -56,7 +56,7 @@ class PageVip extends React.Component {
         let {params} = this.props.navigation.state;
         return (
             <View style={styles.pageVip.vipView}>
-                <ImageBackground resizeMode="stretch" style={styles.pageVip.vipImg} source={require("../images/vipcard.png")}>
+                <Image resizeMode="stretch" style={styles.pageVip.vipImg} source={require("../images/vipcard.png")}>
                     <View style={styles.pageVip.vipTextRowView}>
                         <View>
                             <Text style={styles.pageVip.vipTextName}>{params.nickname}</Text>
@@ -67,7 +67,7 @@ class PageVip extends React.Component {
                     <View style={[styles.pageVip.vipTextRowView, { paddingTop:styles.setScaleSize(130),}]}>
                         <Text style={styles.pageVip.vipText3}>会员到期时间:{params.vip_end_time}</Text>
                     </View>
-                </ImageBackground>
+                </Image>
             </View>
         );
     }

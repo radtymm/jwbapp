@@ -13,6 +13,7 @@ import {
 import  PageBaseData from './PageBaseData';
 import styles from '../styleSheet/Styles';
 import {requestData} from '../libs/request';
+import CachedImage from 'react-native-cached-image';
 
 let firstClick = 0;
 
@@ -53,23 +54,23 @@ class Live extends React.Component {
     componentDidMount() {
         this.handleRefresh();
         this.props.navigation.state.param = this.handleDoublePressTab; //({navigatePress :this.handleDoublePressTab, title:"live"})
-        BackHandler.addEventListener('hardwareBackPress', this.onBackHandler);
+        // BackHandler.addEventListener('hardwareBackPress', this.onBackHandler);
     }
 
     componentWillUnmount(){
-        BackHandler.removeEventListener('hardwareBackPress', this.onBackHandler);
+        // BackHandler.removeEventListener('hardwareBackPress', this.onBackHandler);
         firstClick = null;
     }
 
     onBackHandler = () => {
-        if (this.lastBackPressed && this.lastBackPressed + 2000 >= Date.now()) {
-            //最近2秒内按过back键，可以退出应用。
-            BackHandler.exitApp();
-            return false;
-        }
-        this.lastBackPressed = Date.now();
-        ToastAndroid.show('再按一次退出应用', 2000);
-        return true;
+        // if (this.lastBackPressed && this.lastBackPressed + 2000 >= Date.now()) {
+        //     //最近2秒内按过back键，可以退出应用。
+        //     BackHandler.exitApp();
+        //     return false;
+        // }
+        // this.lastBackPressed = Date.now();
+        // ToastAndroid.show('再按一次退出应用', 2000);
+        // return true;
     };
 
     handleDoublePressTab(){
@@ -134,7 +135,7 @@ class Live extends React.Component {
                             return (
                                 <TouchableOpacity style={styles.live.flatTouch} onPress={() => this.props.navigation.navigate('PageBaseData', item)}>
                                     <View style={styles.live.itemView}>
-                                        <Image resizeMode="cover" style={styles.live.headImage}
+                                        <CachedImage resizeMode="cover" style={styles.live.headImage}
                                            source={{uri: 'https://cdn.jiaowangba.com/' + item.avatar + '?imageView2/1/w/640/h/640/interlace/1/q/100|imageslim'}}/>
                                        {(item.is_vip == "No")?<View/>:(<Image style={styles.live.isvip} source={require('../images/isvip.png')}/>)}
                                         <View style={styles.live.realnameView}>
@@ -178,7 +179,7 @@ class Live extends React.Component {
                 {styles.isIOS?<View style={styles.homePage.iosTab} onPress={()=>this.scrollTotop()}/>:<View/>}
                 <View style={styles.live.liveIn}>
                     <Image style={styles.live.liveInImg} source={require('../images/livein.png')}/>
-                    <Text style={[styles.live.titleText, {fontSize:18, marginLeft:8}]}>厦门市</Text>
+                    <Text style={[styles.live.titleText, {fontSize:18, marginLeft:8}]}>{global.perInfo?global.perInfo.live:""}</Text>
                 </View>
                 {this.comFlatList()}
             </View>

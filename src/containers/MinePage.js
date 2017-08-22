@@ -8,6 +8,7 @@ import styles from '../styleSheet/Styles';
 // import ImagePicker from 'react-native-image-picker'; //第三方相机
 import ImageCropPicker from 'react-native-image-crop-picker';
 import Qiniu,{Auth,ImgOps,Conf,Rs,Rpc} from 'react-native-qiniu';
+import CachedImage from 'react-native-cached-image';
 
 
 let photoOptions = {
@@ -143,8 +144,12 @@ class MinePage extends React.Component {
                 <View style={[styles.minePage.arrMine, {paddingTop:index==0?styles.setScaleSize(40):styles.setScaleSize(0)}]} key={index}>
                     <TouchableOpacity onPress={()=>{
                             if (item.title == "退出登录"){
-                                    requestData("https://app.jiaowangba.com/login_out", (res)=>{});
-                                    this.props.navigation.navigate("Login");
+                                    global.WebIM.conn.close();
+                                    requestData("https://app.jiaowangba.com/login_out", (res)=>{
+                                        if (res.status != 'error') {
+                                            this.props.navigation.navigate("Login");
+                                        }
+                                    });
                             }else if (item.title == "个人资料") {
                                 let perInfoParams = Object.assign({}, this.state.res.code);
                                 perInfoParams.refresh = this.refresh;
@@ -179,10 +184,10 @@ class MinePage extends React.Component {
             <ScrollView style={styles.minePage.flex}>
                 <TouchableOpacity onPress={()=>that.openMycamera()}>
                     <View style={{alignItems: 'flex-start', justifyContent: 'center'}}>
-                        <ImageBackground resizeMode="cover" style={ styles.homePage.headImage}
+                        <CachedImage resizeMode="cover" style={ styles.homePage.headImage}
                            source={imageSrc}>
                             {isvip}
-                        </ImageBackground>
+                        </CachedImage>
                     </View>
                     </TouchableOpacity>
                     <View style={styles.minePage.nameId}>

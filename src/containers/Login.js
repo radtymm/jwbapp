@@ -20,55 +20,47 @@ class Login extends React.Component {
     }
 
     componentDidMount(){
-        requestData(`https://app.jiaowangba.com/login?telephone=${this.state.tel}&password=${this.state.pwd}`, (res)=>{
-            if (res.status != "error") {
-                this.props.navigation.navigate('Tab');
-                return;
-            }
-        });
+        this.reqLogin(true);
 
         // 添加返回键监听
-        BackHandler.addEventListener('hardwareBackPress', this.onBackHandler);
+        // BackHandler.addEventListener('hardwareBackPress', this.onBackHandler);
 
     }
 
     componentWillUnmount(){
          // 移除返回键监听
-         BackHandler.removeEventListener('hardwareBackPress', this.onBackHandler);
+        //  BackHandler.removeEventListener('hardwareBackPress', this.onBackHandler);
     }
 
     onBackHandler = () => {
-        if (this.lastBackPressed && this.lastBackPressed + 2000 >= Date.now()) {
-            //最近2秒内按过back键，可以退出应用。
-            return false;
-        }
-        this.lastBackPressed = Date.now();
-        ToastAndroid.show('再按一次退出应用', 2000);
-        return true;
+        // if (this.lastBackPressed && this.lastBackPressed + 2000 >= Date.now()) {
+        //     //最近2秒内按过back键，可以退出应用。
+        //     return false;
+        // }
+        // this.lastBackPressed = Date.now();
+        // ToastAndroid.show('再按一次退出应用', 2000);
+        // return true;
     };
 
     webIMConnection(){
+        let that = this;
         global.WebIM.conn.listen({
             onOpened: function ( message ) {          //连接成功回调
                 // 如果isAutoLogin设置为false，那么必须手动设置上线，否则无法收消息
                 // 手动上线指的是调用conn.setPresence(); 如果conn初始化时已将isAutoLogin设置为true
                 // 则无需调用conn.setPresence();
-                console.log("onOpened");
+                that.props.navigation.navigate('Tab');
             },
 
             onError: (error) => {
-              console.log(error)
-              // 16: server-side close the websocket connection
+              Alert.alert('聊天系统登录失败', '请退出重新登录');
               if (error.type == WebIM.statusCode.WEBIM_CONNCTION_DISCONNECTED) {
-                console.log('WEBIM_CONNCTION_DISCONNECTED');
-
-                Alert.alert('Error', 'server-side close the websocket connection')
+                // console.log('WEBIM_CONNCTION_DISCONNECTED');
                 return;
               }
-              // 8: offline by multi login
+
               if (error.type == WebIM.statusCode.WEBIM_CONNCTION_SERVER_ERROR) {
-                console.log('WEBIM_CONNCTION_SERVER_ERROR');
-                Alert.alert('Error', 'offline by multi login')
+                // console.log('WEBIM_CONNCTION_SERVER_ERROR');
                 return;
               }
               if (error.type == 1) {
@@ -77,17 +69,38 @@ class Login extends React.Component {
               }
             },
         });
-        let options = {
-          apiUrl: global.WebIM.config.apiURL,
-          user: 'radtymm2',
-          pwd: '1314520',
-          appKey: global.WebIM.config.appkey
-        };
-        global.WebIM.conn.open(options);
+
+    }
+
+    reqLogin(isFirst){
+        global.WebIM.conn.close();
+        requestData(`https://app.jiaowangba.com/login?telephone=${this.state.tel}&password=${this.state.pwd}`, (res)=>{
+            if (res.status != "error") {
+                requestData(`https://app.jiaowangba.com/chat/user_details`, (res)=>{
+                    if (res.status != 'error') {
+                        let options = {
+                          apiUrl: global.WebIM.config.apiURL,
+                          user: res.code.username,
+                          pwd: res.code.password,
+                          appKey: global.WebIM.config.appkey
+                        };
+                        global.WebIM.conn.open(options);
+                    }
+                });
+
+            }else {
+                if (isFirst) {
+                    return;
+                }
+                Alert.alert('提示', res.msg,
+                    [{text: 'OK', onPress: () => null},],
+                    { cancelable: false }
+                );
+            }
+        });
     }
 
     handleLogin(){
-        let that = this;
         if (!this.state.tel || this.state.tel=="") {
             Alert.alert('提示', '手机号码不能为空，请重新填写',
                 [{text: 'OK', onPress: () => null},],
@@ -97,21 +110,12 @@ class Login extends React.Component {
         }
         if (!this.state.pwd || this.state.pwd=="") {
             Alert.alert('提示', '密码不能为空，请重新填写',
-            [{text: 'OK', onPress: () => null},],
-            { cancelable: false }
-        )
-        return;
-        }
-        requestData(`https://app.jiaowangba.com/login?telephone=${this.state.tel}&password=${this.state.pwd}`, (res)=>{
-            if (res.status != "error") {
-                that.props.navigation.navigate('Tab');
-                return;
-            }
-            Alert.alert('提示', res.msg,
                 [{text: 'OK', onPress: () => null},],
                 { cancelable: false }
             );
-        });
+            return;
+        }
+        this.reqLogin();
     }
 
     renderImg(){

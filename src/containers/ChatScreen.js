@@ -20,6 +20,7 @@ class ChatScreen extends React.Component {
     constructor(props, context) {
         super(props, context);
         this.storageKey = this.props.navigation.state.params.id + "&" + global.perInfo.id;
+        console.log(JSON.stringify(this.props.navigation.state.params));
         this.state = {
             isRefreshing:false,
             msgData:[],
@@ -37,6 +38,13 @@ class ChatScreen extends React.Component {
 
     componentDidMount() {
         this._get(this.storageKey);
+
+        // requestData("https://app.jiaowangba.com/chat/user_details?id="+this.props.navigation.state.params.id, (res)=>{
+        //     if (res.status != 'error') {
+        //         console.log(JSON.stringify(res));
+        //     }
+        // })
+
         // 页面加载完成后获取权限
         this.checkPermission().then((hasPermission) => {
           this.setState({ hasPermission });
@@ -54,7 +62,6 @@ class ChatScreen extends React.Component {
               this.finishRecording(data.status === "OK", data.audioFileURL);
             }
           };
-
         })
 
     }
@@ -137,7 +144,7 @@ class ChatScreen extends React.Component {
         if(this.state.stoppedRecording){
           this.prepareRecordingPath(this.state.audioPath);
         }
-        console.log("alsdjas");
+
         this.prepareRecordingPath(this.state.audioPath);
         this.setState({recording: true});
 
@@ -170,29 +177,27 @@ class ChatScreen extends React.Component {
 
     }
 
-    async play() {
-        // 如果在录音 , 执行停止按钮
-        if (this.state.recording) {
-          await this.stopRecord();
-        }
-
+    playRecord() {
         // 使用 setTimeout 是因为, 为避免发生一些问题 react-native-sound中
-        setTimeout(() => {
-          var sound = new Sound(this.state.audioPath, '', (error) => {
+        console.log('begin');
+
+        console.log("-");
+          let sound = new Sound(this.state.audioPath, '', (error) => {
             if (error) {
               console.log('failed to load the sound', error);
             }
           });
-
-          setTimeout(() => {
+          console.log("++");
+          clearTimeout(this.timeout);
+          this.timeout = setTimeout(() => {
             sound.play((success) => {
               if (success) {
+                  console.log("+++++");
                 console.log('successfully finished playing');
               } else {
                 console.log('playback failed due to audio decoding errors');
               }
             });
-          }, 100);
         }, 100);
     }
 
@@ -201,17 +206,15 @@ class ChatScreen extends React.Component {
       console.log(`Finished recording of duration ${this.state.currentTime} seconds at path: ${filePath}`);
     }
 
-
     // 获取本地聊天记录
     async _get(key) {
         try {// try catch 捕获异步执行的异常
             var value = await AsyncStorage.getItem(key);
             if (value !== null){
-                console.log('_get() success: ' ,value);
+                this.setState({msgData:JSON.parse(value)});
             } else {
-                console.log('_get() no data');
+                this.setState({msgData:[]});
             }
-            this.setState({msgData:JSON.parse(value)});
 
         } catch (error) {
             console.log('_get() error: ', error.message);
@@ -219,10 +222,10 @@ class ChatScreen extends React.Component {
     }
 
     handleRefresh() {
-        this.setState({isRefreshing: true})
-        setTimeout(() => {
-          ()=>this.setState({isRefreshing: false})
-        }, 1000);
+        // this.setState({isRefreshing: true})
+        // setTimeout(() => {
+        //   ()=>this.setState({isRefreshing: false})
+        // }, 1000);
     }
 
     handleRefreshMessage(msg, isOther, type='txt'){
@@ -393,6 +396,9 @@ class ChatScreen extends React.Component {
                 <Image resizeMode="contain" style={styles.chatScreen.voiceImg} source={require('../images/home.png')}/>
             </TouchableOpacity>
             <TouchableOpacity style={styles.chatScreen.otherTouch} onPress={()=>this.pickSingle()}>
+                <Image resizeMode="contain" style={styles.chatScreen.voiceImg} source={require('../images/home.png')}/>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.chatScreen.otherTouch} onPress={()=>this.playRecord()}>
                 <Image resizeMode="contain" style={styles.chatScreen.voiceImg} source={require('../images/home.png')}/>
             </TouchableOpacity>
         </View>;

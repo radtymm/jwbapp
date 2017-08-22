@@ -15,6 +15,7 @@ import {requestData} from '../libs/request.js';
 import DeviceInfo from 'react-native-device-info';
 import { createAnimatableComponent, Image as AnimatableImage} from 'react-native-animatable';
 const AnimatableView = createAnimatableComponent(View);
+import CachedImage from 'react-native-cached-image';
 
 class PageBaseData extends React.Component {
 
@@ -45,7 +46,7 @@ class PageBaseData extends React.Component {
                 renderItem={({item}) =>
                     <View style={styles.PageBaseData.item}>
                         <Text style={styles.PageBaseData.titleDetail}>{item.title}</Text>
-                        <Text style={styles.PageBaseData.content}>{item.content}</Text>
+                        <Text style={styles.PageBaseData.content}>{(item.content!="null"?item.content:"")}</Text>
                     </View>
                 }
             />
@@ -61,8 +62,8 @@ class PageBaseData extends React.Component {
                 {title: '职业：', content: params.occupation,},
                 {title: '收入：', content: params.income,},
                 {title: '婚况：', content: params.marry,},
-                {title: '身高：', content: params.height?params.height + '厘米':"",},
-                {title: '体重：', content: params.weight?params.weight + '公斤':"",},
+                {title: '身高：', content: params.height!="null"?params.height + '厘米':"",},
+                {title: '体重：', content: params.weight!="null"?params.weight + '公斤':"",},
                 {title: '住房：', content: params.house,},
                 {title: '上线时间：', content: params.time,},
             ];
@@ -86,8 +87,8 @@ class PageBaseData extends React.Component {
         if (this.state.data) {
 
             let params = this.state.data.code;
-            if ((this.state.data.code.idea != null) && (this.state.data.code.idea != "")) {
-                ComIdea = <View>
+            if ((this.state.data.code.idea != "null") && (this.state.data.code.idea != "")) {
+                ComIdea = <View style={{borderBottomColor:"#ebebeb", borderBottomWidth:1}}>
                     <View style={styles.PageBaseData.loveStory}>
                         <Text style={styles.PageBaseData.loveText}>爱情宣言</Text>
                     </View>
@@ -107,9 +108,11 @@ class PageBaseData extends React.Component {
             requestData('https://app.jiaowangba.com/add_ilike?id=' + this.state.data.code.id, (res) => {
                 if (res.status == "success") {
                     if (res.code == 1) {
-                        this.setState({is_like:true});
+                        this.state.data.code.like_i_total = this.state.data.code.like_i_total + 1;
+                        this.setState({is_like:true, data:this.state.data});
                     } else {
-                        this.setState({is_like:false});
+                        this.state.data.code.like_i_total = this.state.data.code.like_i_total - 1;
+                        this.setState({is_like:false, data:this.state.data});
                     }
                 }
             });
@@ -135,7 +138,7 @@ class PageBaseData extends React.Component {
         }
 
         return <View style={styles.PageBaseData.headView}>
-            <Image resizeMode="cover"  style={styles.PageBaseData.headImage} source={imageSrc}/>
+            <CachedImage resizeMode="cover"  style={styles.PageBaseData.headImage} source={imageSrc}/>
             {isvip}
             <View style={styles.PageBaseData.nameIdView}>
                 <Text style={styles.PageBaseData.nicknameText}>{this.state.data?code.nickname:""}</Text>
@@ -159,11 +162,11 @@ class PageBaseData extends React.Component {
 
 
         return <View style={styles.PageBaseData.contentView}>
+            {this.renderIdea()}
             <View style={styles.PageBaseData.loveStory}>
                 <Text style={styles.PageBaseData.loveText}>基本资料</Text>
             </View>
             {this.renderFlatList()}
-            {this.renderIdea()}
         </View>
     }
 
@@ -172,7 +175,10 @@ class PageBaseData extends React.Component {
     }
 
     renderModal(){
-        let {params} = this.props.navigation.state;
+        if (!this.state.data) {
+            return;
+        }
+        let params = this.state.data.code;
         let imageSrc = require("../images/headDef.jpg");
         if (params && params.avatar != null){
             imageSrc = {uri: 'https://cdn.jiaowangba.com/' + params.avatar, cache:'force-cache'};
@@ -181,12 +187,12 @@ class PageBaseData extends React.Component {
             <View style={styles.PageBaseData.modalView}>
                 <View style={styles.PageBaseData.modalContent}>
                     <View style={styles.PageBaseData.modalHead}>
-                        <Image style={styles.PageBaseData.modalHeadImg} source={imageSrc}/>
+                        <CachedImage style={styles.PageBaseData.modalHeadImg} source={imageSrc}/>
                         <Text style={styles.PageBaseData.modalClose} onPress={()=>this.setState({isVisibleModal:false})}>×</Text>
                     </View>
                     <View style={styles.PageBaseData.modalWechatView}>
                         <Text style={styles.PageBaseData.modalName}>{params.nickname}的微信号</Text>
-                        <Text style={styles.PageBaseData.modalWechat}>{params.wechat?params.wechat:"该用户未提交微信号"}</Text>
+                        <Text style={styles.PageBaseData.modalWechat}>{(params.wechat!='null')?params.wechat:"该用户未提交微信号"}</Text>
                         <TouchableOpacity onPress={()=>this.copyStr(params.wechat)} style={styles.PageBaseData.modalCopyTouch}>
                             <Text style={styles.PageBaseData.modalCopy}>复制微信号</Text>
                         </TouchableOpacity>
