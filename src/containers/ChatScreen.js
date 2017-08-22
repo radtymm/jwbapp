@@ -226,7 +226,7 @@ class ChatScreen extends React.Component {
         // }, 1000);
     }
 
-    handleRefreshMessage(msg, isOther, type='txt'){
+    handleRefreshMessage(msg, isOther, type){
         let msgData = Object.assign([], this.state.msgData);
         msgData.push({message:msg, isOther:isOther, type:type});
         this.setState({msgData:msgData});
@@ -242,10 +242,10 @@ class ChatScreen extends React.Component {
         let id = WebIM.conn.getUniqueId();                 // 生成本地消息id
         let msg = new WebIM.message('txt', id);      // 创建文本消息
         this.setState({message:"", showPicker:false});
-        this.handleRefreshMessage(message, false);
+        this.handleRefreshMessage(message, false, 'txt');
         msg.set({
             msg: message,                  // 消息内容
-            to: '13003995110',                          // 接收消息对象（用户id）
+            to: this.props.navigation.state.params.uuid,    // 接收消息对象（用户id）
             roomType: false,
             success: function (id, serverMsgId) {
                 console.log('send private text Success');
@@ -279,7 +279,7 @@ class ChatScreen extends React.Component {
                 uri: response.path, type: 'application/octet-stream', name: response.filename
               }
             },
-            to: '13003995110',                       // 接收消息对象
+            to: this.props.navigation.state.params.uuid,                       // 接收消息对象
             roomType: false,
             chatType: 'singleChat',
             onFileUploadError: function (e) {      // 消息上传失败
@@ -339,7 +339,7 @@ class ChatScreen extends React.Component {
             ComMsg = <Text style={[styles.chatScreen.msgText, {textAlign:!item.isOther?'left':'left'}]}>{item.message}</Text>
         }else if (item.type == 'img') {
             // ComMsg = <CachedImage source={require(item.message.path)}/>;
-            console.log(item.message.path);
+            console.log("------"+item.message.path);
             var promise = CameraRoll.getPhotos({first:1, after: item.message.path, });
             promise.then(function(data){
                 console.log(JSON.stringify(data));
