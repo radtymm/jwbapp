@@ -225,7 +225,7 @@ const PagePerInfo = StyleSheet.create({
     submitIOSDate:{color:"blue", fontSize:setScaleSize(30), },
 });
 const pageChangePwd = StyleSheet.create({
-    changeView:{padding:setScaleSize(40), paddingTop:setScaleSize(35), flex:1, justifyContent:"flex-start"},
+    changeView:{padding:setScaleSize(40), paddingTop:setScaleSize(35), flex:1, },
     changeText:{color:"#333", paddingVertical:setScaleSize(24), paddingLeft:setScaleSize(18), fontSize:setScaleSize(34), marginBottom:setScaleSize(40), backgroundColor:"#e5e5e5"},
     submitTouch:{borderRadius:setScaleSize(8), height:setScaleSize(94), backgroundColor:"#2FB9C3", justifyContent:"center", alignItems:"center"},
     submitText:{color:"#fff", fontSize:setScaleSize(30)},

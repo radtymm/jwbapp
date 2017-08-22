@@ -14,6 +14,7 @@ import PageBaseData from './PageBaseData';
 import styles from '../styleSheet/Styles';
 import {requestData} from '../libs/request.js';
 import comHead from '../components/comHead';
+import CachedImage from 'react-native-cached-image';
 
 let firstClick = 0;
 
@@ -115,7 +116,7 @@ class HomePage extends React.Component {
         }}>
             <View style={[styles.homePage.flatViewOne,]}>
                 <View>
-                    <Image style={styles.homePage.flatViewImage}
+                    <CachedImage style={styles.homePage.flatViewImage}
                            source={{uri: 'https://cdn.jiaowangba.com/' + item.avatar + '?imageView2/1/w/250/h/250/interlace/1/q/96|imageslim'}}/>
                     {(item.is_vip == "No")?<View/>:(<Image style={styles.homePage.isvip} source={require('../images/isvip.png')}/>)}
                     <Image style={styles.homePage.livein} source={require('../images/livein.png')}/>

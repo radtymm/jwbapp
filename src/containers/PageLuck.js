@@ -18,6 +18,8 @@ import {StackNavigator, TabNavigator} from 'react-navigation';
 import  PageBaseData from './PageBaseData';
 import styles from '../styleSheet/Styles';
 import {requestData} from '../libs/request';
+import CachedImage from 'react-native-cached-image';
+
 
 class PageLuck extends React.Component {
 
@@ -81,18 +83,18 @@ class PageLuck extends React.Component {
         return (<View style={styles.pageLuck.bodyView}>
             <TouchableOpacity style={styles.pageLuck.headTouch} onPress={()=>{this.props.navigation.navigate("PageBaseData" , this.state.data)}}>
                 <View style={styles.pageLuck.contentView}>
-                    <ImageBackground onLoadStart={()=>this.setState({load:'loading'})}
+                    <CachedImage onLoadStart={()=>this.setState({load:'loading'})}
                         onLoad={()=>this.setState({load:'loadSuccess'})}
                         onError={()=>this.setState({load:'loadError'})}
                         style={styles.pageLuck.headImageLuck} source={imageSrc}>
                         {imgLoad}
-                    </ImageBackground>
+                    </CachedImage>
                     {(this.state.data.is_vip == "No")?<View/>:(<Image style={styles.minePage.isvip} source={require('../images/isvip.png')}/>)}
                     <View style={styles.pageLuck.nameView}>
                         <Text style={styles.pageLuck.nameText}>{this.state.data.nickname?this.state.data.nickname:""}</Text>
                     </View>
                     <View style={styles.pageLuck.ageLiveEduView}>
-                        {(this.state.data.age=="Unknown")?<View/>:<View style={styles.pageLuck.ageView}><Text style={styles.pageLuck.ageLiveEdu}>{(this.state.data.age+'岁')}</Text></View>}
+                        {(!this.state.data.age)?<View/>:<View style={styles.pageLuck.ageView}><Text style={styles.pageLuck.ageLiveEdu}>{(this.state.data.age+'岁')}</Text></View>}
                         <View style={styles.pageLuck.liveView}><Text style={styles.pageLuck.ageLiveEdu}>{this.state.data.live}</Text></View>
                         <View style={styles.pageLuck.eduView}><Text style={styles.pageLuck.ageLiveEdu}>{this.state.data.education}</Text></View>
                     </View>

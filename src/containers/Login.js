@@ -23,23 +23,23 @@ class Login extends React.Component {
         this.reqLogin(true);
 
         // 添加返回键监听
-        BackHandler.addEventListener('hardwareBackPress', this.onBackHandler);
+        // BackHandler.addEventListener('hardwareBackPress', this.onBackHandler);
 
     }
 
     componentWillUnmount(){
          // 移除返回键监听
-         BackHandler.removeEventListener('hardwareBackPress', this.onBackHandler);
+        //  BackHandler.removeEventListener('hardwareBackPress', this.onBackHandler);
     }
 
     onBackHandler = () => {
-        if (this.lastBackPressed && this.lastBackPressed + 2000 >= Date.now()) {
-            //最近2秒内按过back键，可以退出应用。
-            return false;
-        }
-        this.lastBackPressed = Date.now();
-        ToastAndroid.show('再按一次退出应用', 2000);
-        return true;
+        // if (this.lastBackPressed && this.lastBackPressed + 2000 >= Date.now()) {
+        //     //最近2秒内按过back键，可以退出应用。
+        //     return false;
+        // }
+        // this.lastBackPressed = Date.now();
+        // ToastAndroid.show('再按一次退出应用', 2000);
+        // return true;
     };
 
     webIMConnection(){
@@ -53,16 +53,14 @@ class Login extends React.Component {
             },
 
             onError: (error) => {
-              console.log(error)
+              Alert.alert('聊天系统登录失败', '请退出重新登录');
               if (error.type == WebIM.statusCode.WEBIM_CONNCTION_DISCONNECTED) {
                 // console.log('WEBIM_CONNCTION_DISCONNECTED');
-                Alert.alert('登录失败', '请重新登录');
                 return;
               }
 
               if (error.type == WebIM.statusCode.WEBIM_CONNCTION_SERVER_ERROR) {
                 // console.log('WEBIM_CONNCTION_SERVER_ERROR');
-                Alert.alert('登录失败', '请重新登录');
                 return;
               }
               if (error.type == 1) {
@@ -75,9 +73,9 @@ class Login extends React.Component {
     }
 
     reqLogin(isFirst){
+        global.WebIM.conn.close();
         requestData(`https://app.jiaowangba.com/login?telephone=${this.state.tel}&password=${this.state.pwd}`, (res)=>{
             if (res.status != "error") {
-
                 requestData(`https://app.jiaowangba.com/chat/user_details`, (res)=>{
                     if (res.status != 'error') {
                         let options = {

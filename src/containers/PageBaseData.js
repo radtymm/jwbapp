@@ -15,6 +15,7 @@ import {requestData} from '../libs/request.js';
 import DeviceInfo from 'react-native-device-info';
 import { createAnimatableComponent, Image as AnimatableImage} from 'react-native-animatable';
 const AnimatableView = createAnimatableComponent(View);
+import CachedImage from 'react-native-cached-image';
 
 class PageBaseData extends React.Component {
 
@@ -137,7 +138,7 @@ class PageBaseData extends React.Component {
         }
 
         return <View style={styles.PageBaseData.headView}>
-            <Image resizeMode="cover"  style={styles.PageBaseData.headImage} source={imageSrc}/>
+            <CachedImage resizeMode="cover"  style={styles.PageBaseData.headImage} source={imageSrc}/>
             {isvip}
             <View style={styles.PageBaseData.nameIdView}>
                 <Text style={styles.PageBaseData.nicknameText}>{this.state.data?code.nickname:""}</Text>
@@ -186,7 +187,7 @@ class PageBaseData extends React.Component {
             <View style={styles.PageBaseData.modalView}>
                 <View style={styles.PageBaseData.modalContent}>
                     <View style={styles.PageBaseData.modalHead}>
-                        <Image style={styles.PageBaseData.modalHeadImg} source={imageSrc}/>
+                        <CachedImage style={styles.PageBaseData.modalHeadImg} source={imageSrc}/>
                         <Text style={styles.PageBaseData.modalClose} onPress={()=>this.setState({isVisibleModal:false})}>×</Text>
                     </View>
                     <View style={styles.PageBaseData.modalWechatView}>
