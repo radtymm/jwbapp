@@ -144,6 +144,7 @@ class MinePage extends React.Component {
                     <TouchableOpacity onPress={()=>{
                             if (item.title == "退出登录"){
                                     requestData("https://app.jiaowangba.com/login_out", (res)=>{});
+                                    global.WebIM.conn.close();
                                     this.props.navigation.navigate("Login");
                             }else if (item.title == "个人资料") {
                                 let perInfoParams = Object.assign({}, this.state.res.code);
@@ -179,10 +180,10 @@ class MinePage extends React.Component {
             <ScrollView style={styles.minePage.flex}>
                 <TouchableOpacity onPress={()=>that.openMycamera()}>
                     <View style={{alignItems: 'flex-start', justifyContent: 'center'}}>
-                        <ImageBackground resizeMode="cover" style={ styles.homePage.headImage}
+                        <Image resizeMode="cover" style={ styles.homePage.headImage}
                            source={imageSrc}>
                             {isvip}
-                        </ImageBackground>
+                        </Image>
                     </View>
                     </TouchableOpacity>
                     <View style={styles.minePage.nameId}>

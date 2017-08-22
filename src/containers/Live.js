@@ -178,7 +178,7 @@ class Live extends React.Component {
                 {styles.isIOS?<View style={styles.homePage.iosTab} onPress={()=>this.scrollTotop()}/>:<View/>}
                 <View style={styles.live.liveIn}>
                     <Image style={styles.live.liveInImg} source={require('../images/livein.png')}/>
-                    <Text style={[styles.live.titleText, {fontSize:18, marginLeft:8}]}>厦门市</Text>
+                    <Text style={[styles.live.titleText, {fontSize:18, marginLeft:8}]}>{global.perInfo.live}</Text>
                 </View>
                 {this.comFlatList()}
             </View>
