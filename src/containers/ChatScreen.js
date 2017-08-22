@@ -1,7 +1,7 @@
 import React from 'react';
 import {
     StyleSheet, ScrollView, navigator, Alert, View, Text, Button, FlatList, Dimensions, TouchableOpacity, Platform,
-    TouchableWithoutFeedback, Image, TextInput, Animated, Easing, RefreshControl, KeyboardAvoidingView, AsyncStorage,
+    TouchableWithoutFeedback, CameraRoll, Image, TextInput, Animated, Easing, RefreshControl, KeyboardAvoidingView, AsyncStorage,
 } from 'react-native';
 
 import styles from '../styleSheet/Styles';
@@ -84,50 +84,13 @@ class ChatScreen extends React.Component {
             hideBottomControls: false,
             cropping: true,
         }).then(image => {
-            this.sendImage(image);
+            console.log(JSON.stringify(image));
+            this.handleSendImage(image);
         }).catch(e => {
             console.log(e);
         });
     }
 
-    sendImage(response){
-        // console.log(WebIM.utils);
-        var id = WebIM.conn.getUniqueId();                   // 生成本地消息id
-        var msg = new WebIM.message('img', id);        // 创建图片消息
-
-        let source = null;
-        if (Platform.OS === 'ios') {
-          source = {path: response.path.replace('file://', ''), isStatic: true};
-        } else {
-          source = {path: response.path, isStatic: true};
-        }
-        response.path = source.path;
-
-        var option = {
-            apiUrl: WebIM.config.apiURL,
-            file: {
-              data: {
-                uri: response.path, type: 'application/octet-stream', name: response.filename
-              }
-            },
-            to: '13003995110',                       // 接收消息对象
-            roomType: false,
-            chatType: 'singleChat',
-            onFileUploadError: function (e) {      // 消息上传失败
-                console.log(e);
-                console.log('onFileUploadError');
-            },
-            onFileUploadComplete: function () {   // 消息上传成功
-                console.log('onFileUploadComplete');
-            },
-            success: function () {                // 消息发送成功
-                console.log('Success');
-            },
-            flashUpload: WebIM.flashUpload
-        };
-        msg.set(option);
-        WebIM.conn.send(msg.body);
-    }
 
     // 录音
     prepareRecordingPath(audioPath){
@@ -262,9 +225,9 @@ class ChatScreen extends React.Component {
         }, 1000);
     }
 
-    handleRefreshMessage(msg, isOther){
+    handleRefreshMessage(msg, isOther, type='txt'){
         let msgData = Object.assign([], this.state.msgData);
-        msgData.push({message:msg, isOther:isOther});
+        msgData.push({message:msg, isOther:isOther, type:type});
         this.setState({msgData:msgData});
         storage.save(this.storageKey, JSON.stringify(msgData));
         this.handleScrollToEnd();
@@ -291,6 +254,46 @@ class ChatScreen extends React.Component {
             }
         });
         msg.body.chatType = 'singleChat';
+        WebIM.conn.send(msg.body);
+    }
+
+    handleSendImage(response){
+        // console.log(WebIM.utils);
+        var id = WebIM.conn.getUniqueId();                   // 生成本地消息id
+        var msg = new WebIM.message('img', id);        // 创建图片消息
+
+        let source = null;
+        if (Platform.OS === 'ios') {
+          source = {path: response.path.replace('file://', ''), isStatic: true};
+        } else {
+          source = {path: response.path, isStatic: true};
+        }
+        response.path = source.path;
+        this.handleRefreshMessage(response, false, 'img');
+
+        var option = {
+            apiUrl: WebIM.config.apiURL,
+            file: {
+              data: {
+                uri: response.path, type: 'application/octet-stream', name: response.filename
+              }
+            },
+            to: '13003995110',                       // 接收消息对象
+            roomType: false,
+            chatType: 'singleChat',
+            onFileUploadError: function (e) {      // 消息上传失败
+                console.log(e);
+                console.log('onFileUploadError');
+            },
+            onFileUploadComplete: function () {   // 消息上传成功
+                console.log('onFileUploadComplete');
+            },
+            success: function () {                // 消息发送成功
+                console.log('Success');
+            },
+            flashUpload: WebIM.flashUpload
+        };
+        msg.set(option);
         WebIM.conn.send(msg.body);
     }
 
@@ -330,10 +333,32 @@ class ChatScreen extends React.Component {
             headImage = {uri: 'https://cdn.jiaowangba.com/' + global.perInfo.avatar, cache:'force-cache'};
         }
 
+        let ComMsg = <View/>;
+        if (item.type == 'txt') {
+            ComMsg = <Text style={[styles.chatScreen.msgText, {textAlign:!item.isOther?'left':'left'}]}>{item.message}</Text>
+        }else if (item.type == 'img') {
+            // ComMsg = <CachedImage source={require(item.message.path)}/>;
+            console.log(item.message.path);
+            var promise = CameraRoll.getPhotos({first:1, after: item.message.path, });
+            promise.then(function(data){
+                console.log(JSON.stringify(data));
+                    // var edges = data.edges;
+                    // var photos = [];
+                    // for (var i in edges) {
+                    //     photos.push(edges[i].node.image.uri);
+                    // }
+                    // _that.setState({
+                    //     photos:photos
+                    // });
+            },function(err){
+                alert('获取照片失败！');
+            });
+        }
+
         return (
             <View style={[styles.chatScreen.itemView, {justifyContent:!item.isOther?'flex-end':'flex-start'}]}>
                 {item.isOther?<CachedImage style={styles.chatScreen.headImg} source={headImage}/>:<View/>}
-                <Text style={[styles.chatScreen.msgText, {textAlign:!item.isOther?'left':'left'}]}>{item.message}</Text>
+                {ComMsg}
                 {!item.isOther?<CachedImage style={styles.chatScreen.headImg} source={headImage}/>:<View/>}
             </View>
         );
