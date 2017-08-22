@@ -37,10 +37,8 @@
 		2DCD954D1E0B4F2C00145EB5 /* jwbappTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* jwbappTests.m */; };
 		39C9058903C84DDEB0D2C8FF /* libRCTBEEPickerManager.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 427931A7CE8D4B61880DDC92 /* libRCTBEEPickerManager.a */; };
 		5E9157361DD0AC6A00FF2AA8 /* libRCTAnimation.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5E9157331DD0AC6500FF2AA8 /* libRCTAnimation.a */; };
-		70F5A32F293D4884B578EE5F /* libRNAudio.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4532CC61975C4473ACB3C5CE /* libRNAudio.a */; };
 		7DBD81D522CD4213B1D20404 /* libRNFetchBlob.a in Frameworks */ = {isa = PBXBuildFile; fileRef = AC9C8B08DB3449DC8F7D3C46 /* libRNFetchBlob.a */; };
 		832341BD1AAA6AB300B99B32 /* libRCTText.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 832341B51AAA6A8300B99B32 /* libRCTText.a */; };
-		966673EBCFA24B4A9C7AF6CA /* libRNSound.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4162AFB9425548AE8ACB2516 /* libRNSound.a */; };
 		A93FB8001F3EB90D002917FA /* QBImagePicker.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A93FB7FE1F3EB90D002917FA /* QBImagePicker.framework */; };
 		A93FB8011F3EB90D002917FA /* RSKImageCropper.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A93FB7FF1F3EB90D002917FA /* RSKImageCropper.framework */; };
 		A93FB8271F3EB9BF002917FA /* QBImagePicker.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A93FB7FE1F3EB90D002917FA /* QBImagePicker.framework */; };
@@ -48,6 +46,8 @@
 		A93FB82A1F3EB9C4002917FA /* RSKImageCropper.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A93FB7FF1F3EB90D002917FA /* RSKImageCropper.framework */; };
 		A93FB82B1F3EB9C4002917FA /* RSKImageCropper.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = A93FB7FF1F3EB90D002917FA /* RSKImageCropper.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		A9889A4E1F4B4E54001611CF /* libRCTCameraRoll.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A9889A301F4B4E0F001611CF /* libRCTCameraRoll.a */; };
+		A98CB1BE1F4C58F500F6638C /* libRNSound.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A9A2E5031F498C9C00BFAFAC /* libRNSound.a */; };
+		A98CB1BF1F4C590300F6638C /* libRNAudio.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A9A2E4CB1F49596800BFAFAC /* libRNAudio.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -353,9 +353,7 @@
 		2D02E4901E0B4A5D006451C7 /* jwbapp-tvOSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "jwbapp-tvOSTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		33764756ACE642C78F4D058E /* imageCropPicker.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = imageCropPicker.xcodeproj; path = "../node_modules/react-native-image-crop-picker/ios/imageCropPicker.xcodeproj"; sourceTree = "<group>"; };
 		3B11BDB34FEB49829104B714 /* RNAudio.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNAudio.xcodeproj; path = "../node_modules/react-native-audio/ios/RNAudio.xcodeproj"; sourceTree = "<group>"; };
-		4162AFB9425548AE8ACB2516 /* libRNSound.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNSound.a; sourceTree = "<group>"; };
 		427931A7CE8D4B61880DDC92 /* libRCTBEEPickerManager.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRCTBEEPickerManager.a; sourceTree = "<group>"; };
-		4532CC61975C4473ACB3C5CE /* libRNAudio.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNAudio.a; sourceTree = "<group>"; };
 		5E91572D1DD0AC6500FF2AA8 /* RCTAnimation.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTAnimation.xcodeproj; path = "../node_modules/react-native/Libraries/NativeAnimation/RCTAnimation.xcodeproj"; sourceTree = "<group>"; };
 		78C398B01ACF4ADC00677621 /* RCTLinking.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTLinking.xcodeproj; path = "../node_modules/react-native/Libraries/LinkingIOS/RCTLinking.xcodeproj"; sourceTree = "<group>"; };
 		832341B01AAA6A8300B99B32 /* RCTText.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTText.xcodeproj; path = "../node_modules/react-native/Libraries/Text/RCTText.xcodeproj"; sourceTree = "<group>"; };
@@ -380,6 +378,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A98CB1BF1F4C590300F6638C /* libRNAudio.a in Frameworks */,
+				A98CB1BE1F4C58F500F6638C /* libRNSound.a in Frameworks */,
 				A9889A4E1F4B4E54001611CF /* libRCTCameraRoll.a in Frameworks */,
 				146834051AC3E58100842450 /* libReact.a in Frameworks */,
 				A93FB82A1F3EB9C4002917FA /* RSKImageCropper.framework in Frameworks */,
@@ -399,8 +399,6 @@
 				0DA791F08031439BB8420790 /* libimageCropPicker.a in Frameworks */,
 				39C9058903C84DDEB0D2C8FF /* libRCTBEEPickerManager.a in Frameworks */,
 				7DBD81D522CD4213B1D20404 /* libRNFetchBlob.a in Frameworks */,
-				70F5A32F293D4884B578EE5F /* libRNAudio.a in Frameworks */,
-				966673EBCFA24B4A9C7AF6CA /* libRNSound.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
