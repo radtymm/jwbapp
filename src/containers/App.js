@@ -24,7 +24,6 @@ import PageLikeMe from './PageLikeMe';
 import PageVip from './PageVip';
 import PagePerInfo from './PagePerInfo';
 import PageChangePwd from './PageChangePwd';
-import AudioExample from './AudioExample';
 
 const Tab = TabNavigator({
       HomePage: {

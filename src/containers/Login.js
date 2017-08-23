@@ -6,6 +6,7 @@ import styles from '../styleSheet/Styles';
 import {requestData, requestDataPost,} from '../libs/request.js';
 import Swiper from 'react-native-swiper';
 import WebIM from '../../WebIM';
+import storage from '../libs/storage';
 
 global.WebIM = WebIM;
 
@@ -49,11 +50,12 @@ class Login extends React.Component {
                 // 如果isAutoLogin设置为false，那么必须手动设置上线，否则无法收消息
                 // 手动上线指的是调用conn.setPresence(); 如果conn初始化时已将isAutoLogin设置为true
                 // 则无需调用conn.setPresence();
+                console.log('loginsuccess');
                 that.props.navigation.navigate('Tab');
             },
 
             onError: (error) => {
-              Alert.alert('聊天系统登录失败', '请退出重新登录');
+              Alert.alert('登录失败', '请退出重新登录');
               if (error.type == WebIM.statusCode.WEBIM_CONNCTION_DISCONNECTED) {
                 // console.log('WEBIM_CONNCTION_DISCONNECTED');
                 return;
@@ -73,21 +75,25 @@ class Login extends React.Component {
     }
 
     reqLogin(isFirst){
-        global.WebIM.conn.close();
+        // global.WebIM.conn.close();
         requestData(`https://app.jiaowangba.com/login?telephone=${this.state.tel}&password=${this.state.pwd}`, (res)=>{
-            if (res.status != "error") {
-                requestData(`https://app.jiaowangba.com/chat/user_details`, (res)=>{
-                    if (res.status != 'error') {
-                        let options = {
-                          apiUrl: global.WebIM.config.apiURL,
-                          user: res.code.username,
-                          pwd: res.code.password,
-                          appKey: global.WebIM.config.appkey
-                        };
-                        global.WebIM.conn.open(options);
-                    }
-                });
+            if (res.status == "success") {
 
+                let options = {
+                  apiUrl: global.WebIM.config.apiURL,
+                  user: 'radtymm3',
+                  pwd: '1314520',
+              //   user: res.code.uuid,
+              //   pwd: res.code.password,
+                  success: function (token) {
+                    var token = token.access_token;
+                    WebIM.utils.setCookie('webim_' + encryptUsername, token, 1);
+                  },
+                  appKey: global.WebIM.config.appkey
+                };
+                global.WebIM.conn.open(options);
+            }else if (res.status == "redirect") {
+                this.props.navigation.navigate('Tab');
             }else {
                 if (isFirst) {
                     return;

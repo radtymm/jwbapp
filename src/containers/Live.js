@@ -49,20 +49,23 @@ class Live extends React.Component {
         this.handleRefresh = this.handleRefresh.bind(this);
         this.scrollTotop = this.scrollTotop.bind(this);
         this.handleDoublePressTab = this.handleDoublePressTab.bind(this);
+        this.onBackHandler = this.onBackHandler.bind(this);
     }
 
     componentDidMount() {
         this.handleRefresh();
         this.props.navigation.state.param = this.handleDoublePressTab; //({navigatePress :this.handleDoublePressTab, title:"live"})
-        // BackHandler.addEventListener('hardwareBackPress', this.onBackHandler);
+        BackHandler.addEventListener('hardwareBackPress', this.onBackHandler);
     }
 
     componentWillUnmount(){
-        // BackHandler.removeEventListener('hardwareBackPress', this.onBackHandler);
+        BackHandler.removeEventListener('hardwareBackPress', this.onBackHandler);
         firstClick = null;
     }
 
-    onBackHandler = () => {
+    onBackHandler() {
+        console.log(this);
+
         // if (this.lastBackPressed && this.lastBackPressed + 2000 >= Date.now()) {
         //     //最近2秒内按过back键，可以退出应用。
         //     BackHandler.exitApp();
@@ -70,7 +73,8 @@ class Live extends React.Component {
         // }
         // this.lastBackPressed = Date.now();
         // ToastAndroid.show('再按一次退出应用', 2000);
-        // return true;
+        this.props.navigation.goBack(null);
+        return true;
     };
 
     handleDoublePressTab(){

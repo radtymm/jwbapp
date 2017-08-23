@@ -1,7 +1,7 @@
 import React from 'react';
 import {
     StyleSheet, ScrollView, navigator, Alert, View, Text, Button, FlatList, Dimensions, TouchableOpacity, Platform,
-    TouchableWithoutFeedback, CameraRoll, Image, TextInput, Animated, Easing, RefreshControl, KeyboardAvoidingView, AsyncStorage,
+    TouchableWithoutFeedback, PermissionsAndroid, CameraRoll, Image, TextInput, Animated, Easing, RefreshControl, KeyboardAvoidingView, AsyncStorage,
 } from 'react-native';
 
 import styles from '../styleSheet/Styles';
@@ -20,7 +20,7 @@ class ChatScreen extends React.Component {
     constructor(props, context) {
         super(props, context);
         this.storageKey = this.props.navigation.state.params.id + "&" + global.perInfo.id;
-        console.log(JSON.stringify(this.props.navigation.state.params));
+        // console.log(JSON.stringify(this.props.navigation.state.params));
         this.state = {
             isRefreshing:false,
             msgData:[],
@@ -30,7 +30,7 @@ class ChatScreen extends React.Component {
             recording: false,                                                   //是否正在录音
             stoppedRecording: false,                                            //是否停止了录音
             finished: false,                                                    //是否完成录音
-            audioPath: AudioUtils.DocumentDirectoryPath + '/test.aac',          //路径下的文件名
+            audioPath: AudioUtils.DocumentDirectoryPath + '/test.amr',          //路径下的文件名
             hasPermission: undefined,                                           //是否获取权限
         };
         this.webIMConnection();
@@ -38,12 +38,6 @@ class ChatScreen extends React.Component {
 
     componentDidMount() {
         this._get(this.storageKey);
-
-        // requestData("https://app.jiaowangba.com/chat/user_details?id="+this.props.navigation.state.params.id, (res)=>{
-        //     if (res.status != 'error') {
-        //         console.log(JSON.stringify(res));
-        //     }
-        // })
 
         // 页面加载完成后获取权限
         this._checkPermission().then((hasPermission) => {
@@ -75,7 +69,6 @@ class ChatScreen extends React.Component {
         let that = this;
         global.WebIM.conn.listen({
             onTextMessage: function ( message ) {
-                console.log(JSON.stringify(message));
                 that.handleRefreshMessage(message.data, true);
             },    //收到文本消息
             onEmojiMessage: function ( message ) {},   //收到表情消息
@@ -88,17 +81,23 @@ class ChatScreen extends React.Component {
         ImageCropPicker.openPicker({
             width: styles.WIDTH + 500,
             height: styles.WIDTH + 500,
-            // compressImageQuality:1,
-            hideBottomControls: false,
-            cropping: true,
+            cropping: false,
         }).then(image => {
-            console.log(JSON.stringify(image));
-            this.handleSendImage(image);
+            this.handleSendImage(image, 'img');
         }).catch(e => {
             console.log(e);
         });
     }
 
+    pickSingleWithCamera() {
+        ImageCropPicker.openCamera({
+            width: styles.WIDTH + 500,
+            height: styles.WIDTH + 500,
+            cropping: false,
+        }).then(image => {
+            this.handleSendImage(image, 'img');
+        }).catch(e => alert(e));
+    }
 
     // 录音
     prepareRecordingPath(audioPath){
@@ -106,7 +105,7 @@ class ChatScreen extends React.Component {
         SampleRate: 22050,
         Channels: 1,
         AudioQuality: "Low",
-        AudioEncoding: "aac",
+        AudioEncoding: "amr",
         AudioEncodingBitRate: 32000
       });
     }
@@ -167,6 +166,7 @@ class ChatScreen extends React.Component {
           if (Platform.OS === 'android') {
             this._finishRecording(true, filePath);
           }
+          this.handleSendImage({path:"file://" + filePath, filename:'test.amr'}, 'audio');
           return filePath;
         } catch (error) {
           console.error(error);
@@ -245,7 +245,7 @@ class ChatScreen extends React.Component {
         this.handleRefreshMessage(message, false, 'txt');
         msg.set({
             msg: message,                  // 消息内容
-            to: this.props.navigation.state.params.uuid,    // 接收消息对象（用户id）
+            to: '13003995110',    // 接收消息对象（用户id）
             roomType: false,
             success: function (id, serverMsgId) {
                 console.log('send private text Success');
@@ -258,10 +258,10 @@ class ChatScreen extends React.Component {
         WebIM.conn.send(msg.body);
     }
 
-    handleSendImage(response){
+    handleSendImage(response, type){
         // console.log(WebIM.utils);
         var id = WebIM.conn.getUniqueId();                   // 生成本地消息id
-        var msg = new WebIM.message('img', id);        // 创建图片消息
+        var msg = new WebIM.message(type, id);        // 创建图片消息
 
         let source = null;
         if (Platform.OS === 'ios') {
@@ -270,8 +270,10 @@ class ChatScreen extends React.Component {
           source = {path: response.path, isStatic: true};
         }
         response.path = source.path;
-        this.handleRefreshMessage(response, false, 'img');
+        this.handleRefreshMessage(response, false, type);
 
+        console.log(response.path);
+        console.log(response.filename);
         var option = {
             apiUrl: WebIM.config.apiURL,
             file: {
@@ -280,6 +282,7 @@ class ChatScreen extends React.Component {
               }
             },
             to: this.props.navigation.state.params.uuid,                       // 接收消息对象
+            to: '13003995110',                       // 接收消息对象
             roomType: false,
             chatType: 'singleChat',
             onFileUploadError: function (e) {      // 消息上传失败
@@ -339,10 +342,9 @@ class ChatScreen extends React.Component {
             ComMsg = <Text style={[styles.chatScreen.msgText, {textAlign:!item.isOther?'left':'left'}]}>{item.message}</Text>
         }else if (item.type == 'img') {
             // ComMsg = <CachedImage source={require(item.message.path)}/>;
-            console.log("------"+item.message.path);
             var promise = CameraRoll.getPhotos({first:1, after: item.message.path, });
             promise.then(function(data){
-                console.log(JSON.stringify(data));
+                // console.log(JSON.stringify(data));
                     // var edges = data.edges;
                     // var photos = [];
                     // for (var i in edges) {
@@ -354,6 +356,8 @@ class ChatScreen extends React.Component {
             },function(err){
                 alert('获取照片失败！');
             });
+            ComMsg = <CachedImage style={{width:100,height:100}} source={{uri:item.message.path}} />
+
         }
 
         return (
@@ -385,20 +389,23 @@ class ChatScreen extends React.Component {
             />
         }
         return <View style={styles.chatScreen.barView}>
-            <TouchableOpacity style={styles.chatScreen.voiceTouch}
+            {/*<TouchableOpacity style={styles.chatScreen.voiceTouch}
                 onPress={()=>this.setState({showAudio:!this.state.showAudio})}>
                 <Image resizeMode="contain" style={styles.chatScreen.voiceImg} source={require('../images/home.png')}/>
-            </TouchableOpacity>
-            {ComIsAudio}
+            </TouchableOpacity>*/}
             <TouchableOpacity style={styles.chatScreen.emojiView} onPress={() => this.handleShowEmoji()}>
                 <Image resizeMode="contain" style={styles.chatScreen.voiceImg} source={require('../images/home.png')}/>
             </TouchableOpacity>
+            {ComIsAudio}
             <TouchableOpacity style={styles.chatScreen.otherTouch} onPress={()=>this.pickSingle()}>
                 <Image resizeMode="contain" style={styles.chatScreen.voiceImg} source={require('../images/home.png')}/>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.chatScreen.otherTouch} onPress={()=>this._play()}>
+            <TouchableOpacity style={styles.chatScreen.otherTouch} onPress={()=>this.pickSingleWithCamera()()}>
                 <Image resizeMode="contain" style={styles.chatScreen.voiceImg} source={require('../images/home.png')}/>
             </TouchableOpacity>
+            {/*<TouchableOpacity style={styles.chatScreen.otherTouch} onPress={()=>this._play()}>
+                <Image resizeMode="contain" style={styles.chatScreen.voiceImg} source={require('../images/home.png')}/>
+            </TouchableOpacity>*/}
         </View>;
     }
 

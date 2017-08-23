@@ -31,7 +31,7 @@ class PageBaseData extends React.Component {
         requestData('https://app.jiaowangba.com/info?id='+this.props.navigation.state.params.id, (res)=>{
             if (res.status == 'success') {
                 that.setState({data:res, is_like:res.code.is_like});
-
+                console.log(JSON.stringify(global.perInfo));
             }else {
                 Alert.alert("提示", "网络异常");
             }
@@ -203,7 +203,7 @@ class PageBaseData extends React.Component {
     }
 
     handleWetchat(){
-        if (this.state.data.code.is_vip == "No") {
+        if (this.state.data.code.is_vip == "N2o") {
             Alert.alert("提示", "VIP用户可查看微信号");
         }else {
             this.setState({isVisibleModal:true});
