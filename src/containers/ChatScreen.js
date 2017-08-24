@@ -22,16 +22,10 @@ class ChatScreen extends React.Component {
         this.storageKey = this.props.navigation.state.params.id + "&" + global.perInfo.id;
         // console.log(JSON.stringify(this.props.navigation.state.params));
         this.state = {
-            isRefreshing:false,
             msgData:[],
+            scrollToEnd:false,
             message:"",
-            showAudio:false,
-            currentTime: 0.0,                                                   //开始录音到现在的持续时间
-            recording: false,                                                   //是否正在录音
-            stoppedRecording: false,                                            //是否停止了录音
-            finished: false,                                                    //是否完成录音
-            audioPath: AudioUtils.DocumentDirectoryPath + '/test.amr',          //路径下的文件名
-            hasPermission: undefined,                                           //是否获取权限
+            showPicker:false,
         };
         this.webIMConnection();
     }
@@ -39,30 +33,17 @@ class ChatScreen extends React.Component {
     componentDidMount() {
         this._get(this.storageKey);
 
-        // 页面加载完成后获取权限
-        this._checkPermission().then((hasPermission) => {
-          this.setState({ hasPermission });
-
-          if (!hasPermission) return;
-
-          this.prepareRecordingPath(this.state.audioPath);
-
-          AudioRecorder.onProgress = (data) => {
-            this.setState({currentTime: Math.floor(data.currentTime)});
-          };
-
-          AudioRecorder.onFinished = (data) => {
-            // Android callback comes in the form of a promise instead.
-            if (Platform.OS === 'ios') {
-              this._finishRecording(data.status === "OK", data.audioFileURL);
-            }
-          };
-        });
-
     }
 
     componentWillUnmount(){
         clearTimeout(this.timeout);
+    }
+
+    componentDidUpdate(){
+        if (this.state.scrollToEnd) {
+            this.setState({scrollToEnd:false});
+        }
+        setTimeout(()=>this.handleScrollToEnd(), 100);
     }
 
     webIMConnection(){
@@ -71,21 +52,16 @@ class ChatScreen extends React.Component {
             onTextMessage: function ( message ) {
                 that.handleRefreshMessage(message.data, true, 'txt');
             },    //收到文本消息
-            onEmojiMessage: function ( message ) {
-            },   //收到表情消息
             onPictureMessage: function ( message ) {
-                console.log("Location of Picture is ", JSON.stringify(message));
-
                 that.handleRefreshMessage({path:message.url}, true, 'img');
             }, //收到图片消息
-            onAudioMessage: function ( message ) {},   //收到音频消息
         });
     }
 
     pickSingle( circular=false) {
         ImageCropPicker.openPicker({
-            width: styles.WIDTH + 500,
-            height: styles.WIDTH + 500,
+            width: styles.WIDTH * 2,
+            height: styles.WIDTH * 2,
             cropping: false,
         }).then(image => {
             this.handleSendImage(image, 'img');
@@ -96,117 +72,14 @@ class ChatScreen extends React.Component {
 
     pickSingleWithCamera() {
         ImageCropPicker.openCamera({
-            width: styles.WIDTH + 500,
-            height: styles.WIDTH + 500,
+            width: styles.WIDTH * 2,
+            height: styles.WIDTH * 2,
             cropping: false,
         }).then(image => {
             this.handleSendImage(image, 'img');
-        }).catch(e => alert(e));
-    }
-
-    // 录音
-    prepareRecordingPath(audioPath){
-      AudioRecorder.prepareRecordingAtPath(audioPath, {
-        SampleRate: 22050,
-        Channels: 1,
-        AudioQuality: "Low",
-        AudioEncoding: "amr",
-        AudioEncodingBitRate: 32000
-      });
-    }
-
-    _checkPermission() {
-      if (Platform.OS !== 'android') {
-        return Promise.resolve(true);
-      }
-
-      const rationale = {
-        'title': 'Microphone Permission',
-        'message': 'AudioExample needs access to your microphone so you can record audio.'
-      };
-
-      return PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.RECORD_AUDIO, rationale)
-        .then((result) => {
-          console.log('Permission result:', result);
-          return (result === true || result === PermissionsAndroid.RESULTS.GRANTED);
+        }).catch(e => {
+            console.log(e);
         });
-    }
-
-    async _record() {
-      if (this.state.recording) {
-        console.warn('Already recording!');
-        return;
-      }
-
-      if (!this.state.hasPermission) {
-        console.warn('Can\'t record, no permission granted!');
-        return;
-      }
-
-      if(this.state.stoppedRecording){
-        this.prepareRecordingPath(this.state.audioPath);
-      }
-
-      this.setState({recording: true});
-
-      try {
-        const filePath = await AudioRecorder.startRecording();
-      } catch (error) {
-        console.error(error);
-      }
-    }
-
-    async _stop() {
-        // 如果没有在录音
-        if (!this.state.recording) {
-          console.warn('Can\'t stop, not recording!');
-          return;
-        }
-
-        this.setState({stoppedRecording: true, recording: false});
-
-        try {
-          const filePath = await AudioRecorder.stopRecording();
-
-          if (Platform.OS === 'android') {
-            this._finishRecording(true, filePath);
-          }
-          this.handleSendImage({path:"file://" + filePath, filename:'test.amr'}, 'audio');
-          return filePath;
-        } catch (error) {
-          console.error(error);
-        }
-    }
-
-    async _play() {
-        if (this.state.recording) {
-          await this._stop();
-        }
-
-        // These timeouts are a hacky workaround for some issues with react-native-sound.
-        // See https://github.com/zmxv/react-native-sound/issues/89.
-        setTimeout(() => {
-          var sound = new Sound(this.state.audioPath, '', (error) => {
-            if (error) {
-              console.log('failed to load the sound', error);
-            }
-          });
-
-          setTimeout(() => {
-            sound.play((success) => {
-              if (success) {
-                console.log('successfully finished playing');
-              } else {
-                console.log('playback failed due to audio decoding errors');
-              }
-            });
-          }, 100);
-        }, 100);
-    }
-
-    _finishRecording(didSucceed, filePath) {
-      this.setState({ finished: didSucceed });
-      console.log(`Finished recording of duration ${this.state.currentTime} seconds at path: ${filePath}`);
     }
 
     // 获取本地聊天记录
@@ -214,7 +87,6 @@ class ChatScreen extends React.Component {
         try {// try catch 捕获异步执行的异常
             var value = await AsyncStorage.getItem(key);
             if (value !== null){
-                console.log(value);
                 this.setState({msgData:JSON.parse(value)});
             } else {
                 this.setState({msgData:[]});
@@ -225,23 +97,16 @@ class ChatScreen extends React.Component {
         }
     }
 
-    handleRefresh() {
-        // this.setState({isRefreshing: true})
-        // setTimeout(() => {
-        //   ()=>this.setState({isRefreshing: false})
-        // }, 1000);
-    }
-
     handleRefreshMessage(msg, isOther, type){
         let msgData = Object.assign([], this.state.msgData);
-        msgData.push({message:msg, isOther:isOther, type:type});
-        this.setState({msgData:msgData});
+        msgData.push({message:msg, isOther:isOther, type:type,});
+        this.setState({msgData:msgData, scrollToEnd:true});
         storage.save(this.storageKey, JSON.stringify(msgData));
         this.handleScrollToEnd();
     }
 
     handleScrollToEnd(){
-        this.refs.flat.scrollToEnd({animated: false})
+        this.refs.flat.scrollToEnd({animated: false});
     }
 
     handleSendMessage(message){
@@ -307,9 +172,6 @@ class ChatScreen extends React.Component {
     }
 
     handleChangeText(text){
-        // if(this.state.msgData.length == 0){
-        //     return;
-        // }
         this.setState({message:text});
     }
 
@@ -318,21 +180,16 @@ class ChatScreen extends React.Component {
     }
 
     handleShowEmoji(){
-        if (this.state.showAudio) {
-            return;
+        if (this.state.showPicker) {
+            this.refs.textMsg.focus();
+        }else {
+            this.refs.textMsg.blur();
         }
-        this.refs.textMsg.blur();
-        this.setState({showPicker: true});
+        this.setState({showPicker: !this.state.showPicker});
     }
 
-    handleFocus(){
-        clearTimeout(this.timeout);
-        this.timeout = styles.isIOS?setTimeout(()=>this.refs.flat.scrollToEnd({animated: false}), 100):null;
-    }
-
-    handleBlur(){
-        clearTimeout(this.timeout);
-        this.timeout = styles.isIOS?setTimeout(()=>this.refs.flat.scrollToEnd({animated: false}), 100):null;
+    handleItemLayoutHeight(event, index){
+        // console.log(event.nativeEvent.layout.height);
     }
 
     renderItem(item, index){
@@ -344,7 +201,7 @@ class ChatScreen extends React.Component {
 
         let ComMsg = <View/>;
         if (item.type == 'txt') {
-            ComMsg = <Text style={[styles.chatScreen.msgText, {textAlign:!item.isOther?'left':'left'}]}>{item.message}</Text>
+            ComMsg = <Text style={styles.chatScreen.msgText}>{item.message}</Text>
         }else if (item.type == 'img') {
             // ComMsg = <CachedImage source={require(item.message.path)}/>;
             var promise = CameraRoll.getPhotos({first:1, after: item.message.path, });
@@ -362,55 +219,41 @@ class ChatScreen extends React.Component {
                 alert('获取照片失败！');
             });
             ComMsg = <CachedImage style={{width:100,height:100}} source={{uri:item.message.path}} />
-
         }
 
         return (
-            <View style={[styles.chatScreen.itemView, {justifyContent:!item.isOther?'flex-end':'flex-start'}]}>
-                {item.isOther?<CachedImage style={styles.chatScreen.headImg} source={headImage}/>:<View/>}
-                {ComMsg}
-                {!item.isOther?<CachedImage style={styles.chatScreen.headImg} source={headImage}/>:<View/>}
-            </View>
+            <TouchableWithoutFeedback onPress={()=>this.setState({showPicker:false})}>
+                <View onLayout={(event, index)=>{this.handleItemLayoutHeight(event, index)}}
+                     style={[styles.chatScreen.itemView, {justifyContent:!item.isOther?'flex-end':'flex-start', backgroundColor:"yellow",}]}>
+                    {item.isOther?<CachedImage style={styles.chatScreen.headImg} source={headImage}/>:<View/>}
+                    {ComMsg}
+                    {!item.isOther?<CachedImage style={styles.chatScreen.headImg} source={headImage}/>:<View/>}
+                </View>
+            </TouchableWithoutFeedback>
         );
     }
 
     renderBar(){
-        let ComIsAudio = <View/>
-        if (this.state.showAudio) {
-            ComIsAudio = <TouchableOpacity style={styles.chatScreen.audioTouch}
-                onPressOut={()=>this._stop()}
-                onPressIn={()=>this._record()}
-                onPress={()=>console.log("onPress")}>
-                    <Text>按住说话</Text>
-                </TouchableOpacity>;
-        }else {
-            ComIsAudio = <TextInput style={styles.chatScreen.msgTextIpt} underlineColorAndroid="transparent"
-                numberOfLines={3} multiple={true} ref="textMsg"
-                defaultValue={this.state.message}
-                onChangeText={(text)=>this.handleChangeText(text)}
-                onFocus={()=>this.handleFocus()}
-                onBlur={()=>this.handleBlur()}
-                onSubmitEditing={()=>this.handleSendMessage(this.state.message)}
-            />
-        }
         return <View style={styles.chatScreen.barView}>
-            {/*<TouchableOpacity style={styles.chatScreen.voiceTouch}
-                onPress={()=>this.setState({showAudio:!this.state.showAudio})}>
-                <Image resizeMode="contain" style={styles.chatScreen.voiceImg} source={require('../images/home.png')}/>
-            </TouchableOpacity>*/}
             <TouchableOpacity style={styles.chatScreen.emojiView} onPress={() => this.handleShowEmoji()}>
                 <Image resizeMode="contain" style={styles.chatScreen.voiceImg} source={require('../images/home.png')}/>
             </TouchableOpacity>
-            {ComIsAudio}
+            <TextInput style={styles.chatScreen.msgTextIpt} underlineColorAndroid="transparent"
+                numberOfLines={3} multiple={true} ref="textMsg"
+                defaultValue={this.state.message}
+                onChangeText={(text)=>this.handleChangeText(text)}
+                onFocus={()=>this.setState({scrollToEnd:true, showPicker:false})}
+                onBlur={()=>this.handleScrollToEnd()}
+                onSubmitEditing={()=>this.handleSendMessage(this.state.message)}
+                returnKeyLabel="发送"
+                returnKeyType="send"
+            />
             <TouchableOpacity style={styles.chatScreen.otherTouch} onPress={()=>this.pickSingle()}>
                 <Image resizeMode="contain" style={styles.chatScreen.voiceImg} source={require('../images/home.png')}/>
             </TouchableOpacity>
             <TouchableOpacity style={styles.chatScreen.otherTouch} onPress={()=>this.pickSingleWithCamera()()}>
                 <Image resizeMode="contain" style={styles.chatScreen.voiceImg} source={require('../images/home.png')}/>
             </TouchableOpacity>
-            {/*<TouchableOpacity style={styles.chatScreen.otherTouch} onPress={()=>this._play()}>
-                <Image resizeMode="contain" style={styles.chatScreen.voiceImg} source={require('../images/home.png')}/>
-            </TouchableOpacity>*/}
         </View>;
     }
 
@@ -420,19 +263,12 @@ class ChatScreen extends React.Component {
 
         let ComFlat = (
             <View style={{flex:1}}>
-            <TouchableWithoutFeedback onPress={()=>this.setState({showPicker:false})}>
                 <FlatList
                     data={this.state.msgData}
                     keyExtractor = {(item, index) => ""+index}
                     ref={"flat"}
-                    keyboardDismissMode="on-drag"
-
-                    getItemLayout={(data,index)=>(
-                        {length: (styles.setScaleSize(125)), offset: (styles.setScaleSize(125)) * index, index}
-                    )}
                     renderItem={({item, index}) => this.renderItem(item, index)}
                 />
-                </TouchableWithoutFeedback>
                 {this.renderBar()}
             </View>
         );

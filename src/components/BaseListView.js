@@ -1,174 +1,104 @@
-import React, {Component, PropTypes} from 'react'
-import {
-  RefreshControl,
-  View,
-  TouchableOpacity,
-  TextInput,
-  Text,
-  TabBarIOS,
-  StyleSheet,
-  ScrollView,
-  ListView,
-  StatusBar,
-  Image,
-  RecyclerViewBackedScrollView,
-  TouchableHighlight,
-  TouchableWithoutFeedback
-} from 'react-native'
-
-// custom
-import Styles from '../styleSheet/BaseListViewStyle'
-
-class BaseListView extends Component {
-
-  // ------------ init -------------
-
-  constructor(props) {
-    super(props)
-
-    const ds = new ListView.DataSource({
-      rowHasChanged: (r1, r2) => r1 !== r2,
-      sectionHeaderHasChanged: (s1, s2) => s1 !== s2
-    });
-
-    const {data = [], search} =  this.props;
-
-    this.state = {
-      isRefreshing: false,
-      ds,
-      dataSource: ds.cloneWithRowsAndSections(data)
-    }
-  }
-
-  // ------------ logic  ---------------
-
-  updateList(props) {
-    //TODO: 比对prev和next，search的筛选
-    const {data = [], search} = props || this.props;
-    this.setState({
-      dataSource: this.state.ds.cloneWithRowsAndSections(data)
-    })
-  }
-
-  // ------------ lifecycle ------------
-
-  componentDidMount() {
-    // this.updateList()
-  }
-
-  componentWillReceiveProps(nextProps) {
-    this.updateList(nextProps)
-  }
-
-  componentDidUpdate() {
-    const {autoScroll} = this.props
-
-    if (autoScroll && "listHeight" in this.state &&
-      "footerY" in this.state &&
-      this.state.footerY > this.state.listHeight) {
-      let scrollDistance = this.state.listHeight - this.state.footerY;
-      this.refs.list.getScrollResponder().scrollTo({y: -scrollDistance, animated: true});
-    }
-  }
-
-  // ------------ handlers -------------
-
-  handleRefresh() {
-    const {handleRefresh} = this.props;
-
-    this.setState({isRefreshing: true})
-    handleRefresh()
-    // TODO: 刷新成功/刷新失败
-    setTimeout(() => {
-      this.setState({isRefreshing: false})
-    }, 1000)
-  }
-
-  // ------------ renders -------------
-
-  _renderRow(rowData, sectionId, rowID, highlightRow) {
-    return (
-      <TouchableOpacity onPress={() => {
-        {/*NavigationActions.contactInfo({"uid": rowData})*/
-        }
-      }}>
-        <View style={Styles.row}>
-          <Image source={require('../images/home.png')} resizeMode='cover' style={Styles.rowLogo}/>
-          <View style={Styles.rowName}>
-            <Text>{rowData}</Text>
-          </View>
-        </View>
-      </TouchableOpacity>
-    )
-  }
-
-  _renderSeparator(sectionID, rowID, adjacentRowHighlighted) {
-    return (
-      <View
-        key={`${sectionID}-${rowID}`}
-        style={Styles.separator}
-      />
-    )
-  }
-
-
-  render() {
-    const {hasNav, renderRow, renderSeparator, listViewStyle, autoScroll = false} = this.props
-
-    const containerStyle = [Styles.container]
-    // hasNav && containerStyle.push({marginTop: Metrics.navBarHeight})
-    const listStyle = [Styles.listView]
-    listViewStyle && listStyle.push(listViewStyle)
-
-    return (
-      <View style={containerStyle}>
-        <ListView
-          ref="list"
-          refreshControl={
-            <RefreshControl
-              refreshing={this.state.isRefreshing}
-              onRefresh={this.handleRefresh.bind(this)}
-              tintColor="#ff0000"
-              title="Loading..."
-              titleColor="#00ff00"
-              colors={['#ff0000', '#00ff00', '#0000ff']}
-              progressBackgroundColor="#ffff00"
-            />
-          }
-          automaticallyAdjustContentInsets={false}
-          initialListSize={10}
-          enableEmptySections={true}
-          style={listStyle}
-          dataSource={this.state.dataSource}
-          renderRow={this._renderRow.bind(this)}
-          renderSeparator={renderSeparator || this._renderSeparator.bind(this)}
-        //   renderScrollComponent={props => <RecyclerViewBackedScrollView {...props} />}
-          onLayout={(event) => {
-            this.setState({
-              listHeight: event.nativeEvent.layout.height
-            })
-          }}
-          renderFooter={() => {
-            return (<View onLayout={(event) => {
-              this.setState({
-                footerY: event.nativeEvent.layout.y
-              })
-            }}/>)
-          }}
-        />
-      </View>
-    )
-  }
-}
-
-
-BaseListView.propTypes = {
-  hasNav: PropTypes.bool,
-  data: PropTypes.object,
-  search: PropTypes.string,
-  handleRefresh: PropTypes.func,
-  renderRow: PropTypes.func,
-  renderSeparator: PropTypes.func,
-}
-
-export default BaseListView
+// // 录音
+// prepareRecordingPath(audioPath){
+//   AudioRecorder.prepareRecordingAtPath(audioPath, {
+//     SampleRate: 22050,
+//     Channels: 1,
+//     AudioQuality: "Low",
+//     AudioEncoding: "amr",
+//     AudioEncodingBitRate: 32000
+//   });
+// }
+//
+// _checkPermission() {
+//   if (Platform.OS !== 'android') {
+//     return Promise.resolve(true);
+//   }
+//
+//   const rationale = {
+//     'title': 'Microphone Permission',
+//     'message': 'AudioExample needs access to your microphone so you can record audio.'
+//   };
+//
+//   return PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.RECORD_AUDIO, rationale)
+//     .then((result) => {
+//       console.log('Permission result:', result);
+//       return (result === true || result === PermissionsAndroid.RESULTS.GRANTED);
+//     });
+// }
+//
+// async _record() {
+//   if (this.state.recording) {
+//     console.warn('Already recording!');
+//     return;
+//   }
+//
+//   if (!this.state.hasPermission) {
+//     console.warn('Can\'t record, no permission granted!');
+//     return;
+//   }
+//
+//   if(this.state.stoppedRecording){
+//     this.prepareRecordingPath(this.state.audioPath);
+//   }
+//
+//   this.setState({recording: true});
+//
+//   try {
+//     const filePath = await AudioRecorder.startRecording();
+//   } catch (error) {
+//     console.error(error);
+//   }
+// }
+//
+// async _stop() {
+//     // 如果没有在录音
+//     if (!this.state.recording) {
+//       console.warn('Can\'t stop, not recording!');
+//       return;
+//     }
+//
+//     this.setState({stoppedRecording: true, recording: false});
+//
+//     try {
+//       const filePath = await AudioRecorder.stopRecording();
+//
+//       if (Platform.OS === 'android') {
+//         this._finishRecording(true, filePath);
+//       }
+//       this.handleSendImage({path:"file://" + filePath, filename:'test.amr'}, 'audio');
+//       return filePath;
+//     } catch (error) {
+//       console.error(error);
+//     }
+// }
+//
+// async _play() {
+//     if (this.state.recording) {
+//       await this._stop();
+//     }
+//
+//     // These timeouts are a hacky workaround for some issues with react-native-sound.
+//     // See https://github.com/zmxv/react-native-sound/issues/89.
+//     setTimeout(() => {
+//       var sound = new Sound(this.state.audioPath, '', (error) => {
+//         if (error) {
+//           console.log('failed to load the sound', error);
+//         }
+//       });
+//
+//       setTimeout(() => {
+//         sound.play((success) => {
+//           if (success) {
+//             console.log('successfully finished playing');
+//           } else {
+//             console.log('playback failed due to audio decoding errors');
+//           }
+//         });
+//       }, 100);
+//     }, 100);
+// }
+//
+// _finishRecording(didSucceed, filePath) {
+//   this.setState({ finished: didSucceed });
+//   console.log(`Finished recording of duration ${this.state.currentTime} seconds at path: ${filePath}`);
+// }

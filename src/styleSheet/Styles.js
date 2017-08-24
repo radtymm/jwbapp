@@ -231,7 +231,7 @@ const pageChangePwd = StyleSheet.create({
     submitText:{color:"#fff", fontSize:setScaleSize(30)},
 });
 const chatScreen = StyleSheet.create({
-    itemView:{minHeight:setScaleSize(80), flexDirection:"row", alignItems:"center",  margin:setScaleSize(20),},
+    itemView:{minHeight:setScaleSize(80), flexDirection:"row", alignItems:"center",  padding:setScaleSize(20),},
     headImg:{borderRadius:setScaleSize(25), width:setScaleSize(50), height:setScaleSize(50), marginHorizontal:setScaleSize(20)},
     msgText:{backgroundColor:"#fff", maxWidth:WIDTH/2, fontSize:setScaleSize(25), color:"#333", textAlign:'left', padding:setScaleSize(8), borderRadius:setScaleSize(18), borderWidth:1, borderColor:"#333"},
     barView:{flexDirection:"row", justifyContent:"space-around", alignItems:"center", backgroundColor:"#f6f3fa", height:setScaleSize(116), width:WIDTH, borderBottomWidth:1, borderTopWidth:1, borderColor:"#dbdbdb", },
