@@ -688,7 +688,6 @@ connection.prototype.handelSendQueue = function () {
   }
 }
 connection.prototype.listen = function (options) {
-    console.log("listen");
   options.url && (this.url = _getXmppUrl(options.url, this.https))
   this.onOpened = options.onOpened || _utils.emptyfn
   this.onClosed = options.onClosed || _utils.emptyfn

@@ -16,7 +16,6 @@ import {AsyncStorage} from 'react-native';
 
     // 保存
     async function _save(key, value) {
-        console.log('Demo._save()');
         try {
             await AsyncStorage.setItem(key, value);
         } catch (error) {

@@ -1,6 +1,6 @@
 import React from 'react';
 import {StyleSheet, ScrollView, navigator, Alert, View, Text, Button, FlatList, Dimensions, TouchableOpacity,
-    TouchableHighlight, Image, TextInput, BackHandler, ToastAndroid } from 'react-native';
+    TouchableHighlight, Image, TextInput, BackHandler, ToastAndroid, AsyncStorage } from 'react-native';
 
 import styles from '../styleSheet/Styles';
 import {requestData, requestDataPost,} from '../libs/request.js';
@@ -15,14 +15,14 @@ class Login extends React.Component {
     constructor(props, context) {
         super(props, context);
         this.state = {
-
+            msgData:{},
         };
         this.webIMConnection();
     }
 
     componentDidMount(){
         this.reqLogin(true);
-
+        this._get('loginUP');
         // 添加返回键监听
         // BackHandler.addEventListener('hardwareBackPress', this.onBackHandler);
 
@@ -55,20 +55,12 @@ class Login extends React.Component {
             },
 
             onError: (error) => {
-              Alert.alert('登录失败', '请退出重新登录');
-              if (error.type == WebIM.statusCode.WEBIM_CONNCTION_DISCONNECTED) {
-                // console.log('WEBIM_CONNCTION_DISCONNECTED');
-                return;
-              }
-
-              if (error.type == WebIM.statusCode.WEBIM_CONNCTION_SERVER_ERROR) {
-                // console.log('WEBIM_CONNCTION_SERVER_ERROR');
-                return;
-              }
-              if (error.type == 1) {
-                let data = error.data ? error.data.data : ''
-                data && Alert.alert('Error', data)
-              }
+                global.WebIM.conn.close();
+                requestData("https://app.jiaowangba.com/login_out", (res)=>{
+                    if (res.status != 'error') {
+                    }
+                });
+                Alert.alert('网络连接异常', '请重新登录');
             },
         });
 
@@ -78,22 +70,22 @@ class Login extends React.Component {
         // global.WebIM.conn.close();
         requestData(`https://app.jiaowangba.com/login?telephone=${this.state.tel}&password=${this.state.pwd}`, (res)=>{
             if (res.status == "success") {
-
+                storage.save('loginUP', JSON.stringify(res.code));
                 let options = {
-                  apiUrl: global.WebIM.config.apiURL,
-                  user: 'radtymm3',
-                  pwd: '1314520',
-              //   user: res.code.uuid,
-              //   pwd: res.code.password,
-                  success: function (token) {
-                    var token = token.access_token;
-                    WebIM.utils.setCookie('webim_' + encryptUsername, token, 1);
-                  },
-                  appKey: global.WebIM.config.appkey
+                    apiUrl: global.WebIM.config.apiURL,
+                    user: res.code.uuid,
+                    pwd: res.code.password,
+                    appKey: global.WebIM.config.appkey
                 };
                 global.WebIM.conn.open(options);
             }else if (res.status == "redirect") {
-                this.props.navigation.navigate('Tab');
+                let options = {
+                  apiUrl: global.WebIM.config.apiURL,
+                  user: this.state.msgData.uuid,
+                  pwd: this.state.msgData.password,
+                  appKey: global.WebIM.config.appkey
+                };
+                global.WebIM.conn.open(options);
             }else {
                 if (isFirst) {
                     return;
@@ -104,6 +96,19 @@ class Login extends React.Component {
                 );
             }
         });
+    }
+
+    async _get(key) {
+        try {// try catch 捕获异步执行的异常
+            var value = await AsyncStorage.getItem(key);
+            if (value !== null){
+                this.setState({msgData:JSON.parse(value)});
+            } else {
+                this.setState({msgData:{}});
+            }
+        } catch (error) {
+            console.log('_get() error: ', error.message);
+        }
     }
 
     handleLogin(){

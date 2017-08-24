@@ -203,7 +203,7 @@ class PageBaseData extends React.Component {
     }
 
     handleWetchat(){
-        if (this.state.data.code.is_vip == "N2o") {
+        if (global.perInfo.is_vip == "No") {
             Alert.alert("提示", "VIP用户可查看微信号");
         }else {
             this.setState({isVisibleModal:true});

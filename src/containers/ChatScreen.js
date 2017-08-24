@@ -69,10 +69,15 @@ class ChatScreen extends React.Component {
         let that = this;
         global.WebIM.conn.listen({
             onTextMessage: function ( message ) {
-                that.handleRefreshMessage(message.data, true);
+                that.handleRefreshMessage(message.data, true, 'txt');
             },    //收到文本消息
-            onEmojiMessage: function ( message ) {},   //收到表情消息
-            onPictureMessage: function ( message ) {}, //收到图片消息
+            onEmojiMessage: function ( message ) {
+            },   //收到表情消息
+            onPictureMessage: function ( message ) {
+                console.log("Location of Picture is ", JSON.stringify(message));
+
+                that.handleRefreshMessage({path:message.url}, true, 'img');
+            }, //收到图片消息
             onAudioMessage: function ( message ) {},   //收到音频消息
         });
     }
@@ -209,6 +214,7 @@ class ChatScreen extends React.Component {
         try {// try catch 捕获异步执行的异常
             var value = await AsyncStorage.getItem(key);
             if (value !== null){
+                console.log(value);
                 this.setState({msgData:JSON.parse(value)});
             } else {
                 this.setState({msgData:[]});
@@ -245,7 +251,7 @@ class ChatScreen extends React.Component {
         this.handleRefreshMessage(message, false, 'txt');
         msg.set({
             msg: message,                  // 消息内容
-            to: '13003995110',    // 接收消息对象（用户id）
+            to: this.props.navigation.state.params.uuid,      // 接收消息对象（用户id）
             roomType: false,
             success: function (id, serverMsgId) {
                 console.log('send private text Success');
@@ -282,7 +288,6 @@ class ChatScreen extends React.Component {
               }
             },
             to: this.props.navigation.state.params.uuid,                       // 接收消息对象
-            to: '13003995110',                       // 接收消息对象
             roomType: false,
             chatType: 'singleChat',
             onFileUploadError: function (e) {      // 消息上传失败
@@ -302,9 +307,9 @@ class ChatScreen extends React.Component {
     }
 
     handleChangeText(text){
-        if(this.state.msgData.length == 0){
-            return;
-        }
+        // if(this.state.msgData.length == 0){
+        //     return;
+        // }
         this.setState({message:text});
     }
 
