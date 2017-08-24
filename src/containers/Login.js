@@ -55,12 +55,12 @@ class Login extends React.Component {
             },
 
             onError: (error) => {
-                global.WebIM.conn.close();
                 requestData("https://app.jiaowangba.com/login_out", (res)=>{
                     if (res.status != 'error') {
                     }
                 });
                 Alert.alert('网络连接异常', '请重新登录');
+                global.WebIM.conn.close();
             },
         });
 
@@ -71,6 +71,7 @@ class Login extends React.Component {
         requestData(`https://app.jiaowangba.com/login?telephone=${this.state.tel}&password=${this.state.pwd}`, (res)=>{
             if (res.status == "success") {
                 storage.save('loginUP', JSON.stringify(res.code));
+                console.log('reqsuccess');
                 let options = {
                     apiUrl: global.WebIM.config.apiURL,
                     user: res.code.uuid,
@@ -79,6 +80,7 @@ class Login extends React.Component {
                 };
                 global.WebIM.conn.open(options);
             }else if (res.status == "redirect") {
+                console.log('reqredirect');
                 let options = {
                   apiUrl: global.WebIM.config.apiURL,
                   user: this.state.msgData.uuid,

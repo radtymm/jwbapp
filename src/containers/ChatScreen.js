@@ -1,6 +1,6 @@
 import React from 'react';
 import {
-    StyleSheet, ScrollView, navigator, Alert, View, Text, Button, FlatList, Dimensions, TouchableOpacity, Platform,
+    StyleSheet, ScrollView, Keyboard, LayoutAnimation, navigator, Alert, View, Text, Button, FlatList, Dimensions, TouchableOpacity, Platform,
     TouchableWithoutFeedback, PermissionsAndroid, CameraRoll, Image, TextInput, Animated, Easing, RefreshControl, KeyboardAvoidingView, AsyncStorage,
 } from 'react-native';
 
@@ -32,11 +32,36 @@ class ChatScreen extends React.Component {
 
     componentDidMount() {
         this._get(this.storageKey);
-
+        this.keyboardDidShowListener = Keyboard.addListener('keyboardWillShow', this.keyboardDidShow);
+        this.keyboardDidHideListener = Keyboard.addListener('keyboardWillHide', this.keyboardDidHide);
     }
 
     componentWillUnmount(){
         clearTimeout(this.timeout);
+        this.keyboardDidShowListener && this.keyboardDidShowListener.remove();
+        this.keyboardDidHideListener && this.keyboardDidHideListener.remove();
+    }
+
+    keyboardDidShow = (e) => {
+      // Animation chatTypes easeInEaseOut/linear/spring
+    //   LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut)
+    //   let newSize = Metrics.screenHeight - e.endCoordinates.height
+      console.log(e.endCoordinates.height);
+    //   this.setState({
+    //     keyboardHeight: e.endCoordinates.height,
+    //     visibleHeight: newSize,
+    //   })
+        this.setState({keyboardHeight: e.endCoordinates.height,});
+    }
+
+    keyboardDidHide = (e) => {
+      // Animation chatTypes easeInEaseOut/linear/spring
+    //   LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut)
+    //   this.setState({
+    //     keyboardHeight: 0,
+    //     visibleHeight: Metrics.screenHeight,
+    //   })
+        this.setState({keyboardHeight: 0,});
     }
 
     componentDidUpdate(){
@@ -143,8 +168,6 @@ class ChatScreen extends React.Component {
         response.path = source.path;
         this.handleRefreshMessage(response, false, type);
 
-        console.log(response.path);
-        console.log(response.filename);
         var option = {
             apiUrl: WebIM.config.apiURL,
             file: {
@@ -243,7 +266,7 @@ class ChatScreen extends React.Component {
                 defaultValue={this.state.message}
                 onChangeText={(text)=>this.handleChangeText(text)}
                 onFocus={()=>this.setState({scrollToEnd:true, showPicker:false})}
-                onBlur={()=>this.handleScrollToEnd()}
+                onBlur={()=>this.setState({scrollToEnd:true})}
                 onSubmitEditing={()=>this.handleSendMessage(this.state.message)}
                 returnKeyLabel="发送"
                 returnKeyType="send"
@@ -251,7 +274,7 @@ class ChatScreen extends React.Component {
             <TouchableOpacity style={styles.chatScreen.otherTouch} onPress={()=>this.pickSingle()}>
                 <Image resizeMode="contain" style={styles.chatScreen.voiceImg} source={require('../images/home.png')}/>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.chatScreen.otherTouch} onPress={()=>this.pickSingleWithCamera()()}>
+            <TouchableOpacity style={styles.chatScreen.otherTouch} onPress={()=>this.pickSingleWithCamera()}>
                 <Image resizeMode="contain" style={styles.chatScreen.voiceImg} source={require('../images/home.png')}/>
             </TouchableOpacity>
         </View>;
@@ -273,16 +296,21 @@ class ChatScreen extends React.Component {
             </View>
         );
 
-        if (styles.isIOS) {
-            return <KeyboardAvoidingView style={{flex:1}} behavior="padding">
-                {ComFlat}
-            </KeyboardAvoidingView>;
-        }
+        // if (styles.isIOS) {
+        //     return <KeyboardAvoidingView style={{flex:1}} behavior="padding">
+        //         {ComFlat}
+        //     </KeyboardAvoidingView>;
+        // }
         return ComFlat;
     }
 
     render() {
-
+        let height = 0;
+        if (styles.isIOS) {
+            height = (this.state.keyboardHeight==0)?(this.state.showPicker?150:0):this.state.keyboardHeight;
+        }else {
+            height = this.state.showPicker?150:0;
+        }
         return (
             <View style={{flex: 1, backgroundColor:"#f5f5f5"}} >
                 {styles.isIOS?<View style={styles.homePage.iosTab}/>:<View/>}
@@ -293,17 +321,17 @@ class ChatScreen extends React.Component {
                     <Text style={styles.homePage.title}>{this.props.navigation.state.params.nickname}</Text>
                 </View>
                 {this.renderFlatList()}
-                <View style={{height: this.state.showPicker?150:0, }} >
+                <View style={{height: height, }} >
                     <EmojiPicker
                       style={{
-                        height: 150,
+                        height: this.state.showPicker?150:0,
                         backgroundColor: '#f4f4f4'
                       }}
                       hideClearButton={true}
                       horizontal={true}
                       onEmojiSelected={(emoji)=>this.handleEmojiSelected(emoji)}
                       />
-                  </View>
+                </View>
             </View>
         );
     }

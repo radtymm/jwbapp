@@ -76,8 +76,6 @@ class PagePerInfo extends React.Component {
                 console.log(error,'error');
             })
         }
-
-
      }
 
     componentWillUnmount(){
@@ -186,7 +184,6 @@ class PagePerInfo extends React.Component {
                 _city[area[i]['city'][j]['name']] = area[i]['city'][j]['area'];
                 city.push(area[i]['city'][j]['name']);
             }
-
             let _data = {};
             _data[area[i]['name']] = city;
             data.push(_data);
