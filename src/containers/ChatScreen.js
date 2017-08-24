@@ -1,6 +1,6 @@
 import React from 'react';
 import {
-    StyleSheet, ScrollView, Keyboard, LayoutAnimation, navigator, Alert, View, Text, Button, FlatList, Dimensions, TouchableOpacity, Platform,
+    StyleSheet, Modal, ScrollView, Keyboard, LayoutAnimation, navigator, Alert, View, Text, Button, FlatList, Dimensions, TouchableOpacity, Platform,
     TouchableWithoutFeedback, PermissionsAndroid, CameraRoll, Image, TextInput, Animated, Easing, RefreshControl, KeyboardAvoidingView, AsyncStorage,
 } from 'react-native';
 
@@ -26,6 +26,7 @@ class ChatScreen extends React.Component {
             scrollToEnd:false,
             message:"",
             showPicker:false,
+            isVisibleModal:false,
         };
         this.webIMConnection();
     }
@@ -75,6 +76,7 @@ class ChatScreen extends React.Component {
         let that = this;
         global.WebIM.conn.listen({
             onTextMessage: function ( message ) {
+                console.log("chat");
                 that.handleRefreshMessage(message.data, true, 'txt');
             },    //收到文本消息
             onPictureMessage: function ( message ) {
@@ -217,37 +219,26 @@ class ChatScreen extends React.Component {
 
     renderItem(item, index){
         let {params} = this.props.navigation.state;
-        let headImage = {uri: 'https://cdn.jiaowangba.com/' + params.avatar, cache:'force-cache'};
+        let headImage = {uri: 'https://cdn.jiaowangba.com/' + params.avatar + '?imageView2/1/w/250/h/250/interlace/1/q/96|imageslim', cache:'force-cache'};
         if (!item.isOther) {
-            headImage = {uri: 'https://cdn.jiaowangba.com/' + global.perInfo.avatar, cache:'force-cache'};
+            headImage = {uri: 'https://cdn.jiaowangba.com/' + global.perInfo.avatar + '?imageView2/1/w/250/h/250/interlace/1/q/96|imageslim', cache:'force-cache'};
         }
 
         let ComMsg = <View/>;
         if (item.type == 'txt') {
-            ComMsg = <Text style={styles.chatScreen.msgText}>{item.message}</Text>
+            ComMsg = <Text style={styles.chatScreen.msgText}>{item.message}</Text>;
         }else if (item.type == 'img') {
-            // ComMsg = <CachedImage source={require(item.message.path)}/>;
-            var promise = CameraRoll.getPhotos({first:1, after: item.message.path, });
-            promise.then(function(data){
-                // console.log(JSON.stringify(data));
-                    // var edges = data.edges;
-                    // var photos = [];
-                    // for (var i in edges) {
-                    //     photos.push(edges[i].node.image.uri);
-                    // }
-                    // _that.setState({
-                    //     photos:photos
-                    // });
-            },function(err){
-                alert('获取照片失败！');
-            });
-            ComMsg = <CachedImage style={{width:100,height:100}} source={{uri:item.message.path}} />
+            ComMsg = (
+                <TouchableOpacity onPress={()=>this.setState({isVisibleModal:true, imgPath:item.message.path})}>
+                    <CachedImage style={{width:100,height:100}} source={{uri:item.message.path}} />
+                </TouchableOpacity>
+            );
         }
 
         return (
             <TouchableWithoutFeedback onPress={()=>this.setState({showPicker:false})}>
                 <View onLayout={(event, index)=>{this.handleItemLayoutHeight(event, index)}}
-                     style={[styles.chatScreen.itemView, {justifyContent:!item.isOther?'flex-end':'flex-start', backgroundColor:"yellow",}]}>
+                     style={[styles.chatScreen.itemView, {justifyContent:!item.isOther?'flex-end':'flex-start', }]}>
                     {item.isOther?<CachedImage style={styles.chatScreen.headImg} source={headImage}/>:<View/>}
                     {ComMsg}
                     {!item.isOther?<CachedImage style={styles.chatScreen.headImg} source={headImage}/>:<View/>}
@@ -296,12 +287,19 @@ class ChatScreen extends React.Component {
             </View>
         );
 
-        // if (styles.isIOS) {
-        //     return <KeyboardAvoidingView style={{flex:1}} behavior="padding">
-        //         {ComFlat}
-        //     </KeyboardAvoidingView>;
-        // }
         return ComFlat;
+    }
+
+    renderModalImg(){
+        return (
+            <Modal transparent={false} animationType="fade" visible={this.state.isVisibleModal} onRequestClose={()=>this.setState({isVisibleModal:false})}>
+                <TouchableOpacity style={{flex:1}} onPress={()=>this.setState({isVisibleModal:false})}>
+                    <View style={styles.chatScreen.modalView}>
+                        <CachedImage resizeMode="contain" style={{width:styles.WIDTH, height:styles.HEIGHT}} source={{uri:this.state.imgPath}} />
+                    </View>
+                </TouchableOpacity>
+            </Modal>
+        );
     }
 
     render() {
@@ -312,7 +310,7 @@ class ChatScreen extends React.Component {
             height = this.state.showPicker?150:0;
         }
         return (
-            <View style={{flex: 1, backgroundColor:"#f5f5f5"}} >
+            <View style={{flex: 1, backgroundColor:"#fff"}} >
                 {styles.isIOS?<View style={styles.homePage.iosTab}/>:<View/>}
                 <View style={styles.PagePerInfo.title}>
                     <TouchableOpacity style={styles.PagePerInfo.titleBack} onPress={()=>this.props.navigation.goBack(null)}>
@@ -332,6 +330,7 @@ class ChatScreen extends React.Component {
                       onEmojiSelected={(emoji)=>this.handleEmojiSelected(emoji)}
                       />
                 </View>
+                {this.renderModalImg()}
             </View>
         );
     }

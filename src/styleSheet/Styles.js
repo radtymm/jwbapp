@@ -238,6 +238,7 @@ const chatScreen = StyleSheet.create({
     voiceImg:{width:setScaleSize(66), height:setScaleSize(66), },
     audioTouch:{width:setScaleSize(466), height:setScaleSize(80), justifyContent:"center", alignItems:"center", borderColor:"#ccc", borderWidth:1, borderRadius:setScaleSize(8), },
     msgTextIpt:{width:setScaleSize(466), height:setScaleSize(80), backgroundColor:"#fcfcfc", padding:0, borderColor:"#dce5de", borderWidth:1, borderRadius:setScaleSize(8), },
+    modalView:{flex:1, backgroundColor:"#000", justifyContent:"center", alignItems:"center"},
 });
 const styles = {
     PageRegister: PageRegister,
