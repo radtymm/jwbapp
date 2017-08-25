@@ -13,14 +13,23 @@ import CachedImage from 'react-native-cached-image';
 import {AudioRecorder, AudioUtils} from 'react-native-audio';
 import Sound from 'react-native-sound';
 import ImageCropPicker from 'react-native-image-crop-picker';
-
+import { connect } from 'react-redux';
+import {msgData} from '../redux/action/actions';
 
 class ChatScreen extends React.Component {
 
+    // 映射redux中的数值到页面的Props中的值
+    static mapStateToProps(state) {
+        let props = {};
+        props.msgData = state.msgData;
+
+        return props;
+    }
+
     constructor(props, context) {
         super(props, context);
-        this.storageKey = this.props.navigation.state.params.id + "&" + global.perInfo.id;
-        // console.log(JSON.stringify(this.props.navigation.state.params));
+        this.storageKey = this.props.navigation.state.params.uuid + "&&" + global.perInfo.uuid;
+        console.log(this.storageKey);
         this.state = {
             msgData:[],
             scrollToEnd:false,
@@ -28,13 +37,28 @@ class ChatScreen extends React.Component {
             showPicker:false,
             isVisibleModal:false,
         };
-        this.webIMConnection();
+        // this.webIMConnection();
     }
 
     componentDidMount() {
         this._get(this.storageKey);
         this.keyboardDidShowListener = Keyboard.addListener('keyboardWillShow', this.keyboardDidShow);
         this.keyboardDidHideListener = Keyboard.addListener('keyboardWillHide', this.keyboardDidHide);
+    }
+
+    componentWillReceiveProps(nextProps){
+        this.setState({msgData:nextProps.msgData.msgData[this.storageKey]});
+        if (this.state.scrollToEnd) {
+            this.setState({scrollToEnd:false});
+        }
+        setTimeout(()=>this.handleScrollToEnd(), 100);
+    }
+
+    componentDidUpdate(){
+        if (this.state.scrollToEnd) {
+            this.setState({scrollToEnd:false});
+        }
+        setTimeout(()=>this.handleScrollToEnd(), 100);
     }
 
     componentWillUnmount(){
@@ -44,33 +68,13 @@ class ChatScreen extends React.Component {
     }
 
     keyboardDidShow = (e) => {
-      // Animation chatTypes easeInEaseOut/linear/spring
-    //   LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut)
-    //   let newSize = Metrics.screenHeight - e.endCoordinates.height
-      console.log(e.endCoordinates.height);
-    //   this.setState({
-    //     keyboardHeight: e.endCoordinates.height,
-    //     visibleHeight: newSize,
-    //   })
         this.setState({keyboardHeight: e.endCoordinates.height,});
     }
 
     keyboardDidHide = (e) => {
-      // Animation chatTypes easeInEaseOut/linear/spring
-    //   LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut)
-    //   this.setState({
-    //     keyboardHeight: 0,
-    //     visibleHeight: Metrics.screenHeight,
-    //   })
         this.setState({keyboardHeight: 0,});
     }
 
-    componentDidUpdate(){
-        if (this.state.scrollToEnd) {
-            this.setState({scrollToEnd:false});
-        }
-        setTimeout(()=>this.handleScrollToEnd(), 100);
-    }
 
     webIMConnection(){
         let that = this;
@@ -226,8 +230,8 @@ class ChatScreen extends React.Component {
         }
 
         let ComMsg = <View/>;
-        if (item.type == 'txt') {
-            ComMsg = <Text style={styles.chatScreen.msgText}>{item.message}</Text>;
+        if (item.msgType == 'txt') {
+            ComMsg = <Text style={styles.chatScreen.msgText}>{item.data}</Text>;
         }else if (item.type == 'img') {
             ComMsg = (
                 <TouchableOpacity onPress={()=>this.setState({isVisibleModal:true, imgPath:item.message.path})}>
@@ -276,7 +280,9 @@ class ChatScreen extends React.Component {
         let {params} = this.props.navigation.state;
         let headImage = {uri: 'https://cdn.jiaowangba.com/' + params.avatar, cache:'force-cache'};
 
-        let ComFlat = (
+
+        console.log("----------" + JSON.stringify(this.props.msgData.msgData));
+        return (
             <View style={{flex:1}}>
                 <FlatList
                     data={this.state.msgData}
@@ -287,8 +293,6 @@ class ChatScreen extends React.Component {
                 {this.renderBar()}
             </View>
         );
-
-        return ComFlat;
     }
 
     renderModalImg(){
@@ -310,6 +314,9 @@ class ChatScreen extends React.Component {
         }else {
             height = this.state.showPicker?150:0;
         }
+        let {params} = this.props.navigation.state;
+        let headImage = {uri: 'https://cdn.jiaowangba.com/' + params.avatar, cache:'force-cache'};
+
         return (
             <View style={{flex: 1, backgroundColor:"#fff"}} >
                 {styles.isIOS?<View style={styles.homePage.iosTab}/>:<View/>}
@@ -319,7 +326,15 @@ class ChatScreen extends React.Component {
                     </TouchableOpacity>
                     <Text style={styles.homePage.title}>{this.props.navigation.state.params.nickname}</Text>
                 </View>
-                {this.renderFlatList()}
+                <View style={{flex:1}}>
+                    <FlatList
+                        data={this.state.msgData}
+                        keyExtractor = {(item, index) => ""+index}
+                        ref={"flat"}
+                        renderItem={({item, index}) => this.renderItem(item, index)}
+                    />
+                    {this.renderBar()}
+                </View>
                 <View style={{height: height, }} >
                     <EmojiPicker
                       style={{
@@ -337,5 +352,4 @@ class ChatScreen extends React.Component {
     }
 }
 
-
-export default ChatScreen;
+export default connect(ChatScreen.mapStateToProps)(ChatScreen);

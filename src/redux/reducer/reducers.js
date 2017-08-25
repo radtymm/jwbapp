@@ -1,10 +1,11 @@
 import { combineReducers } from 'redux';
-import { INCREASE, DECREASE, RESET} from '../action/actionsTypes';
+import { INCREASE, DECREASE, RESET, MSGDATA} from '../action/actionsTypes';
 
 // 原始默认state
 const defaultState = {
   count: 5,
-  factor: 1
+  factor: 1,
+  msgData:{}
 }
 
 function counter(state = defaultState, action) {
@@ -20,6 +21,23 @@ function counter(state = defaultState, action) {
   }
 }
 
+function msgData(state = defaultState, action) {
+    if (action.type == MSGDATA) {
+        let retState = Object.assign({}, state, {});
+        if (action.data) {
+            let key = action.data.from + "&&" + action.data.to;
+            if (!retState['msgData'][key]) {
+                retState['msgData'][key] = [];
+            }
+            retState['msgData'][key].push(action.data);
+            return retState;
+        }
+        return retState;
+    }
+    return state;
+}
+
 export default combineReducers({
-    counter
+    counter,
+    msgData
 });

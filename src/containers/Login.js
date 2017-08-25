@@ -8,7 +8,7 @@ import Swiper from 'react-native-swiper';
 import WebIM from '../../WebIM';
 import storage from '../libs/storage';
 import { connect } from 'react-redux';
-import { increase, decrease, reset } from '../redux/action/actions';
+import { increase, decrease, reset, msgData} from '../redux/action/actions';
 
 global.WebIM = WebIM;
 
@@ -58,19 +58,17 @@ class Login extends React.Component {
             },
             onTextMessage: function ( message ) {
                 console.log(JSON.stringify(message));
-                that.handleRefreshMessage(message.data, true, 'txt');
+                message.isOther = true;
+                message.msgType = 'txt';
+                that.props.dispatch(msgData(message));
             },    //收到文本消息
             onPictureMessage: function ( message ) {
-                that.handleRefreshMessage({path:message.url}, true, 'img');
+                // that.handleRefreshMessage({path:message.url}, true, 'img');
             }, //收到图片消息
         });
     }
 
-    handleRefreshMessage(msg, isOther, type){
-        // let msgData = Object.assign([], this.state.msgData);
-        // msgData.push({message:msg, isOther:isOther, type:type,});
-        // storage.save(this.storageKey, JSON.stringify(msgData));
-    }
+
 
     reqLogin(isFirst){
         // global.WebIM.conn.close();
@@ -87,8 +85,6 @@ class Login extends React.Component {
                 global.WebIM.conn.open(options);
             }else if (res.status == "redirect") {
                 console.log('reqredirect');
-                console.log(this.state.msgData.uuid);
-                console.log(this.state.msgData.password);
                 let options = {
                     apiUrl: global.WebIM.config.apiURL,
                     user: this.state.msgData.uuid,
@@ -110,7 +106,6 @@ class Login extends React.Component {
             }
         });
     }
-
 
     reqLogout(){
         requestData("https://app.jiaowangba.com/login_out", (res)=>{
@@ -164,7 +159,7 @@ class Login extends React.Component {
     }
 
     render() {
-
+        console.log(JSON.stringify(this.props.msgData.msgData));
         return (
             <View style={{flex:1, backgroundColor:"#fff"}}>
                 <Modal transparent={false} animationType="fade" visible={this.state.isVisibleModal} onRequestClose={()=>false}>
@@ -202,7 +197,7 @@ class Login extends React.Component {
 }
 
 const mapStateToProps = state => ({
-    counter: state.counter
+    msgData: state.msgData,
 })
 
 export default connect(mapStateToProps)(Login);
