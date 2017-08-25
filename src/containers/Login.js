@@ -1,5 +1,5 @@
 import React from 'react';
-import {StyleSheet, ScrollView, navigator, Alert, View, Text, Button, FlatList, Dimensions, TouchableOpacity,
+import {StyleSheet, ScrollView, Alert, View, Text, Button, FlatList, Dimensions, TouchableOpacity, Modal,
     TouchableHighlight, Image, TextInput, BackHandler, ToastAndroid, AsyncStorage } from 'react-native';
 
 import styles from '../styleSheet/Styles';
@@ -7,6 +7,8 @@ import {requestData, requestDataPost,} from '../libs/request.js';
 import Swiper from 'react-native-swiper';
 import WebIM from '../../WebIM';
 import storage from '../libs/storage';
+import { connect } from 'react-redux';
+import { increase, decrease, reset } from '../redux/action/actions';
 
 global.WebIM = WebIM;
 
@@ -16,32 +18,18 @@ class Login extends React.Component {
         super(props, context);
         this.state = {
             msgData:{},
+            isVisibleModal:false,
         };
+
+        this.reqLogout = this.reqLogout.bind(this);
+        this._get('loginUP');
         this.webIMConnection();
     }
 
     componentDidMount(){
         this.reqLogin(true);
-        this._get('loginUP');
         // 添加返回键监听
-        // BackHandler.addEventListener('hardwareBackPress', this.onBackHandler);
-
     }
-
-    componentWillUnmount(){
-         // 移除返回键监听
-        //  BackHandler.removeEventListener('hardwareBackPress', this.onBackHandler);
-    }
-
-    onBackHandler = () => {
-        // if (this.lastBackPressed && this.lastBackPressed + 2000 >= Date.now()) {
-        //     //最近2秒内按过back键，可以退出应用。
-        //     return false;
-        // }
-        // this.lastBackPressed = Date.now();
-        // ToastAndroid.show('再按一次退出应用', 2000);
-        // return true;
-    };
 
     webIMConnection(){
         let that = this;
@@ -51,19 +39,37 @@ class Login extends React.Component {
                 // 手动上线指的是调用conn.setPresence(); 如果conn初始化时已将isAutoLogin设置为true
                 // 则无需调用conn.setPresence();
                 console.log('loginsuccess');
+                that.setState({isVisibleModal:false});
                 that.props.navigation.navigate('Tab');
             },
-
-            onError: (error) => {
+            onClosed: function ( message ) {
+                console.log("onClosed");
                 requestData("https://app.jiaowangba.com/login_out", (res)=>{
                     if (res.status != 'error') {
                     }
                 });
+                this.setState({isVisibleModal:true});
+                that.reqLogout();
+            },         //连接关闭回调
+            onError: (error) => {
+                that.reqLogout();
+                console.log('onError');
                 Alert.alert('网络连接异常', '请重新登录');
-                global.WebIM.conn.close();
             },
+            onTextMessage: function ( message ) {
+                console.log(JSON.stringify(message));
+                that.handleRefreshMessage(message.data, true, 'txt');
+            },    //收到文本消息
+            onPictureMessage: function ( message ) {
+                that.handleRefreshMessage({path:message.url}, true, 'img');
+            }, //收到图片消息
         });
+    }
 
+    handleRefreshMessage(msg, isOther, type){
+        // let msgData = Object.assign([], this.state.msgData);
+        // msgData.push({message:msg, isOther:isOther, type:type,});
+        // storage.save(this.storageKey, JSON.stringify(msgData));
     }
 
     reqLogin(isFirst){
@@ -81,14 +87,19 @@ class Login extends React.Component {
                 global.WebIM.conn.open(options);
             }else if (res.status == "redirect") {
                 console.log('reqredirect');
+                console.log(this.state.msgData.uuid);
+                console.log(this.state.msgData.password);
                 let options = {
-                  apiUrl: global.WebIM.config.apiURL,
-                  user: this.state.msgData.uuid,
-                  pwd: this.state.msgData.password,
-                  appKey: global.WebIM.config.appkey
+                    apiUrl: global.WebIM.config.apiURL,
+                    user: this.state.msgData.uuid,
+                    pwd: this.state.msgData.password,
+                    appKey: global.WebIM.config.appkey
                 };
                 global.WebIM.conn.open(options);
+                this.setState({isVisibleModal:false});
+                this.props.navigation.navigate('Tab');
             }else {
+                this.reqLogout();
                 if (isFirst) {
                     return;
                 }
@@ -98,6 +109,16 @@ class Login extends React.Component {
                 );
             }
         });
+    }
+
+
+    reqLogout(){
+        requestData("https://app.jiaowangba.com/login_out", (res)=>{
+            if (res.status != 'error') {
+            }
+        });
+        global.WebIM.conn.close();
+        this.setState({isVisibleModal:true});
     }
 
     async _get(key) {
@@ -145,37 +166,43 @@ class Login extends React.Component {
     render() {
 
         return (
-            <View style={{flex:1,}}>
-                <Swiper height={styles.HEIGHT} width={styles.WIDTH}
-                    loop={styles.isIOS?false:true}
-                    showsButtons={false}
-                    showsPagination={false}
-                    index={0}
-                    autoplayTimeout={5}
-                    autoplay={true}
-                    horizontal={true}
-                    >
-                    {this.renderImg()}
-                </Swiper>
-                <View style={styles.pageLogin.container}>
-                    <View style={styles.pageLogin.inputView}>
-                        <TextInput onChangeText={(tel)=>this.setState({tel:tel})} underlineColorAndroid="transparent" placeholderTextColor="#fff" keyboardType='numeric' placeholder="手机号" style={styles.pageLogin.input} />
+            <View style={{flex:1, backgroundColor:"#fff"}}>
+                <Modal transparent={false} animationType="fade" visible={this.state.isVisibleModal} onRequestClose={()=>false}>
+                    <Swiper height={styles.HEIGHT} width={styles.WIDTH}
+                        loop={styles.isIOS?false:true}
+                        showsButtons={false}
+                        showsPagination={false}
+                        index={0}
+                        autoplayTimeout={5}
+                        autoplay={true}
+                        horizontal={true}
+                        >
+                        {this.renderImg()}
+                    </Swiper>
+                    <View style={styles.pageLogin.container}>
+                        <View style={styles.pageLogin.inputView}>
+                            <TextInput onChangeText={(tel)=>this.setState({tel:tel})} underlineColorAndroid="transparent" placeholderTextColor="#fff" keyboardType='numeric' placeholder="手机号" style={styles.pageLogin.input} />
+                        </View>
+                        <View style={[styles.pageLogin.inputView, {marginTop:styles.setScaleSize(30)}]}>
+                            <TextInput onChangeText={(pwd)=>this.setState({pwd:pwd})} secureTextEntry={true} underlineColorAndroid="transparent" placeholderTextColor="#fff" placeholder="密码" style={styles.pageLogin.input} />
+                        </View>
+                        <TouchableOpacity onPress={()=>this.handleLogin()} style={styles.pageLogin.submit}>
+                            <View><Text style={styles.pageLogin.submitText}>登录</Text></View>
+                        </TouchableOpacity>
+                        <View style={styles.pageLogin.forgetpwd}>
+                            <Text style={styles.pageLogin.forgetpwdText} onPress={()=>Alert.alert("提示", "请加客服微信:hunlian21", [{text:"OK", onPress:()=>null}])}>忘记密码</Text>
+                            <Text style={styles.pageLogin.forgetpwdText} onPress={()=>{this.props.navigation.navigate("PageRegister")}}>用户注册</Text>
+                        </View>
                     </View>
-                    <View style={[styles.pageLogin.inputView, {marginTop:styles.setScaleSize(30)}]}>
-                        <TextInput onChangeText={(pwd)=>this.setState({pwd:pwd})} secureTextEntry={true} underlineColorAndroid="transparent" placeholderTextColor="#fff" placeholder="密码" style={styles.pageLogin.input} />
-                    </View>
-                    <TouchableOpacity onPress={()=>this.handleLogin()} style={styles.pageLogin.submit}>
-                        <View><Text style={styles.pageLogin.submitText}>登录</Text></View>
-                    </TouchableOpacity>
-                    <View style={styles.pageLogin.forgetpwd}>
-                        <Text style={styles.pageLogin.forgetpwdText} onPress={()=>Alert.alert("提示", "请加客服微信:hunlian21", [{text:"OK", onPress:()=>null}])}>忘记密码</Text>
-                        <Text style={styles.pageLogin.forgetpwdText} onPress={()=>{this.props.navigation.navigate("PageRegister")}}>用户注册</Text>
-                    </View>
-                </View>
+                </Modal>
             </View>
         );
     }
+
 }
 
+const mapStateToProps = state => ({
+    counter: state.counter
+})
 
-export default Login;
+export default connect(mapStateToProps)(Login);

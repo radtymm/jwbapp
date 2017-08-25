@@ -1,6 +1,6 @@
 import React from 'react';
 import {
-    StyleSheet, Modal, ScrollView, Keyboard, LayoutAnimation, navigator, Alert, View, Text, Button, FlatList, Dimensions, TouchableOpacity, Platform,
+    StyleSheet, Modal, ScrollView, Keyboard, LayoutAnimation,  Alert, View, Text, Button, FlatList, Dimensions, TouchableOpacity, Platform,
     TouchableWithoutFeedback, PermissionsAndroid, CameraRoll, Image, TextInput, Animated, Easing, RefreshControl, KeyboardAvoidingView, AsyncStorage,
 } from 'react-native';
 
@@ -76,6 +76,7 @@ class ChatScreen extends React.Component {
         let that = this;
         global.WebIM.conn.listen({
             onTextMessage: function ( message ) {
+                console.log(JSON.stringify(message));
                 console.log("chat");
                 that.handleRefreshMessage(message.data, true, 'txt');
             },    //收到文本消息
