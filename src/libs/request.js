@@ -5,9 +5,10 @@ export function requestData(url, callback){
       return;
     }
     if (request.status === 200) {
-      callback(JSON.parse(request.responseText));
+        callback(JSON.parse(request.responseText));
     } else {
-      console.warn(JSON.stringify(e));
+        console.warn(JSON.stringify(e));
+        callback(e);
     }
   };
   request.open('GET', url);

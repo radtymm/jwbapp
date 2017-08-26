@@ -8,7 +8,7 @@ import Swiper from 'react-native-swiper';
 import WebIM from '../../WebIM';
 import storage from '../libs/storage';
 import { connect } from 'react-redux';
-import { increase, decrease, reset, msgData} from '../redux/action/actions';
+import {initMsgData, msgData} from '../redux/action/actions';
 
 global.WebIM = WebIM;
 
@@ -27,7 +27,7 @@ class Login extends React.Component {
     }
 
     componentDidMount(){
-        this.reqLogin(true);
+        this.initMsgData();
         // 添加返回键监听
     }
 
@@ -95,6 +95,9 @@ class Login extends React.Component {
     reqLogin(isFirst){
 
         requestData(`https://app.jiaowangba.com/login?telephone=${this.state.tel}&password=${this.state.pwd}`, (res)=>{
+            if (res.type) {
+                alert("错误", res.target._response);
+            }
             if (res.status == "success") {
                 storage.save('loginUP', JSON.stringify(res.code));
                 console.log('reqsuccess');
@@ -108,6 +111,7 @@ class Login extends React.Component {
                 WebIM.conn.open(options);
             }else if (res.status == "redirect") {
                 console.log('reqredirect');
+                global.peruuid = this.state.msgData.uuid;
                 let options = {
                     apiUrl: WebIM.config.apiURL,
                     user: this.state.msgData.uuid,
@@ -137,6 +141,23 @@ class Login extends React.Component {
         });
         global.WebIM.conn.close();
         this.setState({isVisibleModal:true});
+    }
+
+    // 获取本地聊天记录
+    async initMsgData() {
+        try {// try catch 捕获异步执行的异常
+            var value = await AsyncStorage.getItem('msgData');
+            if (value !== null){
+                console.log(value);
+                this.props.dispatch(initMsgData(JSON.parse(value)));
+                this.reqLogin(true);
+            } else {
+                this.reqLogin(true);
+                console.log('消息记录为空');
+            }
+        } catch (error) {
+            console.log('_get() error: ', error.message);
+        }
     }
 
     async _get(key) {

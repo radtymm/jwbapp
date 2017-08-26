@@ -39,7 +39,6 @@ class ChatScreen extends React.Component {
     }
 
     componentDidMount() {
-        this._get(this.storageKey);
         this.keyboardDidShowListener = Keyboard.addListener('keyboardWillShow', this.keyboardDidShow);
         this.keyboardDidHideListener = Keyboard.addListener('keyboardWillHide', this.keyboardDidHide);
     }
@@ -94,27 +93,10 @@ class ChatScreen extends React.Component {
         });
     }
 
-    // 获取本地聊天记录
-    async _get(key) {
-        try {// try catch 捕获异步执行的异常
-            var value = await AsyncStorage.getItem(key);
-            if (value !== null){
-                this.setState({msgData:JSON.parse(value)});
-            } else {
-                this.setState({msgData:[]});
-            }
-
-        } catch (error) {
-            console.log('_get() error: ', error.message);
-        }
-    }
-
     handleRefreshMessage(msg, isOther, type){
         let message = {};
         message.isOther = isOther;
         message.msgType = type;
-        console.log(this.props.navigation.state.params.uuid);
-        console.log(global.peruuid);
         message.from = this.props.navigation.state.params.uuid;
         message.to = global.peruuid;
         if (type == 'txt') {
@@ -286,6 +268,7 @@ class ChatScreen extends React.Component {
         let {params} = this.props.navigation.state;
         let headImage = {uri: 'https://cdn.jiaowangba.com/' + params.avatar, cache:'force-cache'};
 
+        console.log("++++++++" + JSON.stringify(this.state.msgData));
         return (
             <View style={{flex: 1, backgroundColor:"#fff"}} >
                 {styles.isIOS?<View style={styles.homePage.iosTab}/>:<View/>}
@@ -306,7 +289,6 @@ class ChatScreen extends React.Component {
                     </View>
                 </View>
                 {this.renderBar()}
-
                 <View style={{height: height, }} >
                     <EmojiPicker
                       style={{

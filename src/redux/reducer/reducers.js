@@ -1,5 +1,6 @@
 import { combineReducers } from 'redux';
 import { INCREASE, DECREASE, RESET, MSGDATA, INITMSGDATA} from '../action/actionsTypes';
+import storage from '../../libs/storage';
 
 // 原始默认state
 const defaultState = {
@@ -25,11 +26,22 @@ function msgData(state = defaultState, action) {
     if (action.type == MSGDATA) {
         let retState = Object.assign({}, state, {});
         if (action.data) {
+            console.log(JSON.stringify(retState['msgData']));
             let key = action.data.from + "&&" + action.data.to;
             if (!retState['msgData'][key]) {
                 retState['msgData'][key] = [];
             }
             retState['msgData'][key].push(action.data);
+            console.log(JSON.stringify(retState['msgData']));
+            storage.save('msgData', JSON.stringify(retState['msgData']));
+            return retState;
+        }
+        return retState;
+    }else if (action.type == INITMSGDATA) {
+        let retState = Object.assign({}, state, {});
+        if (action.data) {
+            retState['msgData'] = action.data;
+            console.log("-------" + JSON.stringify(retState['msgData']));
             return retState;
         }
         return retState;
@@ -37,24 +49,8 @@ function msgData(state = defaultState, action) {
     return state;
 }
 
-function initMsgData(state = defaultState, action) {
-    if (action.type == INITMSGDATA) {
-        let retState = Object.assign({}, state, {});
-        if (action.data) {
-            let key = action.data.from + "&&" + action.data.to;
-            if (!retState['msgData'][key]) {
-                retState['msgData'][key] = [];
-            }
-            retState['msgData'][key].push(action.data);
-            return retState;
-        }
-        return retState;
-    }
-    return state;
-}
 
 export default combineReducers({
     counter,
-    msgData,
-    initMsgData
+    msgData
 });
