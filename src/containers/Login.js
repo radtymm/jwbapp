@@ -33,7 +33,7 @@ class Login extends React.Component {
 
     webIMConnection(){
         let that = this;
-        global.WebIM.conn.listen({
+        WebIM.conn.listen({
             onOpened: function ( message ) {          //连接成功回调
                 // 如果isAutoLogin设置为false，那么必须手动设置上线，否则无法收消息
                 // 手动上线指的是调用conn.setPresence(); 如果conn初始化时已将isAutoLogin设置为true
@@ -52,9 +52,29 @@ class Login extends React.Component {
                 that.reqLogout();
             },         //连接关闭回调
             onError: (error) => {
-                that.reqLogout();
-                console.log('onError');
-                Alert.alert('网络连接异常', '请重新登录');
+                console.log(error)
+                // 16: server-side close the websocket connection
+                if (error.type == WebIM.statusCode.WEBIM_CONNCTION_DISCONNECTED) {
+                  console.log('WEBIM_CONNCTION_DISCONNECTED', WebIM.conn.autoReconnectNumTotal, WebIM.conn.autoReconnectNumMax);
+                  if (WebIM.conn.autoReconnectNumTotal < WebIM.conn.autoReconnectNumMax) {
+                    return;
+                  }
+                  Alert.alert('错误', '请重新登录');
+                //   NavigationActions.login()
+                  return;
+                }
+                // 8: offline by multi login
+                if (error.type == WebIM.statusCode.WEBIM_CONNCTION_SERVER_ERROR) {
+                  console.log('WEBIM_CONNCTION_SERVER_ERROR');
+                  Alert.alert('错误', '请重新登录');
+                //   NavigationActions.login()
+                  return;
+                }
+                if (error.type == 1) {
+                  let data = error.data ? error.data.data : ''
+                  Alert.alert('Error', 'offline by multi login')
+                //   store.dispatch(LoginActions.loginFailure(error))
+                }
             },
             onTextMessage: function ( message ) {
                 console.log(JSON.stringify(message));
@@ -63,35 +83,38 @@ class Login extends React.Component {
                 that.props.dispatch(msgData(message));
             },    //收到文本消息
             onPictureMessage: function ( message ) {
+                console.log(JSON.stringify(message));
+                message.isOther = true;
+                message.msgType = 'img';
                 // that.handleRefreshMessage({path:message.url}, true, 'img');
+                that.props.dispatch(msgData(message));
             }, //收到图片消息
         });
     }
 
-
-
     reqLogin(isFirst){
-        // global.WebIM.conn.close();
+
         requestData(`https://app.jiaowangba.com/login?telephone=${this.state.tel}&password=${this.state.pwd}`, (res)=>{
             if (res.status == "success") {
                 storage.save('loginUP', JSON.stringify(res.code));
                 console.log('reqsuccess');
+                global.peruuid = res.code.uuid;
                 let options = {
-                    apiUrl: global.WebIM.config.apiURL,
+                    apiUrl: WebIM.config.apiURL,
                     user: res.code.uuid,
                     pwd: res.code.password,
-                    appKey: global.WebIM.config.appkey
+                    appKey: WebIM.config.appkey
                 };
-                global.WebIM.conn.open(options);
+                WebIM.conn.open(options);
             }else if (res.status == "redirect") {
                 console.log('reqredirect');
                 let options = {
-                    apiUrl: global.WebIM.config.apiURL,
+                    apiUrl: WebIM.config.apiURL,
                     user: this.state.msgData.uuid,
                     pwd: this.state.msgData.password,
-                    appKey: global.WebIM.config.appkey
+                    appKey: WebIM.config.appkey
                 };
-                global.WebIM.conn.open(options);
+                WebIM.conn.open(options);
                 this.setState({isVisibleModal:false});
                 this.props.navigation.navigate('Tab');
             }else {
@@ -159,7 +182,6 @@ class Login extends React.Component {
     }
 
     render() {
-        console.log(JSON.stringify(this.props.msgData.msgData));
         return (
             <View style={{flex:1, backgroundColor:"#fff"}}>
                 <Modal transparent={false} animationType="fade" visible={this.state.isVisibleModal} onRequestClose={()=>false}>

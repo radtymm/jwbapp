@@ -22,22 +22,20 @@ class ChatScreen extends React.Component {
     static mapStateToProps(state) {
         let props = {};
         props.msgData = state.msgData;
-
         return props;
     }
 
     constructor(props, context) {
         super(props, context);
-        this.storageKey = this.props.navigation.state.params.uuid + "&&" + global.perInfo.uuid;
-        console.log(this.storageKey);
+        this.storageKey = this.props.navigation.state.params.uuid + "&&" + global.peruuid;
         this.state = {
-            msgData:[],
+            msgData:props.msgData.msgData[this.storageKey],
             scrollToEnd:false,
             message:"",
+            keyboardHeight:0,
             showPicker:false,
             isVisibleModal:false,
         };
-        // this.webIMConnection();
     }
 
     componentDidMount() {
@@ -47,11 +45,8 @@ class ChatScreen extends React.Component {
     }
 
     componentWillReceiveProps(nextProps){
-        this.setState({msgData:nextProps.msgData.msgData[this.storageKey]});
-        if (this.state.scrollToEnd) {
-            this.setState({scrollToEnd:false});
-        }
-        setTimeout(()=>this.handleScrollToEnd(), 100);
+        let msgData = Object.assign([], nextProps.msgData.msgData[this.storageKey]);
+        this.setState({msgData:msgData});
     }
 
     componentDidUpdate(){
@@ -73,21 +68,6 @@ class ChatScreen extends React.Component {
 
     keyboardDidHide = (e) => {
         this.setState({keyboardHeight: 0,});
-    }
-
-
-    webIMConnection(){
-        let that = this;
-        global.WebIM.conn.listen({
-            onTextMessage: function ( message ) {
-                console.log(JSON.stringify(message));
-                console.log("chat");
-                that.handleRefreshMessage(message.data, true, 'txt');
-            },    //收到文本消息
-            onPictureMessage: function ( message ) {
-                that.handleRefreshMessage({path:message.url}, true, 'img');
-            }, //收到图片消息
-        });
     }
 
     pickSingle( circular=false) {
@@ -130,11 +110,19 @@ class ChatScreen extends React.Component {
     }
 
     handleRefreshMessage(msg, isOther, type){
-        let msgData = Object.assign([], this.state.msgData);
-        msgData.push({message:msg, isOther:isOther, type:type,});
-        this.setState({msgData:msgData, scrollToEnd:true});
-        storage.save(this.storageKey, JSON.stringify(msgData));
-        this.handleScrollToEnd();
+        let message = {};
+        message.isOther = isOther;
+        message.msgType = type;
+        console.log(this.props.navigation.state.params.uuid);
+        console.log(global.peruuid);
+        message.from = this.props.navigation.state.params.uuid;
+        message.to = global.peruuid;
+        if (type == 'txt') {
+            message.data = msg;
+        }else if (type == 'img') {
+            message.url = msg.path;
+        }
+        this.props.dispatch(msgData(message));
     }
 
     handleScrollToEnd(){
@@ -144,8 +132,8 @@ class ChatScreen extends React.Component {
     handleSendMessage(message){
         let id = WebIM.conn.getUniqueId();                 // 生成本地消息id
         let msg = new WebIM.message('txt', id);      // 创建文本消息
-        this.setState({message:"", showPicker:false});
         this.handleRefreshMessage(message, false, 'txt');
+        this.setState({message:"", showPicker:false});
         msg.set({
             msg: message,                  // 消息内容
             to: this.props.navigation.state.params.uuid,      // 接收消息对象（用户id）
@@ -232,10 +220,10 @@ class ChatScreen extends React.Component {
         let ComMsg = <View/>;
         if (item.msgType == 'txt') {
             ComMsg = <Text style={styles.chatScreen.msgText}>{item.data}</Text>;
-        }else if (item.type == 'img') {
+        }else if (item.msgType == 'img') {
             ComMsg = (
-                <TouchableOpacity onPress={()=>this.setState({isVisibleModal:true, imgPath:item.message.path})}>
-                    <CachedImage style={{width:100,height:100}} source={{uri:item.message.path}} />
+                <TouchableOpacity onPress={()=>this.setState({isVisibleModal:true, imgPath:item.url})}>
+                    <CachedImage style={{width:100,height:100}} source={{uri:item.url}} />
                 </TouchableOpacity>
             );
         }
@@ -276,25 +264,6 @@ class ChatScreen extends React.Component {
         </View>;
     }
 
-    renderFlatList(){
-        let {params} = this.props.navigation.state;
-        let headImage = {uri: 'https://cdn.jiaowangba.com/' + params.avatar, cache:'force-cache'};
-
-
-        console.log("----------" + JSON.stringify(this.props.msgData.msgData));
-        return (
-            <View style={{flex:1}}>
-                <FlatList
-                    data={this.state.msgData}
-                    keyExtractor = {(item, index) => ""+index}
-                    ref={"flat"}
-                    renderItem={({item, index}) => this.renderItem(item, index)}
-                />
-                {this.renderBar()}
-            </View>
-        );
-    }
-
     renderModalImg(){
         return (
             <Modal transparent={false} animationType="fade" visible={this.state.isVisibleModal} onRequestClose={()=>this.setState({isVisibleModal:false})}>
@@ -327,14 +296,17 @@ class ChatScreen extends React.Component {
                     <Text style={styles.homePage.title}>{this.props.navigation.state.params.nickname}</Text>
                 </View>
                 <View style={{flex:1}}>
-                    <FlatList
-                        data={this.state.msgData}
-                        keyExtractor = {(item, index) => ""+index}
-                        ref={"flat"}
-                        renderItem={({item, index}) => this.renderItem(item, index)}
-                    />
-                    {this.renderBar()}
+                    <View>
+                        <FlatList
+                            data={this.state.msgData}
+                            keyExtractor = {(item, index) => ""+index}
+                            ref={"flat"}
+                            renderItem={({item, index}) => this.renderItem(item, index)}
+                        />
+                    </View>
                 </View>
+                {this.renderBar()}
+
                 <View style={{height: height, }} >
                     <EmojiPicker
                       style={{

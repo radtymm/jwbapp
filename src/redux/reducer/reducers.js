@@ -1,5 +1,5 @@
 import { combineReducers } from 'redux';
-import { INCREASE, DECREASE, RESET, MSGDATA} from '../action/actionsTypes';
+import { INCREASE, DECREASE, RESET, MSGDATA, INITMSGDATA} from '../action/actionsTypes';
 
 // 原始默认state
 const defaultState = {
@@ -37,7 +37,24 @@ function msgData(state = defaultState, action) {
     return state;
 }
 
+function initMsgData(state = defaultState, action) {
+    if (action.type == INITMSGDATA) {
+        let retState = Object.assign({}, state, {});
+        if (action.data) {
+            let key = action.data.from + "&&" + action.data.to;
+            if (!retState['msgData'][key]) {
+                retState['msgData'][key] = [];
+            }
+            retState['msgData'][key].push(action.data);
+            return retState;
+        }
+        return retState;
+    }
+    return state;
+}
+
 export default combineReducers({
     counter,
-    msgData
+    msgData,
+    initMsgData
 });
