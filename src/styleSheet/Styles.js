@@ -237,7 +237,7 @@ const chatScreen = StyleSheet.create({
     barView:{flexDirection:"row", justifyContent:"space-around", alignItems:"center", backgroundColor:"#f6f3fa", height:setScaleSize(116), width:WIDTH, borderBottomWidth:1, borderTopWidth:1, borderColor:"#dbdbdb", },
     voiceImg:{width:setScaleSize(66), height:setScaleSize(66), },
     audioTouch:{width:setScaleSize(466), height:setScaleSize(80), justifyContent:"center", alignItems:"center", borderColor:"#ccc", borderWidth:1, borderRadius:setScaleSize(8), },
-    msgTextIpt:{width:setScaleSize(466), height:setScaleSize(80), backgroundColor:"#fcfcfc", padding:0, borderColor:"#dce5de", borderWidth:1, borderRadius:setScaleSize(8), },
+    msgTextIpt:{width:setScaleSize(466), height:setScaleSize(80), fontSize:setScaleSize(30), backgroundColor:"#fcfcfc", padding:0, borderColor:"#dce5de", borderWidth:1, borderRadius:setScaleSize(8), },
     modalView:{flex:1, backgroundColor:"#000", justifyContent:"center", alignItems:"center"},
 });
 const styles = {

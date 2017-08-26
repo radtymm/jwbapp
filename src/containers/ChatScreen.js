@@ -225,7 +225,7 @@ class ChatScreen extends React.Component {
     renderBar(){
         return <View style={styles.chatScreen.barView}>
             <TouchableOpacity style={styles.chatScreen.emojiView} onPress={() => this.handleShowEmoji()}>
-                <Image resizeMode="contain" style={styles.chatScreen.voiceImg} source={require('../images/home.png')}/>
+                <Image resizeMode="contain" style={styles.chatScreen.voiceImg} source={require('../images/iconEmoji.png')}/>
             </TouchableOpacity>
             <TextInput style={styles.chatScreen.msgTextIpt} underlineColorAndroid="transparent"
                 numberOfLines={3} multiple={true} ref="textMsg"
@@ -238,10 +238,10 @@ class ChatScreen extends React.Component {
                 returnKeyType="send"
             />
             <TouchableOpacity style={styles.chatScreen.otherTouch} onPress={()=>this.pickSingle()}>
-                <Image resizeMode="contain" style={styles.chatScreen.voiceImg} source={require('../images/home.png')}/>
+                <Image resizeMode="contain" style={styles.chatScreen.voiceImg} source={require('../images/iconImage.png')}/>
             </TouchableOpacity>
             <TouchableOpacity style={styles.chatScreen.otherTouch} onPress={()=>this.pickSingleWithCamera()}>
-                <Image resizeMode="contain" style={styles.chatScreen.voiceImg} source={require('../images/home.png')}/>
+                <Image resizeMode="contain" style={styles.chatScreen.voiceImg} source={require('../images/iconCamera.png')}/>
             </TouchableOpacity>
         </View>;
     }
@@ -268,7 +268,6 @@ class ChatScreen extends React.Component {
         let {params} = this.props.navigation.state;
         let headImage = {uri: 'https://cdn.jiaowangba.com/' + params.avatar, cache:'force-cache'};
 
-        console.log("++++++++" + JSON.stringify(this.state.msgData));
         return (
             <View style={{flex: 1, backgroundColor:"#fff"}} >
                 {styles.isIOS?<View style={styles.homePage.iosTab}/>:<View/>}
@@ -278,16 +277,18 @@ class ChatScreen extends React.Component {
                     </TouchableOpacity>
                     <Text style={styles.homePage.title}>{this.props.navigation.state.params.nickname}</Text>
                 </View>
-                <View style={{flex:1}}>
-                    <View>
-                        <FlatList
-                            data={this.state.msgData}
-                            keyExtractor = {(item, index) => ""+index}
-                            ref={"flat"}
-                            renderItem={({item, index}) => this.renderItem(item, index)}
-                        />
+                <TouchableWithoutFeedback onPress={()=>{this.setState({showPicker:false});this.refs.textMsg.blur();}}>
+                    <View style={{flex:1}}>
+                        <View>
+                            <FlatList
+                                data={this.state.msgData}
+                                keyExtractor = {(item, index) => ""+index}
+                                ref={"flat"}
+                                renderItem={({item, index}) => this.renderItem(item, index)}
+                            />
+                        </View>
                     </View>
-                </View>
+                </TouchableWithoutFeedback>
                 {this.renderBar()}
                 <View style={{height: height, }} >
                     <EmojiPicker

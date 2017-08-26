@@ -150,11 +150,11 @@ class Login extends React.Component {
             if (value !== null){
                 console.log(value);
                 this.props.dispatch(initMsgData(JSON.parse(value)));
-                this.reqLogin(true);
             } else {
-                this.reqLogin(true);
+                this.props.dispatch(initMsgData({}));
                 console.log('消息记录为空');
             }
+            this.reqLogin(true);
         } catch (error) {
             console.log('_get() error: ', error.message);
         }
