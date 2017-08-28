@@ -9,6 +9,11 @@ import WebIM from '../../WebIM';
 import storage from '../libs/storage';
 import { connect } from 'react-redux';
 import {initMsgData, msgData} from '../redux/action/actions';
+import JPushModule from 'jpush-react-native';
+const receiveCustomMsgEvent = "receivePushMsg";
+const receiveNotificationEvent = "receiveNotification";
+const openNotificationEvent = "openNotification";
+const getRegistrationIdEvent = "getRegistrationId";
 
 global.WebIM = WebIM;
 
@@ -28,7 +33,30 @@ class Login extends React.Component {
 
     componentDidMount(){
         this.initMsgData();
-        // 添加返回键监听
+        this.jpush();
+    }
+
+    jpush(){
+        //---------------------------------android start---------------------------------
+        console.log("jpush");
+        JPushModule.addReceiveCustomMsgListener((message) => {
+            //  this.setState({pushMsg:message});
+            console.log(JSON.stringify(message));
+        });
+        JPushModule.addReceiveNotificationListener((map) => {
+            //自定义推送的消息
+            console.log("alertContent: " + map.alertContent);
+            //extra是可选配置上的附件字段
+            console.log("extras: " + map.extras);
+            var message = JSON.parse(map.extras);
+            //this.storeDB(message);//我这里是把内容存在了数据库里面，你可以把这里的message放到state里面显示出来
+            //这里面解析json数据，并存在数据库中，同时显示在通知栏上
+        })
+        //点击通知进入应用的主页，相当于跳转到制定的页面
+        JPushModule.addReceiveOpenNotificationListener((map) => {
+            console.log("Opening notification!");
+            // this.props.navigator.replace({name: "HomePage",component:HomePage});
+        })
     }
 
     webIMConnection(){
@@ -148,7 +176,6 @@ class Login extends React.Component {
         try {// try catch 捕获异步执行的异常
             var value = await AsyncStorage.getItem('msgData');
             if (value !== null){
-                console.log(value);
                 this.props.dispatch(initMsgData(JSON.parse(value)));
             } else {
                 this.props.dispatch(initMsgData({}));
