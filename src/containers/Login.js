@@ -9,7 +9,7 @@ import WebIM from '../../WebIM';
 import storage from '../libs/storage';
 import { connect } from 'react-redux';
 import {initMsgData, msgData} from '../redux/action/actions';
-import JPush , {JpushEventReceiveMessage, JpushEventOpenMessage} from 'react-native-jpush'
+import JPushModule from 'jpush-react-native';
 
 global.WebIM = WebIM;
 
@@ -23,7 +23,6 @@ class Login extends React.Component {
         };
 
         this.reqLogout = this.reqLogout.bind(this);
-        this.onOpenMessage = this.onOpenMessage.bind(this);
         this._get('loginUP');
         this.webIMConnection();
     }
@@ -34,26 +33,30 @@ class Login extends React.Component {
     }
 
     componentWillUnmount() {
-        this.pushlisteners.forEach(listener=> {
-            JPush.removeEventListener(listener);
-        });
+
     }
 
     jpush(){
-        JPush.requestPermissions()
-        this.pushlisteners = [
-            JPush.addEventListener(JpushEventReceiveMessage, this.onReceiveMessage.bind(this)),
-            JPush.addEventListener(JpushEventOpenMessage, this.onOpenMessage.bind(this)),
-        ]
-    }
+        if(!styles.isIOS) JPushModule.initPush();
+        console.log("jpush");
+        // 在收到点击事件之前调用此接口
+        JPushModule.notifyJSDidLoad((resultCode) => {
+            if (resultCode === 0) {
+            }
+        });
+        JPushModule.addReceiveNotificationListener((map) => {
+            console.log("alertContent: " + map.alertContent);
+            console.log("extras: " + map.extras);
+            // var extra = JSON.parse(map.extras);
+            // console.log(extra.key + ": " + extra.value);
+        });
 
-    onReceiveMessage(message) {
-        console.log(JSON.stringify(message));
-        Alert.alert("onReceiveMessage", JSON.stringify(message));
-    }
-    onOpenMessage(message) {
-        console.log("open" + JSON.stringify(message));
-        this.props.navigation.navigate('PageRegister');
+        JPushModule.addReceiveOpenNotificationListener((map) => {
+            console.log("Opening notification!");
+            console.log("map.extra: " + map.key);
+        });
+
+
     }
 
     webIMConnection(){

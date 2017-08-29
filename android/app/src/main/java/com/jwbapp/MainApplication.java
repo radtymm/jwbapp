@@ -3,7 +3,7 @@ package com.jwbapp;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
-import cn.reactnative.modules.jpush.JPushPackage;
+import cn.jpush.reactnativejpush.JPushPackage;
 import com.zmxv.RNSound.RNSoundPackage;
 import com.rnim.rn.audio.ReactNativeAudioPackage;
 import com.RNFetchBlob.RNFetchBlobPackage;
@@ -20,7 +20,8 @@ import java.util.Arrays;
 import java.util.List;
 
 public class MainApplication extends Application implements ReactApplication {
-
+    private boolean SHUTDOWN_TOAST = false;
+    private boolean SHUTDOWN_LOG = false;
   private final ReactNativeHost mReactNativeHost = new ReactNativeHost(this) {
     @Override
     public boolean getUseDeveloperSupport() {
@@ -31,7 +32,7 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
-            new JPushPackage(),
+            new JPushPackage(SHUTDOWN_TOAST, SHUTDOWN_LOG),
             new RNSoundPackage(),
             new ReactNativeAudioPackage(),
             new RNFetchBlobPackage(),
