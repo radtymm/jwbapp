@@ -103,6 +103,10 @@ android {
         ndk {
             abiFilters "armeabi-v7a", "x86"
         }
+        manifestPlaceholders = [
+            JPush_APPID: "d27e7dcc67ff5ef7d5bcd31b",	//在此修改JPush的APPID
+            APP_CHANNEL: "developer-default"		//应用渠道号
+        ]
     }
     signingConfigs {
         release {
@@ -150,6 +154,7 @@ dependencies {
     compile project(':react-native-baidu-map')
     compile project(':react-native-image-crop-picker')
     compile project(':react-native-device-info')
+    compile project(':react-native-jpush')
     compile fileTree(dir: "libs", include: ["*.jar"])
     compile "com.android.support:appcompat-v7:23.0.1"
     compile "com.facebook.react:react-native:+"  // From node_modules

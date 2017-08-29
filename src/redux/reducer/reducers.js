@@ -26,13 +26,11 @@ function msgData(state = defaultState, action) {
     if (action.type == MSGDATA) {
         let retState = Object.assign({}, state, {});
         if (action.data) {
-            console.log(JSON.stringify(retState['msgData']));
             let key = action.data.from + "&&" + action.data.to;
             if (!retState['msgData'][key]) {
                 retState['msgData'][key] = [];
             }
             retState['msgData'][key].push(action.data);
-            console.log(JSON.stringify(retState['msgData']));
             storage.save('msgData', JSON.stringify(retState['msgData']));
             return retState;
         }
@@ -41,7 +39,6 @@ function msgData(state = defaultState, action) {
         let retState = Object.assign({}, state, {});
         if (action.data) {
             retState['msgData'] = action.data;
-            console.log("-------" + JSON.stringify(retState['msgData']));
             return retState;
         }
         return retState;

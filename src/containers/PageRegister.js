@@ -67,8 +67,11 @@ class PageRegister extends React.Component {
         requestData(`https://app.jiaowangba.com/signup?telephone=${this.state.tel}&password=${this.state.pwd}&nickname=${this.state.userName}&gender=${this.state.sex}`,
             (res) => {
                 if (res.status != "error") {
+
                     Alert.alert("提示", "注册成功",
-                        [{text: "返回登录", onPress: () => that.props.navigation.goBack(null)}]);
+                        [{text: "返回登录", onPress: () => {
+                            this.props.navigation.state.params.logout();
+                            that.props.navigation.goBack(null)}}]);
                     return;
                 }
                 Alert.alert('提示', res.msg,
@@ -144,7 +147,7 @@ class PageRegister extends React.Component {
                             <View><Text style={styles.pageLogin.submitText}>注册</Text></View>
                         </TouchableOpacity>
                         <View>
-                            <TouchableOpacity onPress={() => this.props.navigation.goBack(null)}
+                            <TouchableOpacity onPress={() => {this.props.navigation.state.params.logout();this.props.navigation.goBack(null)}}
                                               style={styles.PageRegister.backLogin}>
                                 <Text style={styles.PageRegister.submitText}>返回登录</Text>
                             </TouchableOpacity>
