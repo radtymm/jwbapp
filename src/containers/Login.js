@@ -33,7 +33,6 @@ class Login extends React.Component {
     }
 
     componentWillUnmount() {
-
     }
 
     jpush(){
@@ -60,6 +59,8 @@ class Login extends React.Component {
     }
 
     webIMConnection(){
+        console.log("------------------");
+        
         let that = this;
         WebIM.conn.listen({
             onOpened: function ( message ) {          //连接成功回调

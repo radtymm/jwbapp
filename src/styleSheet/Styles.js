@@ -232,13 +232,20 @@ const pageChangePwd = StyleSheet.create({
 });
 const chatScreen = StyleSheet.create({
     itemView:{minHeight:setScaleSize(80), flexDirection:"row", alignItems:"center",  padding:setScaleSize(20),},
-    headImg:{borderRadius:setScaleSize(25), width:setScaleSize(50), height:setScaleSize(50), marginHorizontal:setScaleSize(20)},
-    msgText:{backgroundColor:"#fff", maxWidth:WIDTH/2, fontSize:setScaleSize(25), color:"#333", textAlign:'left', padding:setScaleSize(8), borderRadius:setScaleSize(18), borderWidth:1, borderColor:"#333"},
+    headImg:{alignSelf:'flex-start', marginTop:setScaleSize(20), width:setScaleSize(90), height:setScaleSize(90), marginHorizontal:setScaleSize(20)},
+    msgText:{backgroundColor:"#e0edd1", maxWidth:setScaleSize(490), fontSize:setScaleSize(30), color:"#333", textAlign:'left', paddingVertical:setScaleSize(25), paddingHorizontal:setScaleSize(20), borderRadius:setScaleSize(5), borderWidth:1, borderColor:"#aab1a1"},
     barView:{flexDirection:"row", justifyContent:"space-around", alignItems:"center", backgroundColor:"#f6f3fa", height:setScaleSize(116), width:WIDTH, borderBottomWidth:1, borderTopWidth:1, borderColor:"#dbdbdb", },
-    voiceImg:{width:setScaleSize(66), height:setScaleSize(66), },
+    voiceImg:{width:setScaleSize(85), height:setScaleSize(85), },
     audioTouch:{width:setScaleSize(466), height:setScaleSize(80), justifyContent:"center", alignItems:"center", borderColor:"#ccc", borderWidth:1, borderRadius:setScaleSize(8), },
-    msgTextIpt:{width:setScaleSize(466), height:setScaleSize(80), fontSize:setScaleSize(30), backgroundColor:"#fcfcfc", padding:0, borderColor:"#dce5de", borderWidth:1, borderRadius:setScaleSize(8), },
+    msgTextIpt:{width:setScaleSize(466), height:setScaleSize(80), fontSize:setScaleSize(30), backgroundColor:"#fcfcfc", padding:0, paddingLeft:setScaleSize(10), borderColor:"#bfbfbf", borderWidth:1, borderRadius:setScaleSize(8), },
     modalView:{flex:1, backgroundColor:"#000", justifyContent:"center", alignItems:"center"},
+    sendView:{ borderRadius:setScaleSize(5), backgroundColor:"#99cd59", paddingVertical:setScaleSize(20), paddingHorizontal:setScaleSize(40)},
+    sendText:{color:"#fff", fontSize:setScaleSize(30), },
+    timeBorView:{alignItems:"center",},
+    tipView:{borderRightWidth:1, borderBottomWidth:1, position:'absolute',  backgroundColor:"#e1eed2", borderColor:"#bfbfbf", transform:[{rotate:'-45deg'}], width:setScaleSize(20), height:setScaleSize(20), top:setScaleSize(65), right:setScaleSize(142),},
+    tipOtherView:{borderTopWidth:1, borderLeftWidth:1, position:'absolute',  backgroundColor:"#ffe4ed", borderColor:"#bfbfbf", transform:[{rotate:'-45deg'}], width:setScaleSize(20), height:setScaleSize(20), top:setScaleSize(65), left:setScaleSize(142),},
+    timeText:{color:"#fff", fontSize:setScaleSize(30)},
+    timeView:{backgroundColor:"#0fd8b4", height:setScaleSize(40), width:setScaleSize(360), alignItems:'center', justifyContent:"center", borderRadius:setScaleSize(20)},
 });
 const styles = {
     PageRegister: PageRegister,

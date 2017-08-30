@@ -12,12 +12,10 @@ import {
 } from 'react-native';
 import styles from '../styleSheet/Styles';
 import {requestData} from '../libs/request.js';
-import {height, weight, date1} from '../libs/data.js';
+import {height, weight} from '../libs/data.js';
 import PickerAreaDate from 'react-native-picker';
 import area from '../libs/area.json';
 import {Geolocation} from 'react-native-baidu-map';
-
-let date = date1;
 
 class PagePerInfo extends React.Component {
 
@@ -64,9 +62,6 @@ class PagePerInfo extends React.Component {
         }else {
             Geolocation.getCurrentPosition().then(
                 (data) => {
-                    // console.log(`https://app.jiaowangba.com/mine_info?lng=${"" + data.longitude}&lat=${"" + data.latitude}`);
-                    // console.log(JSON.stringify(data));
-                    // Alert.alert("", JSON.stringify(data));
                      requestData(`https://app.jiaowangba.com/mine_info?lng=${data.longitude}&lat=${data.latitude}`, (res)=>{
                          if (res.status == "success"){
                          }

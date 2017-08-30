@@ -36,6 +36,7 @@ class ChatScreen extends React.Component {
             showPicker:false,
             isVisibleModal:false,
         };
+        this.handleScrollToEnd = this.handleScrollToEnd.bind(this);
     }
 
     componentDidMount() {
@@ -99,6 +100,13 @@ class ChatScreen extends React.Component {
         message.msgType = type;
         message.from = this.props.navigation.state.params.uuid;
         message.to = global.peruuid;
+        let dateNow = new Date();
+        let month = ((dateNow.getMonth()+1) < 10)?("0"+(dateNow.getMonth()+1)):(dateNow.getMonth()+1);
+        let date = ((dateNow.getDate()) < 10)?("0"+dateNow.getDate()):(dateNow.getDate());
+        let hour = ((dateNow.getUTCHours()) < 10)?("0"+dateNow.getUTCHours()):(dateNow.getUTCHours());
+        let min = ((dateNow.getMinutes()) < 10)?("0"+dateNow.getMinutes()):(dateNow.getMinutes());
+        let second = ((dateNow.getSeconds()) < 10)?("0"+dateNow.getSeconds()):(dateNow.getSeconds());
+        message.delay = dateNow.getFullYear() + "-" + month + '-' + date + 'T' + hour + ':' + min + ':' + second;
         if (type == 'txt') {
             message.data = msg;
         }else if (type == 'img') {
@@ -108,6 +116,9 @@ class ChatScreen extends React.Component {
     }
 
     handleScrollToEnd(){
+        if (!this.refs.flat) {
+            return;
+        }
         this.refs.flat.scrollToEnd({animated: false});
     }
 
@@ -122,6 +133,7 @@ class ChatScreen extends React.Component {
             roomType: false,
             success: function (id, serverMsgId) {
                 console.log('send private text Success');
+                console.log(id, serverMsgId);
             },
             fail: function(e){
                 console.log("Send private text error");
@@ -201,22 +213,37 @@ class ChatScreen extends React.Component {
 
         let ComMsg = <View/>;
         if (item.msgType == 'txt') {
-            ComMsg = <Text style={styles.chatScreen.msgText}>{item.data}</Text>;
+            ComMsg = <Text style={[styles.chatScreen.msgText, {backgroundColor:item.isOther?"#ffe4ed":"#e1eed2"}]}>{item.data}</Text>;
         }else if (item.msgType == 'img') {
+            let imgUrl = item.url + '?imageView2/1/w/250/h/250/interlace/1/q/96|imageslim';
             ComMsg = (
                 <TouchableOpacity onPress={()=>this.setState({isVisibleModal:true, imgPath:item.url})}>
-                    <CachedImage style={{width:100,height:100}} source={{uri:item.url}} />
+                    <CachedImage style={{width:100,height:100}} source={{uri:imgUrl}} />
                 </TouchableOpacity>
             );
+        }
+        let sendTime = "";
+        if (item.delay) {
+            let hourChina = Number(item.delay.substring(11, 13));
+            let hour = (8 + hourChina) > 24?(8 + hourChina - 24):(hourChina + 8);
+            sendTime = item.delay.substring(5, 10) + " " + hour + item.delay.substring(13, 16);
         }
 
         return (
             <TouchableWithoutFeedback onPress={()=>this.setState({showPicker:false})}>
-                <View onLayout={(event, index)=>{this.handleItemLayoutHeight(event, index)}}
-                     style={[styles.chatScreen.itemView, {justifyContent:!item.isOther?'flex-end':'flex-start', }]}>
-                    {item.isOther?<CachedImage style={styles.chatScreen.headImg} source={headImage}/>:<View/>}
-                    {ComMsg}
-                    {!item.isOther?<CachedImage style={styles.chatScreen.headImg} source={headImage}/>:<View/>}
+                <View style={{marginVertical:styles.setScaleSize(20)}}>
+                    <View style={styles.chatScreen.timeBorView}>
+                        <View style={styles.chatScreen.timeView}><Text style={styles.chatScreen.timeText}>
+                            {sendTime}
+                        </Text></View>
+                    </View>
+                    <View onLayout={(event, index)=>{this.handleItemLayoutHeight(event, index)}}
+                         style={[styles.chatScreen.itemView, {justifyContent:!item.isOther?'flex-end':'flex-start', }]}>
+                        {item.isOther?<CachedImage style={styles.chatScreen.headImg} source={headImage}/>:<View/>}
+                        {ComMsg}
+                        {(item.msgType=='txt')?(!item.isOther?<View style={styles.chatScreen.tipView}/>:<View style={styles.chatScreen.tipOtherView}/>):<View/>}
+                        {!item.isOther?<CachedImage style={styles.chatScreen.headImg} source={headImage}/>:<View/>}
+                    </View>
                 </View>
             </TouchableWithoutFeedback>
         );
@@ -224,24 +251,24 @@ class ChatScreen extends React.Component {
 
     renderBar(){
         return <View style={styles.chatScreen.barView}>
-            <TouchableOpacity style={styles.chatScreen.emojiView} onPress={() => this.handleShowEmoji()}>
+            {/*<TouchableOpacity style={styles.chatScreen.emojiView} onPress={() => this.handleShowEmoji()}>
                 <Image resizeMode="contain" style={styles.chatScreen.voiceImg} source={require('../images/iconEmoji.png')}/>
-            </TouchableOpacity>
+            </TouchableOpacity>*/}
             <TextInput style={styles.chatScreen.msgTextIpt} underlineColorAndroid="transparent"
                 numberOfLines={3} multiple={true} ref="textMsg"
                 defaultValue={this.state.message}
                 onChangeText={(text)=>this.handleChangeText(text)}
                 onFocus={()=>this.setState({scrollToEnd:true, showPicker:false})}
                 onBlur={()=>this.setState({scrollToEnd:true})}
-                onSubmitEditing={()=>this.handleSendMessage(this.state.message)}
-                returnKeyLabel="发送"
-                returnKeyType="send"
             />
             <TouchableOpacity style={styles.chatScreen.otherTouch} onPress={()=>this.pickSingle()}>
                 <Image resizeMode="contain" style={styles.chatScreen.voiceImg} source={require('../images/iconImage.png')}/>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.chatScreen.otherTouch} onPress={()=>this.pickSingleWithCamera()}>
+            {/*<TouchableOpacity style={styles.chatScreen.otherTouch} onPress={()=>this.pickSingleWithCamera()}>
                 <Image resizeMode="contain" style={styles.chatScreen.voiceImg} source={require('../images/iconCamera.png')}/>
+            </TouchableOpacity>*/}
+            <TouchableOpacity style={styles.chatScreen.otherTouch} onPress={()=>this.handleSendMessage(this.state.message)}>
+                <View style={styles.chatScreen.sendView}><Text style={styles.chatScreen.sendText}>发 送</Text></View>
             </TouchableOpacity>
         </View>;
     }
