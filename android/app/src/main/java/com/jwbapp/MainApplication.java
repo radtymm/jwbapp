@@ -3,6 +3,7 @@ package com.jwbapp;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
+import io.realm.react.RealmReactPackage;
 import cn.jpush.reactnativejpush.JPushPackage;
 import com.zmxv.RNSound.RNSoundPackage;
 import com.rnim.rn.audio.ReactNativeAudioPackage;
@@ -32,6 +33,7 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
+            new RealmReactPackage(),
             new JPushPackage(SHUTDOWN_TOAST, SHUTDOWN_LOG),
             new RNSoundPackage(),
             new ReactNativeAudioPackage(),

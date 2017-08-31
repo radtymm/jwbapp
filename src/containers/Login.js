@@ -10,6 +10,7 @@ import storage from '../libs/storage';
 import { connect } from 'react-redux';
 import {initMsgData, msgData} from '../redux/action/actions';
 import JPushModule from 'jpush-react-native';
+import Realm from 'realm';
 
 global.WebIM = WebIM;
 
@@ -37,7 +38,6 @@ class Login extends React.Component {
 
     jpush(){
         if(!styles.isIOS) JPushModule.initPush();
-        console.log("jpush");
         // 在收到点击事件之前调用此接口
         JPushModule.notifyJSDidLoad((resultCode) => {
             if (resultCode === 0) {
@@ -58,9 +58,29 @@ class Login extends React.Component {
 
     }
 
+    realmInit(obj){
+        const MessageData = {
+            name:'MessageData',
+            properties:{
+                selfUuid:'string',
+                otherUuid:'string',
+                isOther:'bool',
+                msgType:'string',
+                delay:'string',
+                data:{type:'string', optional:true},
+                url:{type:'string', optional:true},
+                isReaded:'bool',
+            }
+        };
+        global.realm = new Realm({schema:[MessageData],});
+        global.realm.write(()=>{
+            global.realm.create('MessageData', obj);
+        });
+        console.log(JSON.stringify(global.realm.objects('MessageData')));
+    }
+
     webIMConnection(){
-        console.log("------------------");
-        
+
         let that = this;
         WebIM.conn.listen({
             onOpened: function ( message ) {          //连接成功回调
@@ -104,12 +124,36 @@ class Login extends React.Component {
                   Alert.alert('Error', 'offline by multi login')
                 //   store.dispatch(LoginActions.loginFailure(error))
                 }
+
             },
             onTextMessage: function ( message ) {
                 console.log(JSON.stringify(message));
                 message.isOther = true;
                 message.msgType = 'txt';
                 that.props.dispatch(msgData(message));
+
+                that.realmInit({
+                    selfUuid:global.peruuid,
+                    otherUuid:message.from,
+                    isOther:true,
+                    msgType:'txt',
+                    delay:'message.delay',
+                    data:message.data,
+                    isReaded:false,
+                });
+
+                // global.realm.write(()=>{
+                //     global.realm.create('MessageData', {
+                //         selfUuid:global.peruuid,
+                //         otherUuid:message.from,
+                //         isOther:true,
+                //         msgType:'txt',
+                //         delay:message.delay,
+                //         data:message.data,
+                //         isReaded:false,
+                //     });
+                // });
+                // console.log(JSON.stringify(global.realm.objects('MessageData')));
             },    //收到文本消息
             onPictureMessage: function ( message ) {
                 console.log(JSON.stringify(message));

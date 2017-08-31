@@ -30,6 +30,7 @@ class ChatScreen extends React.Component {
         this.storageKey = this.props.navigation.state.params.uuid + "&&" + global.peruuid;
         this.state = {
             msgData:props.msgData.msgData[this.storageKey],
+            // msgData:[],
             scrollToEnd:false,
             message:"",
             keyboardHeight:0,
@@ -294,6 +295,8 @@ class ChatScreen extends React.Component {
         }
         let {params} = this.props.navigation.state;
         let headImage = {uri: 'https://cdn.jiaowangba.com/' + params.avatar, cache:'force-cache'};
+
+        // let msgData = global.realm.objects('MessageData').filtered('selfUuid = "' + global.peruuid + '" AND otherUuid = "' + params.uuid + '"');
 
         return (
             <View style={{flex: 1, backgroundColor:"#fff"}} >
