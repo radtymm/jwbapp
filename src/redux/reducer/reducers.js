@@ -1,6 +1,9 @@
 import { combineReducers } from 'redux';
 import { INCREASE, DECREASE, RESET, MSGDATA, INITMSGDATA} from '../action/actionsTypes';
 import storage from '../../libs/storage';
+import SQLite from '../../components/SQLite';
+let sqLite = new SQLite();
+let db;
 
 // 原始默认state
 const defaultState = {
@@ -26,12 +29,16 @@ function msgData(state = defaultState, action) {
     if (action.type == MSGDATA) {
         let retState = Object.assign({}, state, {});
         if (action.data) {
-            let key = action.data.from + "&&" + action.data.to;
-            if (!retState['msgData'][key]) {
-                retState['msgData'][key] = [];
+            //开启数据库
+            if(!db){
+              db = sqLite.open();
             }
-            retState['msgData'][key].push(action.data);
-            storage.save('msgData', JSON.stringify(retState['msgData']));
+            let userData = [];
+            userData.push(action.data);
+            //插入数据
+            sqLite.insertUserData(userData);
+            retState['msgData'].push(action.data);
+            console.log("msgdata=======>" + JSON.stringify(retState['msgData']));
             return retState;
         }
         return retState;

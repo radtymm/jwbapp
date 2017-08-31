@@ -11,6 +11,11 @@ import { connect } from 'react-redux';
 import {initMsgData, msgData} from '../redux/action/actions';
 import JPushModule from 'jpush-react-native';
 import Realm from 'realm';
+import SQLite from '../components/SQLite';
+let sqLite = new SQLite();
+let db;
+
+let loginOnce = false;
 
 global.WebIM = WebIM;
 
@@ -24,16 +29,21 @@ class Login extends React.Component {
         };
 
         this.reqLogout = this.reqLogout.bind(this);
+        if(!db){
+          db = sqLite.open();
+        }
+        sqLite.createTable();
         this._get('loginUP');
         this.webIMConnection();
     }
 
     componentDidMount(){
-        this.initMsgData();
         this.jpush();
+        this.reqLogin(true);
     }
 
     componentWillUnmount() {
+        sqLite.close();
     }
 
     jpush(){
@@ -55,32 +65,9 @@ class Login extends React.Component {
             console.log("map.extra: " + map.key);
         });
 
-
-    }
-
-    realmInit(obj){
-        const MessageData = {
-            name:'MessageData',
-            properties:{
-                selfUuid:'string',
-                otherUuid:'string',
-                isOther:'bool',
-                msgType:'string',
-                delay:'string',
-                data:{type:'string', optional:true},
-                url:{type:'string', optional:true},
-                isReaded:'bool',
-            }
-        };
-        global.realm = new Realm({schema:[MessageData],});
-        global.realm.write(()=>{
-            global.realm.create('MessageData', obj);
-        });
-        console.log(JSON.stringify(global.realm.objects('MessageData')));
     }
 
     webIMConnection(){
-
         let that = this;
         WebIM.conn.listen({
             onOpened: function ( message ) {          //连接成功回调
@@ -89,7 +76,11 @@ class Login extends React.Component {
                 // 则无需调用conn.setPresence();
                 console.log('loginsuccess');
                 that.setState({isVisibleModal:false});
-                that.props.navigation.navigate('Tab');
+                if (!loginOnce) {
+                    that.props.navigation.navigate('Tab');
+                }else {
+                    loginOnce = false;
+                }
             },
             onClosed: function ( message ) {
                 console.log("onClosed");
@@ -130,43 +121,54 @@ class Login extends React.Component {
                 console.log(JSON.stringify(message));
                 message.isOther = true;
                 message.msgType = 'txt';
-                that.props.dispatch(msgData(message));
-
-                that.realmInit({
+                if (!message.delay) {
+                    let dateNow = new Date();
+                    let month = ((dateNow.getMonth()+1) < 10)?("0"+(dateNow.getMonth()+1)):(dateNow.getMonth()+1);
+                    let date = ((dateNow.getDate()) < 10)?("0"+dateNow.getDate()):(dateNow.getDate());
+                    let hour = ((dateNow.getUTCHours()) < 10)?("0"+dateNow.getUTCHours()):(dateNow.getUTCHours());
+                    let min = ((dateNow.getMinutes()) < 10)?("0"+dateNow.getMinutes()):(dateNow.getMinutes());
+                    let second = ((dateNow.getSeconds()) < 10)?("0"+dateNow.getSeconds()):(dateNow.getSeconds());
+                    message.delay = dateNow.getFullYear() + "-" + month + '-' + date + 'T' + hour + ':' + min + ':' + second;
+                }
+                that.props.dispatch(msgData({
                     selfUuid:global.peruuid,
                     otherUuid:message.from,
-                    isOther:true,
+                    isOther:'true',
                     msgType:'txt',
-                    delay:'message.delay',
+                    delay:message.delay,
                     data:message.data,
-                    isReaded:false,
-                });
-
-                // global.realm.write(()=>{
-                //     global.realm.create('MessageData', {
-                //         selfUuid:global.peruuid,
-                //         otherUuid:message.from,
-                //         isOther:true,
-                //         msgType:'txt',
-                //         delay:message.delay,
-                //         data:message.data,
-                //         isReaded:false,
-                //     });
-                // });
-                // console.log(JSON.stringify(global.realm.objects('MessageData')));
+                    isReaded:'false',
+                    url:'',
+                }));
             },    //收到文本消息
             onPictureMessage: function ( message ) {
                 console.log(JSON.stringify(message));
                 message.isOther = true;
                 message.msgType = 'img';
-                // that.handleRefreshMessage({path:message.url}, true, 'img');
-                that.props.dispatch(msgData(message));
+                if (!message.delay) {
+                    let dateNow = new Date();
+                    let month = ((dateNow.getMonth()+1) < 10)?("0"+(dateNow.getMonth()+1)):(dateNow.getMonth()+1);
+                    let date = ((dateNow.getDate()) < 10)?("0"+dateNow.getDate()):(dateNow.getDate());
+                    let hour = ((dateNow.getUTCHours()) < 10)?("0"+dateNow.getUTCHours()):(dateNow.getUTCHours());
+                    let min = ((dateNow.getMinutes()) < 10)?("0"+dateNow.getMinutes()):(dateNow.getMinutes());
+                    let second = ((dateNow.getSeconds()) < 10)?("0"+dateNow.getSeconds()):(dateNow.getSeconds());
+                    message.delay = dateNow.getFullYear() + "-" + month + '-' + date + 'T' + hour + ':' + min + ':' + second;
+                }
+                that.props.dispatch(msgData({
+                    selfUuid:global.peruuid,
+                    otherUuid:message.from,
+                    isOther:'true',
+                    msgType:'img',
+                    delay:message.delay,
+                    data:'',
+                    isReaded:'false',
+                    url:message.url,
+                }));
             }, //收到图片消息
         });
     }
 
     reqLogin(isFirst){
-
         requestData(`https://app.jiaowangba.com/login?telephone=${this.state.tel}&password=${this.state.pwd}`, (res)=>{
             if (res.type) {
                 alert("错误", res.target._response);
@@ -175,6 +177,7 @@ class Login extends React.Component {
                 storage.save('loginUP', JSON.stringify(res.code));
                 console.log('reqsuccess');
                 global.peruuid = res.code.uuid;
+                this.initMsgData();
                 let options = {
                     apiUrl: WebIM.config.apiURL,
                     user: res.code.uuid,
@@ -185,15 +188,18 @@ class Login extends React.Component {
             }else if (res.status == "redirect") {
                 console.log('reqredirect');
                 global.peruuid = this.state.msgData.uuid;
+                this.initMsgData();
                 let options = {
                     apiUrl: WebIM.config.apiURL,
                     user: this.state.msgData.uuid,
                     pwd: this.state.msgData.password,
                     appKey: WebIM.config.appkey
                 };
-                WebIM.conn.open(options);
                 this.setState({isVisibleModal:false});
                 this.props.navigation.navigate('Tab');
+                loginOnce = true;
+                WebIM.conn.open(options);
+
             }else {
                 this.reqLogout();
                 if (isFirst) {
@@ -217,19 +223,25 @@ class Login extends React.Component {
     }
 
     // 获取本地聊天记录
-    async initMsgData() {
-        try {// try catch 捕获异步执行的异常
-            var value = await AsyncStorage.getItem('msgData');
-            if (value !== null){
-                this.props.dispatch(initMsgData(JSON.parse(value)));
-            } else {
-                this.props.dispatch(initMsgData({}));
-                console.log('消息记录为空');
-            }
-            this.reqLogin(true);
-        } catch (error) {
-            console.log('_get() error: ', error.message);
+    initMsgData() {
+        //开启数据库
+        if(!db){
+          db = sqLite.open();
         }
+        db.transaction((tx)=>{
+          tx.executeSql("select * from user WHERE selfUuid = '" + global.peruuid + "' ", [], (tx, results)=>{
+            let len = results.rows.length;
+            let msgData = [];
+            for(let i=0; i < len; i++){
+              let u = results.rows.item(i);
+              msgData.push(u)
+
+            }
+            this.props.dispatch(initMsgData(msgData));
+          });
+        },(error)=>{//打印异常信息
+          console.warn(error);
+        });
     }
 
     async _get(key) {

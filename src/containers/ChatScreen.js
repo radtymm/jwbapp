@@ -15,6 +15,9 @@ import Sound from 'react-native-sound';
 import ImageCropPicker from 'react-native-image-crop-picker';
 import { connect } from 'react-redux';
 import {msgData} from '../redux/action/actions';
+import SQLite from '../components/SQLite';
+let sqLite = new SQLite();
+let db;
 
 class ChatScreen extends React.Component {
 
@@ -27,10 +30,8 @@ class ChatScreen extends React.Component {
 
     constructor(props, context) {
         super(props, context);
-        this.storageKey = this.props.navigation.state.params.uuid + "&&" + global.peruuid;
         this.state = {
-            msgData:props.msgData.msgData[this.storageKey],
-            // msgData:[],
+            msgData:[],
             scrollToEnd:false,
             message:"",
             keyboardHeight:0,
@@ -38,16 +39,17 @@ class ChatScreen extends React.Component {
             isVisibleModal:false,
         };
         this.handleScrollToEnd = this.handleScrollToEnd.bind(this);
+        this.handleRefreshMessage = this.handleRefreshMessage.bind(this);
     }
 
     componentDidMount() {
+        this.selectMsgData();
         this.keyboardDidShowListener = Keyboard.addListener('keyboardWillShow', this.keyboardDidShow);
         this.keyboardDidHideListener = Keyboard.addListener('keyboardWillHide', this.keyboardDidHide);
     }
 
     componentWillReceiveProps(nextProps){
-        let msgData = Object.assign([], nextProps.msgData.msgData[this.storageKey]);
-        this.setState({msgData:msgData});
+        this.selectMsgData();
     }
 
     componentDidUpdate(){
@@ -61,6 +63,29 @@ class ChatScreen extends React.Component {
         clearTimeout(this.timeout);
         this.keyboardDidShowListener && this.keyboardDidShowListener.remove();
         this.keyboardDidHideListener && this.keyboardDidHideListener.remove();
+    }
+
+    selectMsgData(){
+        //开启数据库
+        if(!db){
+          db = sqLite.open();
+        }
+        //查询
+        db.transaction((tx)=>{
+          tx.executeSql("select * from user WHERE selfUuid = '" + global.peruuid + "' AND otherUuid = '" + this.props.navigation.state.params.uuid + "' ", [], (tx, results)=>{
+            let len = results.rows.length;
+            let msgData = [];
+            for(let i=0; i < len; i++){
+              let u = results.rows.item(i);
+              msgData.push(u)
+              //一般在数据查出来之后，  可能要 setState操作，重新渲染页面
+            }
+            console.log("---------" + JSON.stringify(msgData));
+            this.setState({msgData:msgData});
+          });
+        },(error)=>{//打印异常信息
+          console.warn(error);
+        });
     }
 
     keyboardDidShow = (e) => {
@@ -97,10 +122,11 @@ class ChatScreen extends React.Component {
 
     handleRefreshMessage(msg, isOther, type){
         let message = {};
-        message.isOther = isOther;
+        message.isOther = isOther + "";
         message.msgType = type;
-        message.from = this.props.navigation.state.params.uuid;
-        message.to = global.peruuid;
+        message.otherUuid = this.props.navigation.state.params.uuid;
+        message.selfUuid = global.peruuid;
+        message.isReaded = 'true';
         let dateNow = new Date();
         let month = ((dateNow.getMonth()+1) < 10)?("0"+(dateNow.getMonth()+1)):(dateNow.getMonth()+1);
         let date = ((dateNow.getDate()) < 10)?("0"+dateNow.getDate()):(dateNow.getDate());
@@ -110,9 +136,12 @@ class ChatScreen extends React.Component {
         message.delay = dateNow.getFullYear() + "-" + month + '-' + date + 'T' + hour + ':' + min + ':' + second;
         if (type == 'txt') {
             message.data = msg;
+            message.url = ''
         }else if (type == 'img') {
+            message.data = '';
             message.url = msg.path;
         }
+
         this.props.dispatch(msgData(message));
     }
 
@@ -208,13 +237,13 @@ class ChatScreen extends React.Component {
     renderItem(item, index){
         let {params} = this.props.navigation.state;
         let headImage = {uri: 'https://cdn.jiaowangba.com/' + params.avatar + '?imageView2/1/w/250/h/250/interlace/1/q/96|imageslim', cache:'force-cache'};
-        if (!item.isOther) {
+        if (!(item.isOther=='true')) {
             headImage = {uri: 'https://cdn.jiaowangba.com/' + global.perInfo.avatar + '?imageView2/1/w/250/h/250/interlace/1/q/96|imageslim', cache:'force-cache'};
         }
 
         let ComMsg = <View/>;
         if (item.msgType == 'txt') {
-            ComMsg = <Text style={[styles.chatScreen.msgText, {backgroundColor:item.isOther?"#ffe4ed":"#e1eed2"}]}>{item.data}</Text>;
+            ComMsg = <Text style={[styles.chatScreen.msgText, {backgroundColor:(item.isOther=='true')?"#ffe4ed":"#e1eed2"}]}>{item.data}</Text>;
         }else if (item.msgType == 'img') {
             let imgUrl = item.url + '?imageView2/1/w/250/h/250/interlace/1/q/96|imageslim';
             ComMsg = (
@@ -239,11 +268,11 @@ class ChatScreen extends React.Component {
                         </Text></View>
                     </View>
                     <View onLayout={(event, index)=>{this.handleItemLayoutHeight(event, index)}}
-                         style={[styles.chatScreen.itemView, {justifyContent:!item.isOther?'flex-end':'flex-start', }]}>
-                        {item.isOther?<CachedImage style={styles.chatScreen.headImg} source={headImage}/>:<View/>}
+                         style={[styles.chatScreen.itemView, {justifyContent:!(item.isOther=='true')?'flex-end':'flex-start', }]}>
+                        {(item.isOther=='true')?<CachedImage style={styles.chatScreen.headImg} source={headImage}/>:<View/>}
                         {ComMsg}
-                        {(item.msgType=='txt')?(!item.isOther?<View style={styles.chatScreen.tipView}/>:<View style={styles.chatScreen.tipOtherView}/>):<View/>}
-                        {!item.isOther?<CachedImage style={styles.chatScreen.headImg} source={headImage}/>:<View/>}
+                        {(item.msgType=='txt')?(!(item.isOther=='true')?<View style={styles.chatScreen.tipView}/>:<View style={styles.chatScreen.tipOtherView}/>):<View/>}
+                        {!(item.isOther=='true')?<CachedImage style={styles.chatScreen.headImg} source={headImage}/>:<View/>}
                     </View>
                 </View>
             </TouchableWithoutFeedback>
@@ -296,7 +325,6 @@ class ChatScreen extends React.Component {
         let {params} = this.props.navigation.state;
         let headImage = {uri: 'https://cdn.jiaowangba.com/' + params.avatar, cache:'force-cache'};
 
-        // let msgData = global.realm.objects('MessageData').filtered('selfUuid = "' + global.peruuid + '" AND otherUuid = "' + params.uuid + '"');
 
         return (
             <View style={{flex: 1, backgroundColor:"#fff"}} >

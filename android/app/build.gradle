@@ -148,6 +148,7 @@ android {
 
 dependencies {
     compile project(':realm')
+    compile project(':react-native-sqlite-storage')
     compile project(':react-native-sound')
     compile project(':react-native-audio')
     compile project(':react-native-fetch-blob')
