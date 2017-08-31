@@ -7,7 +7,6 @@ import {
 import styles from '../styleSheet/Styles';
 import {requestData, requestDataPost,} from '../libs/request.js';
 import WebIM from '../../WebIM';
-import storage from '../libs/storage';
 import EmojiPicker, { EmojiOverlay } from 'react-native-emoji-picker';
 import CachedImage from 'react-native-cached-image';
 import {AudioRecorder, AudioUtils} from 'react-native-audio';
@@ -80,7 +79,6 @@ class ChatScreen extends React.Component {
               msgData.push(u)
               //一般在数据查出来之后，  可能要 setState操作，重新渲染页面
             }
-            console.log("---------" + JSON.stringify(msgData));
             this.setState({msgData:msgData});
           });
         },(error)=>{//打印异常信息
@@ -146,10 +144,10 @@ class ChatScreen extends React.Component {
     }
 
     handleScrollToEnd(){
-        if (!this.refs.flat) {
+        if (this.refs.flat && this.refs.flat.scrollToEnd) {
+            this.refs.flat.scrollToEnd({animated: false});
             return;
         }
-        this.refs.flat.scrollToEnd({animated: false});
     }
 
     handleSendMessage(message){

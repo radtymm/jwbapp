@@ -8,7 +8,7 @@ import Swiper from 'react-native-swiper';
 import WebIM from '../../WebIM';
 import storage from '../libs/storage';
 import { connect } from 'react-redux';
-import {initMsgData, msgData} from '../redux/action/actions';
+import {initMsgData, msgData, msgList} from '../redux/action/actions';
 import JPushModule from 'jpush-react-native';
 import Realm from 'realm';
 import SQLite from '../components/SQLite';
@@ -29,10 +29,12 @@ class Login extends React.Component {
         };
 
         this.reqLogout = this.reqLogout.bind(this);
+        this.handleReceiveMsg = this.handleReceiveMsg.bind(this);
         if(!db){
           db = sqLite.open();
         }
         sqLite.createTable();
+        sqLite.createTableMessageList();
         this._get('loginUP');
         this.webIMConnection();
     }
@@ -65,6 +67,59 @@ class Login extends React.Component {
             console.log("map.extra: " + map.key);
         });
 
+    }
+
+    handleReceiveMsg(msg, type){
+        console.log(JSON.stringify(msg));
+        let message = msg;
+        let that = this;
+        if (!message.delay) {
+            let dateNow = new Date();
+            let month = ((dateNow.getMonth()+1) < 10)?("0"+(dateNow.getMonth()+1)):(dateNow.getMonth()+1);
+            let date = ((dateNow.getDate()) < 10)?("0"+dateNow.getDate()):(dateNow.getDate());
+            let hour = ((dateNow.getUTCHours()) < 10)?("0"+dateNow.getUTCHours()):(dateNow.getUTCHours());
+            let min = ((dateNow.getMinutes()) < 10)?("0"+dateNow.getMinutes()):(dateNow.getMinutes());
+            let second = ((dateNow.getSeconds()) < 10)?("0"+dateNow.getSeconds()):(dateNow.getSeconds());
+            message.delay = dateNow.getFullYear() + "-" + month + '-' + date + 'T' + hour + ':' + min + ':' + second;
+        }
+        if (type == 'txt') {
+            message.url = '';
+        }else if(type == 'img'){
+            message.data = '';
+        }
+
+        that.props.dispatch(msgData({
+            selfUuid:global.peruuid,
+            otherUuid:message.from,
+            isOther:'true',
+            msgType: type,
+            delay:message.delay,
+            data:message.data,
+            isReaded:'false',
+            url:message.url,
+        }));
+
+        console.log('https://app.jiaowangba.com/info?uuid=' + message.from);
+        console.log('https://app.jiaowangba.com/info?uuid=' + global.peruuid);
+        requestData('https://app.jiaowangba.com/info?uuid=' + message.from, (res)=>{
+            if (res.status == 'success') {
+
+                that.props.dispatch(msgList({
+                    selfUuid:global.peruuid,
+                    otherUuid:message.from,
+                    selfAndOtherid:global.peruuid + "&&" + message.from,
+                    headUrl: res.code.avatar,
+                    otherName:res.code.nickname,
+                    isOther:'true',
+                    message:message.data,
+                    time:message.delay,
+                    msgType:type,
+                    countNoRead:1,
+                }));
+            }else {
+                Alert.alert("提示", "网络异常");
+            }
+        });
     }
 
     webIMConnection(){
@@ -119,51 +174,11 @@ class Login extends React.Component {
             },
             onTextMessage: function ( message ) {
                 console.log(JSON.stringify(message));
-                message.isOther = true;
-                message.msgType = 'txt';
-                if (!message.delay) {
-                    let dateNow = new Date();
-                    let month = ((dateNow.getMonth()+1) < 10)?("0"+(dateNow.getMonth()+1)):(dateNow.getMonth()+1);
-                    let date = ((dateNow.getDate()) < 10)?("0"+dateNow.getDate()):(dateNow.getDate());
-                    let hour = ((dateNow.getUTCHours()) < 10)?("0"+dateNow.getUTCHours()):(dateNow.getUTCHours());
-                    let min = ((dateNow.getMinutes()) < 10)?("0"+dateNow.getMinutes()):(dateNow.getMinutes());
-                    let second = ((dateNow.getSeconds()) < 10)?("0"+dateNow.getSeconds()):(dateNow.getSeconds());
-                    message.delay = dateNow.getFullYear() + "-" + month + '-' + date + 'T' + hour + ':' + min + ':' + second;
-                }
-                that.props.dispatch(msgData({
-                    selfUuid:global.peruuid,
-                    otherUuid:message.from,
-                    isOther:'true',
-                    msgType:'txt',
-                    delay:message.delay,
-                    data:message.data,
-                    isReaded:'false',
-                    url:'',
-                }));
+                that.handleReceiveMsg(message, 'txt');
             },    //收到文本消息
             onPictureMessage: function ( message ) {
                 console.log(JSON.stringify(message));
-                message.isOther = true;
-                message.msgType = 'img';
-                if (!message.delay) {
-                    let dateNow = new Date();
-                    let month = ((dateNow.getMonth()+1) < 10)?("0"+(dateNow.getMonth()+1)):(dateNow.getMonth()+1);
-                    let date = ((dateNow.getDate()) < 10)?("0"+dateNow.getDate()):(dateNow.getDate());
-                    let hour = ((dateNow.getUTCHours()) < 10)?("0"+dateNow.getUTCHours()):(dateNow.getUTCHours());
-                    let min = ((dateNow.getMinutes()) < 10)?("0"+dateNow.getMinutes()):(dateNow.getMinutes());
-                    let second = ((dateNow.getSeconds()) < 10)?("0"+dateNow.getSeconds()):(dateNow.getSeconds());
-                    message.delay = dateNow.getFullYear() + "-" + month + '-' + date + 'T' + hour + ':' + min + ':' + second;
-                }
-                that.props.dispatch(msgData({
-                    selfUuid:global.peruuid,
-                    otherUuid:message.from,
-                    isOther:'true',
-                    msgType:'img',
-                    delay:message.delay,
-                    data:'',
-                    isReaded:'false',
-                    url:message.url,
-                }));
+                that.handleReceiveMsg(message, 'img');
             }, //收到图片消息
         });
     }
