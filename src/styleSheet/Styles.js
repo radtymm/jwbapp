@@ -249,7 +249,7 @@ const chatScreen = StyleSheet.create({
 });
 const myNotificationsScreen = StyleSheet.create({
     heartImg: {width: setScaleSize(120), height: setScaleSize(120), borderRadius:setScaleSize(60)},
-
+    noReadText: {backgroundColor:'red', top:setScaleSize(20), left:setScaleSize(80), textAlign:'center', fontSize:setScaleSize(25), color:"#fff", position:"absolute", width:setScaleSize(40), height:setScaleSize(40), borderRadius:setScaleSize(20)},
 });
 const styles = {
     PageRegister: PageRegister,

@@ -8,9 +8,9 @@ import {
 } from 'react-native';
 import styles from '../styleSheet/Styles';
 import SQLite from '../components/SQLite';
+import CachedImage from 'react-native-cached-image';
 import { connect } from 'react-redux';
 let sqLite = new SQLite();
-let db;
 
 class MyNotificationsScreen extends React.Component {
   static navigationOptions = {
@@ -28,7 +28,7 @@ class MyNotificationsScreen extends React.Component {
   // 映射redux中的数值到页面的Props中的值
   static mapStateToProps(state) {
       let props = {};
-      props.msgData = state.msgData;
+      props.msgList = state.msgList;
       return props;
   }
 
@@ -40,20 +40,22 @@ class MyNotificationsScreen extends React.Component {
   }
 
   componentDidMount(){
+      this.selectMsgData()
       setTimeout(()=>this.selectMsgData(), 100);
   }
 
   componentWillReceiveProps(nextProps){
+      this.selectMsgData()
       setTimeout(()=>this.selectMsgData(), 100);
   }
 
   selectMsgData(){
       //开启数据库
-      if(!db){
-        db = sqLite.open();
+      if(!global.db){
+        global.db = sqLite.open();
       }
       //查询
-      db.transaction((tx)=>{
+      global.db.transaction((tx)=>{
         tx.executeSql("select * from MSGLIST WHERE selfUuid = '" + global.peruuid + "' ", [], (tx, results)=>{
           let len = results.rows.length;
           let msgData = [];
@@ -62,7 +64,7 @@ class MyNotificationsScreen extends React.Component {
             msgData.push(u)
             //一般在数据查出来之后，  可能要 setState操作，重新渲染页面
           }
-          console.log("+++++++++++++++++++++++++++++++" + JSON.stringify(msgData));
+          console.log("-------------------" + JSON.stringify(msgData));
           this.setState({msgData:msgData});
         });
       },(error)=>{//打印异常信息
@@ -72,6 +74,7 @@ class MyNotificationsScreen extends React.Component {
 
     renderMsgList(){
 
+        console.log("++++++++++++++++++" + JSON.stringify(this.state.msgData));
         return (
             <View style={styles.pageLikeWho.flatView}>
                 <FlatList
@@ -81,7 +84,7 @@ class MyNotificationsScreen extends React.Component {
                     renderItem={({item , index}) => {
                         let src = require('../images/headDef.jpg');
                         if (item.headUrl){
-                            src = {uri: 'https://cdn.jiaowangba.com/' + item.headUrl};
+                            src = {uri: 'https://cdn.jiaowangba.com/' + item.headUrl + '?imageView2/1/w/250/h/250/interlace/1/q/96|imageslim'};
                         }
                         let sendTime = "";
                         if (item.time) {
@@ -92,8 +95,8 @@ class MyNotificationsScreen extends React.Component {
                         return (
                             <TouchableOpacity style={styles.pageLikeWho.flatTouch} onPress={() => {}}>
                                 <View style={styles.pageLikeWho.flatItemView}>
-                                    <Image resizeMode="cover" style={ styles.myNotificationsScreen.heartImg}
-                                           source={src}/>
+                                    <CachedImage resizeMode="cover" style={ styles.myNotificationsScreen.heartImg} source={src}/>
+                                    {item.countNoRead==0?<View/>:<Text style={styles.myNotificationsScreen.noReadText}>{item.countNoRead}</Text>}
                                     <View style={styles.pageLikeWho.itemTextView}>
                                         <View style={{flex:1, flexDirection:"row", justifyContent:'space-between'}}>
                                             <Text style={styles.pageLikeWho.realname}>{item.otherName}</Text>

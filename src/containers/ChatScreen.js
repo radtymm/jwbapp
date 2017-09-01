@@ -13,10 +13,9 @@ import {AudioRecorder, AudioUtils} from 'react-native-audio';
 import Sound from 'react-native-sound';
 import ImageCropPicker from 'react-native-image-crop-picker';
 import { connect } from 'react-redux';
-import {msgData} from '../redux/action/actions';
+import {msgData, msgList} from '../redux/action/actions';
 import SQLite from '../components/SQLite';
 let sqLite = new SQLite();
-let db;
 
 class ChatScreen extends React.Component {
 
@@ -66,11 +65,11 @@ class ChatScreen extends React.Component {
 
     selectMsgData(){
         //开启数据库
-        if(!db){
-          db = sqLite.open();
+        if(!global.db){
+          global.db = sqLite.open();
         }
         //查询
-        db.transaction((tx)=>{
+        global.db.transaction((tx)=>{
           tx.executeSql("select * from user WHERE selfUuid = '" + global.peruuid + "' AND otherUuid = '" + this.props.navigation.state.params.uuid + "' ", [], (tx, results)=>{
             let len = results.rows.length;
             let msgData = [];
@@ -79,7 +78,7 @@ class ChatScreen extends React.Component {
               msgData.push(u)
               //一般在数据查出来之后，  可能要 setState操作，重新渲染页面
             }
-            this.setState({msgData:msgData});
+            this.setState({msgData:msgData, len:len});
           });
         },(error)=>{//打印异常信息
           console.warn(error);
@@ -119,6 +118,7 @@ class ChatScreen extends React.Component {
     }
 
     handleRefreshMessage(msg, isOther, type){
+        let that = this;
         let message = {};
         message.isOther = isOther + "";
         message.msgType = type;
@@ -141,6 +141,19 @@ class ChatScreen extends React.Component {
         }
 
         this.props.dispatch(msgData(message));
+
+        that.props.dispatch(msgList({
+            selfUuid:global.peruuid,
+            otherUuid:message.otherUuid,
+            selfAndOtherid:global.peruuid + "&&" + message.otherUuid,
+            headUrl: that.props.navigation.state.params.avatar,
+            otherName:that.props.navigation.state.params.nickname,
+            isOther:message.isOther,
+            message:message.data,
+            time:message.delay,
+            msgType:type,
+            countNoRead:0,
+        }));
     }
 
     handleScrollToEnd(){
@@ -322,7 +335,6 @@ class ChatScreen extends React.Component {
         }
         let {params} = this.props.navigation.state;
         let headImage = {uri: 'https://cdn.jiaowangba.com/' + params.avatar, cache:'force-cache'};
-
 
         return (
             <View style={{flex: 1, backgroundColor:"#fff"}} >

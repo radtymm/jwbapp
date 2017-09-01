@@ -4,21 +4,21 @@ import{
 } from 'react-native';
 import SQLiteStorage from 'react-native-sqlite-storage';
 SQLiteStorage.DEBUG(true);
-var database_name = "test.db";//数据库文件
-var database_version = "1.0";//版本号
+var database_name = "chat.db";//数据库文件
+var database_version = "2.0";//版本号
 var database_displayname = "MySQLite";
 var database_size = -1;//-1应该是表示无限制
 var db;
 
 export default class  SQLite extends Component{
-    componentWillUnmount(){
+componentWillUnmount(){
     if(db){
         this._successCB('close');
         db.close();
     }else {
         console.log("SQLiteStorage not open");
     }
-  }
+}
 
   open(){
     db = SQLiteStorage.openDatabase(
@@ -45,6 +45,7 @@ export default class  SQLite extends Component{
           tx.executeSql('CREATE TABLE IF NOT EXISTS USER(' +
               'id INTEGER PRIMARY KEY  AUTOINCREMENT,' +
               'selfUuid varchar,'+
+              'hxId varchar,'+
               'otherUuid VARCHAR,' +
               'isOther VARCHAR,' +
               'msgType VARCHAR,' +
@@ -102,7 +103,7 @@ if (!db) {
 }
 db.transaction((tx)=>{
   tx.executeSql('delete from user',[],()=>{
-      
+
   });
 });
 }
@@ -170,12 +171,13 @@ insertUserData(userData){
             let isOther = user.isOther;
             let msgType = user.msgType;
             let delay = user.delay;
+            let hxId = user.hxId;
             let url = user.url;
             let data = user.data;
             let isReaded = user.isReaded;
-            let sql = "INSERT INTO user(selfUuid,otherUuid,isOther,msgType,delay,url,data,isReaded)"+
-            "values(?,?,?,?,?,?,?,?)";
-            tx.executeSql(sql,[selfUuid,otherUuid,isOther,msgType,delay,url,data,isReaded],()=>{
+            let sql = "INSERT INTO user(selfUuid,hxId,otherUuid,isOther,msgType,delay,url,data,isReaded)"+
+            "values(?,?,?,?,?,?,?,?,?)";
+            tx.executeSql(sql,[selfUuid,hxId,otherUuid,isOther,msgType,delay,url,data,isReaded],()=>{
               },(err)=>{
                 console.log(err);
               }

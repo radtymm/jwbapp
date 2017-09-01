@@ -13,7 +13,6 @@ import JPushModule from 'jpush-react-native';
 import Realm from 'realm';
 import SQLite from '../components/SQLite';
 let sqLite = new SQLite();
-let db;
 
 let loginOnce = false;
 
@@ -25,13 +24,12 @@ class Login extends React.Component {
         super(props, context);
         this.state = {
             msgData:{},
-            isVisibleModal:false,
         };
 
         this.reqLogout = this.reqLogout.bind(this);
         this.handleReceiveMsg = this.handleReceiveMsg.bind(this);
-        if(!db){
-          db = sqLite.open();
+        if(!global.db){
+          global.db = sqLite.open();
         }
         sqLite.createTable();
         sqLite.createTableMessageList();
@@ -70,7 +68,6 @@ class Login extends React.Component {
     }
 
     handleReceiveMsg(msg, type){
-        console.log(JSON.stringify(msg));
         let message = msg;
         let that = this;
         if (!message.delay) {
@@ -92,6 +89,7 @@ class Login extends React.Component {
             selfUuid:global.peruuid,
             otherUuid:message.from,
             isOther:'true',
+            hxId:message.id,
             msgType: type,
             delay:message.delay,
             data:message.data,
@@ -99,8 +97,6 @@ class Login extends React.Component {
             url:message.url,
         }));
 
-        console.log('https://app.jiaowangba.com/info?uuid=' + message.from);
-        console.log('https://app.jiaowangba.com/info?uuid=' + global.peruuid);
         requestData('https://app.jiaowangba.com/info?uuid=' + message.from, (res)=>{
             if (res.status == 'success') {
 
@@ -130,7 +126,6 @@ class Login extends React.Component {
                 // 手动上线指的是调用conn.setPresence(); 如果conn初始化时已将isAutoLogin设置为true
                 // 则无需调用conn.setPresence();
                 console.log('loginsuccess');
-                that.setState({isVisibleModal:false});
                 if (!loginOnce) {
                     that.props.navigation.navigate('Tab');
                 }else {
@@ -143,7 +138,6 @@ class Login extends React.Component {
                     if (res.status != 'error') {
                     }
                 });
-                this.setState({isVisibleModal:true});
                 that.reqLogout();
             },         //连接关闭回调
             onError: (error) => {
@@ -154,21 +148,37 @@ class Login extends React.Component {
                   if (WebIM.conn.autoReconnectNumTotal < WebIM.conn.autoReconnectNumMax) {
                     return;
                   }
-                  Alert.alert('错误', '请重新登录');
+                  Alert.alert('错误', '请重新登录', [
+                      {text:'确定', onPress:()=>{
+                          that.reqLogout();
+                          that.props.navigation.navigate("Login");
+                      }}
+                  ]);
                 //   NavigationActions.login()
                   return;
                 }
                 // 8: offline by multi login
                 if (error.type == WebIM.statusCode.WEBIM_CONNCTION_SERVER_ERROR) {
                   console.log('WEBIM_CONNCTION_SERVER_ERROR');
-                  Alert.alert('错误', '请重新登录');
+                  Alert.alert('错误', '请重新登录', [
+                      {text:'确定', onPress:()=>{
+                          that.reqLogout();
+                          that.props.navigation.navigate("Login");
+                      }}
+                  ]);
                 //   NavigationActions.login()
                   return;
                 }
                 if (error.type == 1) {
                   let data = error.data ? error.data.data : ''
-                  Alert.alert('Error', 'offline by multi login')
+                //   Alert.alert('Error', 'offline by multi login')
                 //   store.dispatch(LoginActions.loginFailure(error))
+                    Alert.alert('错误', '请重新登录', [
+                        {text:'确定', onPress:()=>{
+                            that.reqLogout();
+                            that.props.navigation.navigate("Login");
+                        }}
+                    ]);
                 }
 
             },
@@ -210,7 +220,6 @@ class Login extends React.Component {
                     pwd: this.state.msgData.password,
                     appKey: WebIM.config.appkey
                 };
-                this.setState({isVisibleModal:false});
                 this.props.navigation.navigate('Tab');
                 loginOnce = true;
                 WebIM.conn.open(options);
@@ -234,16 +243,15 @@ class Login extends React.Component {
             }
         });
         global.WebIM.conn.close();
-        this.setState({isVisibleModal:true});
     }
 
     // 获取本地聊天记录
     initMsgData() {
         //开启数据库
-        if(!db){
-          db = sqLite.open();
+        if(!global.db){
+          global.db = sqLite.open();
         }
-        db.transaction((tx)=>{
+        global.db.transaction((tx)=>{
           tx.executeSql("select * from user WHERE selfUuid = '" + global.peruuid + "' ", [], (tx, results)=>{
             let len = results.rows.length;
             let msgData = [];
@@ -305,34 +313,32 @@ class Login extends React.Component {
         let that = this;
         return (
             <View style={{flex:1, backgroundColor:"#fff"}}>
-                <Modal transparent={false} animationType="fade" visible={this.state.isVisibleModal} onRequestClose={()=>false}>
-                    <Swiper height={styles.HEIGHT} width={styles.WIDTH}
-                        loop={styles.isIOS?false:true}
-                        showsButtons={false}
-                        showsPagination={false}
-                        index={0}
-                        autoplayTimeout={5}
-                        autoplay={true}
-                        horizontal={true}
-                        >
-                        {this.renderImg()}
-                    </Swiper>
-                    <View style={styles.pageLogin.container}>
-                        <View style={styles.pageLogin.inputView}>
-                            <TextInput onChangeText={(tel)=>this.setState({tel:tel})} underlineColorAndroid="transparent" placeholderTextColor="#fff" keyboardType='numeric' placeholder="手机号" style={styles.pageLogin.input} />
-                        </View>
-                        <View style={[styles.pageLogin.inputView, {marginTop:styles.setScaleSize(30)}]}>
-                            <TextInput onChangeText={(pwd)=>this.setState({pwd:pwd})} secureTextEntry={true} underlineColorAndroid="transparent" placeholderTextColor="#fff" placeholder="密码" style={styles.pageLogin.input} />
-                        </View>
-                        <TouchableOpacity onPress={()=>this.handleLogin()} style={styles.pageLogin.submit}>
-                            <View><Text style={styles.pageLogin.submitText}>登录</Text></View>
-                        </TouchableOpacity>
-                        <View style={styles.pageLogin.forgetpwd}>
-                            <Text style={styles.pageLogin.forgetpwdText} onPress={()=>Alert.alert("提示", "请加客服微信:hunlian21", [{text:"OK", onPress:()=>null}])}>忘记密码</Text>
-                            <Text style={styles.pageLogin.forgetpwdText} onPress={()=>{this.setState({isVisibleModal:false});this.props.navigation.navigate("PageRegister", {logout:()=>that.reqLogout()})}}>用户注册</Text>
-                        </View>
+                <Swiper height={styles.HEIGHT} width={styles.WIDTH}
+                    loop={styles.isIOS?false:true}
+                    showsButtons={false}
+                    showsPagination={false}
+                    index={0}
+                    autoplayTimeout={5}
+                    autoplay={true}
+                    horizontal={true}
+                    >
+                    {this.renderImg()}
+                </Swiper>
+                <View style={styles.pageLogin.container}>
+                    <View style={styles.pageLogin.inputView}>
+                        <TextInput onChangeText={(tel)=>this.setState({tel:tel})} underlineColorAndroid="transparent" placeholderTextColor="#fff" keyboardType='numeric' placeholder="手机号" style={styles.pageLogin.input} />
                     </View>
-                </Modal>
+                    <View style={[styles.pageLogin.inputView, {marginTop:styles.setScaleSize(30)}]}>
+                        <TextInput onChangeText={(pwd)=>this.setState({pwd:pwd})} secureTextEntry={true} underlineColorAndroid="transparent" placeholderTextColor="#fff" placeholder="密码" style={styles.pageLogin.input} />
+                    </View>
+                    <TouchableOpacity onPress={()=>this.handleLogin()} style={styles.pageLogin.submit}>
+                        <View><Text style={styles.pageLogin.submitText}>登录</Text></View>
+                    </TouchableOpacity>
+                    <View style={styles.pageLogin.forgetpwd}>
+                        <Text style={styles.pageLogin.forgetpwdText} onPress={()=>Alert.alert("提示", "请加客服微信:hunlian21", [{text:"OK", onPress:()=>null}])}>忘记密码</Text>
+                        <Text style={styles.pageLogin.forgetpwdText} onPress={()=>{this.props.navigation.navigate("PageRegister", {logout:()=>that.reqLogout()})}}>用户注册</Text>
+                    </View>
+                </View>
             </View>
         );
     }
