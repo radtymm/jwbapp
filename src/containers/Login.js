@@ -29,14 +29,14 @@ class Login extends React.Component {
 
     componentDidMount(){
         this.initMsgData();
-        this.jpush();
+        if(!styles.isIOS) this.jpush();
     }
 
     componentWillUnmount() {
     }
 
     jpush(){
-        if(!styles.isIOS) JPushModule.initPush();
+        JPushModule.initPush();
         console.log("jpush");
         // 在收到点击事件之前调用此接口
         JPushModule.notifyJSDidLoad((resultCode) => {
@@ -60,7 +60,7 @@ class Login extends React.Component {
 
     webIMConnection(){
         console.log("------------------");
-        
+
         let that = this;
         WebIM.conn.listen({
             onOpened: function ( message ) {          //连接成功回调

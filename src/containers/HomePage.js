@@ -142,7 +142,7 @@ class HomePage extends React.Component {
                     data={dataLeft}
                     keyExtractor = {(item, index) => ""+item+index}
                     ref={"flat"}
-                    onEndReachedThreshold={styles.isIOS?(-0.1):0.5}
+                    onEndReachedThreshold={styles.isIOS?(-0.5):0.5}
                     onEndReached={(info) => {
                         this.loadMore();
                     } }
