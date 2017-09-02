@@ -14,6 +14,7 @@ import {
 
 import  PageBaseData from './PageBaseData';
 import styles from '../styleSheet/Styles';
+import CachedImage from 'react-native-cached-image';
 import {requestData} from '../libs/request';
 
 class PageLikeMe extends React.Component {
@@ -85,13 +86,13 @@ class PageLikeMe extends React.Component {
                             }
                             let src = require('../images/headDef.jpg');
                             if (item.users_i.avatar){
-                                src = {uri: 'https://cdn.jiaowangba.com/' + item.users_i.avatar};
+                                src = {uri: 'https://cdn.jiaowangba.com/' + item.users_i.avatar + '?imageView2/1/w/250/h/250/interlace/1/q/96|imageslim'};
                             }
 
                             return (
                                 <TouchableOpacity style={styles.pageLikeWho.flatTouch} onPress={() => this.props.navigation.navigate('PageBaseData', item.users_i)}>
                                     <View style={styles.pageLikeWho.flatItemView}>
-                                        <Image resizeMode="cover" style={ styles.pageLikeWho.heartImg}
+                                        <CachedImage resizeMode="cover" style={ styles.pageLikeWho.heartImg}
                                                source={src}/>
                                         <View style={styles.pageLikeWho.itemTextView}>
                                             <View style={{flex:1, flexDirection:"row", justifyContent:'space-between'}}>

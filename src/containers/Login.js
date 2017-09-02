@@ -8,8 +8,12 @@ import Swiper from 'react-native-swiper';
 import WebIM from '../../WebIM';
 import storage from '../libs/storage';
 import { connect } from 'react-redux';
-import {initMsgData, msgData} from '../redux/action/actions';
+import {initMsgData, msgData, msgList} from '../redux/action/actions';
 import JPushModule from 'jpush-react-native';
+import SQLite from '../components/SQLite';
+let sqLite = new SQLite();
+
+let loginOnce = false;
 
 global.WebIM = WebIM;
 
@@ -19,10 +23,15 @@ class Login extends React.Component {
         super(props, context);
         this.state = {
             msgData:{},
-            isVisibleModal:false,
         };
 
         this.reqLogout = this.reqLogout.bind(this);
+        this.handleReceiveMsg = this.handleReceiveMsg.bind(this);
+        if(!global.db){
+          global.db = sqLite.open();
+        }
+        sqLite.createTable();
+        sqLite.createTableMessageList();
         this._get('loginUP');
         this.webIMConnection();
     }
@@ -30,14 +39,15 @@ class Login extends React.Component {
     componentDidMount(){
         this.initMsgData();
         if(!styles.isIOS) this.jpush();
+        this.reqLogin(true);
     }
 
     componentWillUnmount() {
+        sqLite.close();
     }
 
     jpush(){
         JPushModule.initPush();
-        console.log("jpush");
         // 在收到点击事件之前调用此接口
         JPushModule.notifyJSDidLoad((resultCode) => {
             if (resultCode === 0) {
@@ -55,11 +65,60 @@ class Login extends React.Component {
             console.log("map.extra: " + map.key);
         });
 
+    }
 
+    handleReceiveMsg(msg, type){
+        let message = msg;
+        let that = this;
+        if (!message.delay) {
+            let dateNow = new Date();
+            let month = ((dateNow.getMonth()+1) < 10)?("0"+(dateNow.getMonth()+1)):(dateNow.getMonth()+1);
+            let date = ((dateNow.getDate()) < 10)?("0"+dateNow.getDate()):(dateNow.getDate());
+            let hour = ((dateNow.getUTCHours()) < 10)?("0"+dateNow.getUTCHours()):(dateNow.getUTCHours());
+            let min = ((dateNow.getMinutes()) < 10)?("0"+dateNow.getMinutes()):(dateNow.getMinutes());
+            let second = ((dateNow.getSeconds()) < 10)?("0"+dateNow.getSeconds()):(dateNow.getSeconds());
+            message.delay = dateNow.getFullYear() + "-" + month + '-' + date + 'T' + hour + ':' + min + ':' + second;
+        }
+        if (type == 'txt') {
+            message.url = '';
+        }else if(type == 'img'){
+            message.data = '';
+        }
+
+        that.props.dispatch(msgData({
+            selfUuid:global.peruuid,
+            otherUuid:message.from,
+            isOther:'true',
+            hxId:message.id,
+            msgType: type,
+            delay:message.delay,
+            data:message.data,
+            isReaded:'false',
+            url:message.url,
+        }));
+
+        requestData('https://app.jiaowangba.com/info?uuid=' + message.from, (res)=>{
+            if (res.status == 'success') {
+
+                that.props.dispatch(msgList({
+                    selfUuid:global.peruuid,
+                    otherUuid:message.from,
+                    selfAndOtherid:global.peruuid + "&&" + message.from,
+                    headUrl: res.code.avatar,
+                    otherName:res.code.nickname,
+                    isOther:'true',
+                    message:message.data,
+                    time:message.delay,
+                    msgType:type,
+                    countNoRead:1,
+                }));
+            }else {
+                Alert.alert("提示", "网络异常");
+            }
+        });
     }
 
     webIMConnection(){
-        console.log("------------------");
 
         let that = this;
         WebIM.conn.listen({
@@ -68,8 +127,11 @@ class Login extends React.Component {
                 // 手动上线指的是调用conn.setPresence(); 如果conn初始化时已将isAutoLogin设置为true
                 // 则无需调用conn.setPresence();
                 console.log('loginsuccess');
-                that.setState({isVisibleModal:false});
-                that.props.navigation.navigate('Tab');
+                if (!loginOnce) {
+                    that.props.navigation.navigate('Tab');
+                }else {
+                    loginOnce = false;
+                }
             },
             onClosed: function ( message ) {
                 console.log("onClosed");
@@ -77,7 +139,6 @@ class Login extends React.Component {
                     if (res.status != 'error') {
                     }
                 });
-                this.setState({isVisibleModal:true});
                 that.reqLogout();
             },         //连接关闭回调
             onError: (error) => {
@@ -88,41 +149,52 @@ class Login extends React.Component {
                   if (WebIM.conn.autoReconnectNumTotal < WebIM.conn.autoReconnectNumMax) {
                     return;
                   }
-                  Alert.alert('错误', '请重新登录');
+                  Alert.alert('错误', '请重新登录', [
+                      {text:'确定', onPress:()=>{
+                          that.reqLogout();
+                          that.props.navigation.navigate("Login");
+                      }}
+                  ]);
                 //   NavigationActions.login()
                   return;
                 }
                 // 8: offline by multi login
                 if (error.type == WebIM.statusCode.WEBIM_CONNCTION_SERVER_ERROR) {
                   console.log('WEBIM_CONNCTION_SERVER_ERROR');
-                  Alert.alert('错误', '请重新登录');
+                  Alert.alert('错误', '请重新登录', [
+                      {text:'确定', onPress:()=>{
+                          that.reqLogout();
+                          that.props.navigation.navigate("Login");
+                      }}
+                  ]);
                 //   NavigationActions.login()
                   return;
                 }
                 if (error.type == 1) {
                   let data = error.data ? error.data.data : ''
-                  Alert.alert('Error', 'offline by multi login')
+                //   Alert.alert('Error', 'offline by multi login')
                 //   store.dispatch(LoginActions.loginFailure(error))
+                    Alert.alert('错误', '请重新登录', [
+                        {text:'确定', onPress:()=>{
+                            that.reqLogout();
+                            that.props.navigation.navigate("Login");
+                        }}
+                    ]);
                 }
+
             },
             onTextMessage: function ( message ) {
                 console.log(JSON.stringify(message));
-                message.isOther = true;
-                message.msgType = 'txt';
-                that.props.dispatch(msgData(message));
+                that.handleReceiveMsg(message, 'txt');
             },    //收到文本消息
             onPictureMessage: function ( message ) {
                 console.log(JSON.stringify(message));
-                message.isOther = true;
-                message.msgType = 'img';
-                // that.handleRefreshMessage({path:message.url}, true, 'img');
-                that.props.dispatch(msgData(message));
+                that.handleReceiveMsg(message, 'img');
             }, //收到图片消息
         });
     }
 
     reqLogin(isFirst){
-
         requestData(`https://app.jiaowangba.com/login?telephone=${this.state.tel}&password=${this.state.pwd}`, (res)=>{
             if (res.type) {
                 alert("错误", res.target._response);
@@ -131,6 +203,7 @@ class Login extends React.Component {
                 storage.save('loginUP', JSON.stringify(res.code));
                 console.log('reqsuccess');
                 global.peruuid = res.code.uuid;
+                this.initMsgData();
                 let options = {
                     apiUrl: WebIM.config.apiURL,
                     user: res.code.uuid,
@@ -141,15 +214,17 @@ class Login extends React.Component {
             }else if (res.status == "redirect") {
                 console.log('reqredirect');
                 global.peruuid = this.state.msgData.uuid;
+                this.initMsgData();
                 let options = {
                     apiUrl: WebIM.config.apiURL,
                     user: this.state.msgData.uuid,
                     pwd: this.state.msgData.password,
                     appKey: WebIM.config.appkey
                 };
-                WebIM.conn.open(options);
-                this.setState({isVisibleModal:false});
                 this.props.navigation.navigate('Tab');
+                loginOnce = true;
+                WebIM.conn.open(options);
+
             }else {
                 this.reqLogout();
                 if (isFirst) {
@@ -169,23 +244,28 @@ class Login extends React.Component {
             }
         });
         global.WebIM.conn.close();
-        this.setState({isVisibleModal:true});
     }
 
     // 获取本地聊天记录
-    async initMsgData() {
-        try {// try catch 捕获异步执行的异常
-            var value = await AsyncStorage.getItem('msgData');
-            if (value !== null){
-                this.props.dispatch(initMsgData(JSON.parse(value)));
-            } else {
-                this.props.dispatch(initMsgData({}));
-                console.log('消息记录为空');
-            }
-            this.reqLogin(true);
-        } catch (error) {
-            console.log('_get() error: ', error.message);
+    initMsgData() {
+        //开启数据库
+        if(!global.db){
+          global.db = sqLite.open();
         }
+        global.db.transaction((tx)=>{
+          tx.executeSql("select * from user WHERE selfUuid = '" + global.peruuid + "' ", [], (tx, results)=>{
+            let len = results.rows.length;
+            let msgData = [];
+            for(let i=0; i < len; i++){
+              let u = results.rows.item(i);
+              msgData.push(u)
+
+            }
+            this.props.dispatch(initMsgData(msgData));
+          });
+        },(error)=>{//打印异常信息
+          console.warn(error);
+        });
     }
 
     async _get(key) {
@@ -234,34 +314,32 @@ class Login extends React.Component {
         let that = this;
         return (
             <View style={{flex:1, backgroundColor:"#fff"}}>
-                <Modal transparent={false} animationType="fade" visible={this.state.isVisibleModal} onRequestClose={()=>false}>
-                    <Swiper height={styles.HEIGHT} width={styles.WIDTH}
-                        loop={styles.isIOS?false:true}
-                        showsButtons={false}
-                        showsPagination={false}
-                        index={0}
-                        autoplayTimeout={5}
-                        autoplay={true}
-                        horizontal={true}
-                        >
-                        {this.renderImg()}
-                    </Swiper>
-                    <View style={styles.pageLogin.container}>
-                        <View style={styles.pageLogin.inputView}>
-                            <TextInput onChangeText={(tel)=>this.setState({tel:tel})} underlineColorAndroid="transparent" placeholderTextColor="#fff" keyboardType='numeric' placeholder="手机号" style={styles.pageLogin.input} />
-                        </View>
-                        <View style={[styles.pageLogin.inputView, {marginTop:styles.setScaleSize(30)}]}>
-                            <TextInput onChangeText={(pwd)=>this.setState({pwd:pwd})} secureTextEntry={true} underlineColorAndroid="transparent" placeholderTextColor="#fff" placeholder="密码" style={styles.pageLogin.input} />
-                        </View>
-                        <TouchableOpacity onPress={()=>this.handleLogin()} style={styles.pageLogin.submit}>
-                            <View><Text style={styles.pageLogin.submitText}>登录</Text></View>
-                        </TouchableOpacity>
-                        <View style={styles.pageLogin.forgetpwd}>
-                            <Text style={styles.pageLogin.forgetpwdText} onPress={()=>Alert.alert("提示", "请加客服微信:hunlian21", [{text:"OK", onPress:()=>null}])}>忘记密码</Text>
-                            <Text style={styles.pageLogin.forgetpwdText} onPress={()=>{this.setState({isVisibleModal:false});this.props.navigation.navigate("PageRegister", {logout:()=>that.reqLogout()})}}>用户注册</Text>
-                        </View>
+                <Swiper height={styles.HEIGHT} width={styles.WIDTH}
+                    loop={styles.isIOS?false:true}
+                    showsButtons={false}
+                    showsPagination={false}
+                    index={0}
+                    autoplayTimeout={5}
+                    autoplay={true}
+                    horizontal={true}
+                    >
+                    {this.renderImg()}
+                </Swiper>
+                <View style={styles.pageLogin.container}>
+                    <View style={styles.pageLogin.inputView}>
+                        <TextInput onChangeText={(tel)=>this.setState({tel:tel})} underlineColorAndroid="transparent" placeholderTextColor="#fff" keyboardType='numeric' placeholder="手机号" style={styles.pageLogin.input} />
                     </View>
-                </Modal>
+                    <View style={[styles.pageLogin.inputView, {marginTop:styles.setScaleSize(30)}]}>
+                        <TextInput onChangeText={(pwd)=>this.setState({pwd:pwd})} secureTextEntry={true} underlineColorAndroid="transparent" placeholderTextColor="#fff" placeholder="密码" style={styles.pageLogin.input} />
+                    </View>
+                    <TouchableOpacity onPress={()=>this.handleLogin()} style={styles.pageLogin.submit}>
+                        <View><Text style={styles.pageLogin.submitText}>登录</Text></View>
+                    </TouchableOpacity>
+                    <View style={styles.pageLogin.forgetpwd}>
+                        <Text style={styles.pageLogin.forgetpwdText} onPress={()=>Alert.alert("提示", "请加客服微信:hunlian21", [{text:"OK", onPress:()=>null}])}>忘记密码</Text>
+                        <Text style={styles.pageLogin.forgetpwdText} onPress={()=>{this.props.navigation.navigate("PageRegister", {logout:()=>that.reqLogout()})}}>用户注册</Text>
+                    </View>
+                </View>
             </View>
         );
     }

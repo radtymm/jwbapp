@@ -3,6 +3,7 @@ package com.jwbapp;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
+import io.realm.react.RealmReactPackage;
 import cn.jpush.reactnativejpush.JPushPackage;
 import com.zmxv.RNSound.RNSoundPackage;
 import com.rnim.rn.audio.ReactNativeAudioPackage;
@@ -15,6 +16,7 @@ import com.facebook.react.ReactPackage;
 import com.facebook.react.shell.MainReactPackage;
 import org.lovebing.reactnative.baidumap.BaiduMapPackage;
 import com.facebook.soloader.SoLoader;
+import org.pgsqlite.SQLitePluginPackage;
 
 import java.util.Arrays;
 import java.util.List;
@@ -32,6 +34,8 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
+            new RealmReactPackage(),
+            new SQLitePluginPackage(), 
             new JPushPackage(SHUTDOWN_TOAST, SHUTDOWN_LOG),
             new RNSoundPackage(),
             new ReactNativeAudioPackage(),

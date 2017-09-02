@@ -247,6 +247,10 @@ const chatScreen = StyleSheet.create({
     timeText:{color:"#fff", fontSize:setScaleSize(30)},
     timeView:{backgroundColor:"#0fd8b4", height:setScaleSize(40), width:setScaleSize(360), alignItems:'center', justifyContent:"center", borderRadius:setScaleSize(20)},
 });
+const myNotificationsScreen = StyleSheet.create({
+    heartImg: {width: setScaleSize(120), height: setScaleSize(120), borderRadius:setScaleSize(60)},
+    noReadText: {backgroundColor:'red', top:setScaleSize(20), left:setScaleSize(80), textAlign:'center', fontSize:setScaleSize(25), color:"#fff", position:"absolute", width:setScaleSize(40), height:setScaleSize(40), borderRadius:setScaleSize(20)},
+});
 const styles = {
     PageRegister: PageRegister,
     PagePerInfo:PagePerInfo,
@@ -260,6 +264,7 @@ const styles = {
     WIDTH: WIDTH,
     HEIGHT: HEIGHT,
     pageLuck:pageLuck,
+    myNotificationsScreen:myNotificationsScreen,
     pageLikeWho:pageLikeWho,
     pageVip:pageVip,
     chatScreen:chatScreen,
