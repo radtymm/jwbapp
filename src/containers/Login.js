@@ -13,10 +13,6 @@ import JPushModule from 'jpush-react-native';
 import SQLite from '../components/SQLite';
 let sqLite = new SQLite();
 
-let loginOnce = false;
-
-global.WebIM = WebIM;
-
 class Login extends React.Component {
 
     constructor(props, context) {
@@ -26,14 +22,12 @@ class Login extends React.Component {
         };
 
         this.reqLogout = this.reqLogout.bind(this);
-        this.handleReceiveMsg = this.handleReceiveMsg.bind(this);
         if(!global.db){
           global.db = sqLite.open();
         }
         sqLite.createTable();
         sqLite.createTableMessageList();
         this._get('loginUP');
-        this.webIMConnection();
     }
 
     componentDidMount(){
@@ -67,131 +61,20 @@ class Login extends React.Component {
 
     }
 
-    handleReceiveMsg(msg, type){
-        let message = msg;
-        let that = this;
-        if (!message.delay) {
-            let dateNow = new Date();
-            let month = ((dateNow.getMonth()+1) < 10)?("0"+(dateNow.getMonth()+1)):(dateNow.getMonth()+1);
-            let date = ((dateNow.getDate()) < 10)?("0"+dateNow.getDate()):(dateNow.getDate());
-            let hour = ((dateNow.getUTCHours()) < 10)?("0"+dateNow.getUTCHours()):(dateNow.getUTCHours());
-            let min = ((dateNow.getMinutes()) < 10)?("0"+dateNow.getMinutes()):(dateNow.getMinutes());
-            let second = ((dateNow.getSeconds()) < 10)?("0"+dateNow.getSeconds()):(dateNow.getSeconds());
-            message.delay = dateNow.getFullYear() + "-" + month + '-' + date + 'T' + hour + ':' + min + ':' + second;
-        }
-        if (type == 'txt') {
-            message.url = '';
-        }else if(type == 'img'){
-            message.data = '';
-        }
 
-        that.props.dispatch(msgData({
-            selfUuid:global.peruuid,
-            otherUuid:message.from,
-            isOther:'true',
-            hxId:message.id,
-            msgType: type,
-            delay:message.delay,
-            data:message.data,
-            isReaded:'false',
-            url:message.url,
-        }));
 
-        requestData('https://app.jiaowangba.com/info?uuid=' + message.from, (res)=>{
-            if (res.status == 'success') {
-
-                that.props.dispatch(msgList({
-                    selfUuid:global.peruuid,
-                    otherUuid:message.from,
-                    selfAndOtherid:global.peruuid + "&&" + message.from,
-                    headUrl: res.code.avatar,
-                    otherName:res.code.nickname,
-                    isOther:'true',
-                    message:message.data,
-                    time:message.delay,
-                    msgType:type,
-                    countNoRead:1,
-                }));
-            }else {
-                Alert.alert("提示", "网络异常");
-            }
-        });
-    }
-
-    webIMConnection(){
-
-        let that = this;
-        WebIM.conn.listen({
-            onOpened: function ( message ) {          //连接成功回调
-                // 如果isAutoLogin设置为false，那么必须手动设置上线，否则无法收消息
-                // 手动上线指的是调用conn.setPresence(); 如果conn初始化时已将isAutoLogin设置为true
-                // 则无需调用conn.setPresence();
-                console.log('loginsuccess');
-                if (!loginOnce) {
-                    that.props.navigation.navigate('Tab');
-                }else {
-                    loginOnce = false;
-                }
-            },
-            onClosed: function ( message ) {
-                console.log("onClosed");
-                requestData("https://app.jiaowangba.com/login_out", (res)=>{
-                    if (res.status != 'error') {
-                    }
-                });
-                that.reqLogout();
-            },         //连接关闭回调
-            onError: (error) => {
-                console.log(error)
-                // 16: server-side close the websocket connection
-                if (error.type == WebIM.statusCode.WEBIM_CONNCTION_DISCONNECTED) {
-                  console.log('WEBIM_CONNCTION_DISCONNECTED', WebIM.conn.autoReconnectNumTotal, WebIM.conn.autoReconnectNumMax);
-                  if (WebIM.conn.autoReconnectNumTotal < WebIM.conn.autoReconnectNumMax) {
-                    return;
-                  }
-                  Alert.alert('错误', '请重新登录', [
-                      {text:'确定', onPress:()=>{
-                          that.reqLogout();
-                          that.props.navigation.navigate("Login");
-                      }}
-                  ]);
-                //   NavigationActions.login()
-                  return;
-                }
-                // 8: offline by multi login
-                if (error.type == WebIM.statusCode.WEBIM_CONNCTION_SERVER_ERROR) {
-                  console.log('WEBIM_CONNCTION_SERVER_ERROR');
-                  Alert.alert('错误', '请重新登录', [
-                      {text:'确定', onPress:()=>{
-                          that.reqLogout();
-                          that.props.navigation.navigate("Login");
-                      }}
-                  ]);
-                //   NavigationActions.login()
-                  return;
-                }
-                if (error.type == 1) {
-                  let data = error.data ? error.data.data : ''
-                //   Alert.alert('Error', 'offline by multi login')
-                //   store.dispatch(LoginActions.loginFailure(error))
-                    Alert.alert('错误', '请重新登录', [
-                        {text:'确定', onPress:()=>{
-                            that.reqLogout();
-                            that.props.navigation.navigate("Login");
-                        }}
-                    ]);
-                }
-
-            },
-            onTextMessage: function ( message ) {
-                console.log(JSON.stringify(message));
-                that.handleReceiveMsg(message, 'txt');
-            },    //收到文本消息
-            onPictureMessage: function ( message ) {
-                console.log(JSON.stringify(message));
-                that.handleReceiveMsg(message, 'img');
-            }, //收到图片消息
-        });
+    reqLoginHX(uuid, pwd){
+        global.peruuid = uuid;
+        storage.save('isLogin', 'true');
+        this.initMsgData();
+        let options = {
+            apiUrl: WebIM.config.apiURL,
+            user: uuid,
+            pwd: pwd,
+            appKey: WebIM.config.appkey
+        };
+        this.props.navigation.navigate('Tab');
+        WebIM.conn.open(options);
     }
 
     reqLogin(isFirst){
@@ -202,29 +85,10 @@ class Login extends React.Component {
             if (res.status == "success") {
                 storage.save('loginUP', JSON.stringify(res.code));
                 console.log('reqsuccess');
-                global.peruuid = res.code.uuid;
-                this.initMsgData();
-                let options = {
-                    apiUrl: WebIM.config.apiURL,
-                    user: res.code.uuid,
-                    pwd: res.code.password,
-                    appKey: WebIM.config.appkey
-                };
-                WebIM.conn.open(options);
+                this.reqLoginHX(res.code.uuid, res.code.password);
             }else if (res.status == "redirect") {
                 console.log('reqredirect');
-                global.peruuid = this.state.msgData.uuid;
-                this.initMsgData();
-                let options = {
-                    apiUrl: WebIM.config.apiURL,
-                    user: this.state.msgData.uuid,
-                    pwd: this.state.msgData.password,
-                    appKey: WebIM.config.appkey
-                };
-                this.props.navigation.navigate('Tab');
-                loginOnce = true;
-                WebIM.conn.open(options);
-
+                this.reqLoginHX(this.state.msgData.uuid, this.state.msgData.password);
             }else {
                 this.reqLogout();
                 if (isFirst) {
@@ -241,9 +105,10 @@ class Login extends React.Component {
     reqLogout(){
         requestData("https://app.jiaowangba.com/login_out", (res)=>{
             if (res.status != 'error') {
+                storage.save('isLogin', 'false');
+                global.WebIM.conn.close();
             }
         });
-        global.WebIM.conn.close();
     }
 
     // 获取本地聊天记录

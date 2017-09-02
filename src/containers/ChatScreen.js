@@ -41,6 +41,7 @@ class ChatScreen extends React.Component {
     }
 
     componentDidMount() {
+
         this.selectMsgData();
         this.keyboardDidShowListener = Keyboard.addListener('keyboardWillShow', this.keyboardDidShow);
         this.keyboardDidHideListener = Keyboard.addListener('keyboardWillHide', this.keyboardDidHide);
@@ -62,6 +63,18 @@ class ChatScreen extends React.Component {
         this.keyboardDidShowListener && this.keyboardDidShowListener.remove();
         this.keyboardDidHideListener && this.keyboardDidHideListener.remove();
     }
+
+    reqLogout(){
+        requestData("https://app.jiaowangba.com/login_out", (res)=>{
+            if (res.status != 'error') {
+                storage.save('isLogin', 'false');
+                global.WebIM.conn.close();
+                this.props.navigation.navigate("Login");
+            }
+        });
+    }
+
+
 
     selectMsgData(){
         //开启数据库
@@ -167,6 +180,7 @@ class ChatScreen extends React.Component {
         let msg = new WebIM.message('txt', id);      // 创建文本消息
         this.handleRefreshMessage(message, false, 'txt');
         this.setState({message:"", showPicker:false});
+
         msg.set({
             msg: message,                  // 消息内容
             to: this.props.navigation.state.params.uuid,      // 接收消息对象（用户id）

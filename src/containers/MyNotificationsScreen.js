@@ -9,6 +9,7 @@ import {
 import styles from '../styleSheet/Styles';
 import SQLite from '../components/SQLite';
 import CachedImage from 'react-native-cached-image';
+import {msgData, msgList} from '../redux/action/actions';
 import { connect } from 'react-redux';
 let sqLite = new SQLite();
 
@@ -17,11 +18,11 @@ class MyNotificationsScreen extends React.Component {
       headerTitle:"消息",
       headerStyle:styles.homePage.headerStyle,
     tabBarLabel: ()=><View style={styles.tabbar.iconTextTouch}><Text>消息</Text></View>,
-    tabBarIcon: ({ tintColor }) => (
-      <Image
-        source={require('../images/chat_list.png')}
-        style={[styles.tabbar.icon, {tintColor: tintColor}]}
-      />
+    tabBarIcon: ({tintColor}) => (
+        <View>
+            <Image source={require('../images/chat_list.png')}
+                style={[styles.tabbar.icon, {tintColor: tintColor}]} />
+        </View>
     ),
   };
 
@@ -37,16 +38,15 @@ class MyNotificationsScreen extends React.Component {
       this.state = {
           msgData:[],
       };
+      this.handleNavChat = this.handleNavChat.bind(this);
   }
 
   componentDidMount(){
-      this.selectMsgData()
-      setTimeout(()=>this.selectMsgData(), 100);
+      setTimeout(()=>this.selectMsgData(), 1000);
   }
 
   componentWillReceiveProps(nextProps){
-      this.selectMsgData()
-      setTimeout(()=>this.selectMsgData(), 100);
+      setTimeout(()=>this.selectMsgData(), 1000);
   }
 
   selectMsgData(){
@@ -64,7 +64,7 @@ class MyNotificationsScreen extends React.Component {
             msgData.push(u)
             //一般在数据查出来之后，  可能要 setState操作，重新渲染页面
           }
-          console.log("-------------------" + JSON.stringify(msgData));
+          msgData.reverse();
           this.setState({msgData:msgData});
         });
       },(error)=>{//打印异常信息
@@ -72,9 +72,29 @@ class MyNotificationsScreen extends React.Component {
       });
   }
 
+    handleNavChat(item){
+        let that = this;
+        that.props.dispatch(msgList({
+            selfUuid:item.selfUuid,
+            otherUuid:item.otherUuid,
+            selfAndOtherid:item.selfAndOtherid,
+            headUrl: item.headUrl,
+            otherName:item.otherName,
+            isOther:item.isOther,
+            message:item.message,
+            time:item.time,
+            msgType:item.msgType,
+            countNoRead:0,
+        }));
+        let code = {};
+        code.avatar = item.headUrl;
+        code.nickname = item.otherName;
+        code.uuid = item.otherUuid;
+        (global.perInfo)?this.props.navigation.navigate("ChatScreen", code):null;
+    }
+
     renderMsgList(){
 
-        console.log("++++++++++++++++++" + JSON.stringify(this.state.msgData));
         return (
             <View style={styles.pageLikeWho.flatView}>
                 <FlatList
@@ -92,8 +112,9 @@ class MyNotificationsScreen extends React.Component {
                             let hour = (8 + hourChina) > 24?(8 + hourChina - 24):(hourChina + 8);
                             sendTime = item.time.substring(5, 10) + " " + hour + item.time.substring(13, 16);
                         }
+
                         return (
-                            <TouchableOpacity style={styles.pageLikeWho.flatTouch} onPress={() => {}}>
+                            <TouchableOpacity style={styles.pageLikeWho.flatTouch} onPress={() => {this.handleNavChat(item)}}>
                                 <View style={styles.pageLikeWho.flatItemView}>
                                     <CachedImage resizeMode="cover" style={ styles.myNotificationsScreen.heartImg} source={src}/>
                                     {item.countNoRead==0?<View/>:<Text style={styles.myNotificationsScreen.noReadText}>{item.countNoRead}</Text>}

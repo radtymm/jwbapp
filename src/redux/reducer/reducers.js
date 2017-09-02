@@ -29,7 +29,7 @@ function msgData(state = defaultState, action) {
         let retState = Object.assign({}, state, {});
         if (action.data) {
 
-            retState['msgData'].push(action.data);
+            retState['msgData'] = action.data;
             return retState;
         }
         return retState;

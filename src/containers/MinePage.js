@@ -9,6 +9,7 @@ import styles from '../styleSheet/Styles';
 import ImageCropPicker from 'react-native-image-crop-picker';
 import Qiniu,{Auth,ImgOps,Conf,Rs,Rpc} from 'react-native-qiniu';
 import CachedImage from 'react-native-cached-image';
+import storage from '../libs/storage';
 
 
 let photoOptions = {
@@ -61,7 +62,7 @@ class MinePage extends React.Component {
                 this.setState({res: res});
                 global.perInfo = res.code;
             }else {
-                Alert.alert("提示", "个人信息获取失败");
+                Alert.alert("提示", "个人信息获取失败，请检查网络或重新登录");
             }
         });
     }
@@ -144,10 +145,11 @@ class MinePage extends React.Component {
                 <View style={[styles.minePage.arrMine, {paddingTop:index==0?styles.setScaleSize(40):styles.setScaleSize(0)}]} key={index}>
                     <TouchableOpacity onPress={()=>{
                             if (item.title == "退出登录"){
-                                    global.WebIM.conn.close();
                                     requestData("https://app.jiaowangba.com/login_out", (res)=>{
                                         if (res.status != 'error') {
                                             this.props.navigation.navigate("Login");
+                                            global.WebIM.conn.close();
+                                            storage.save('isLogin', 'false');
                                         }
                                     });
                             }else if (item.title == "个人资料") {

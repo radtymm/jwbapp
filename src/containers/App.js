@@ -24,6 +24,7 @@ import PageLikeMe from './PageLikeMe';
 import PageVip from './PageVip';
 import PagePerInfo from './PagePerInfo';
 import PageChangePwd from './PageChangePwd';
+import PageStart from './PageStart';
 
 const Tab = TabNavigator({
       HomePage: {
@@ -51,7 +52,7 @@ const Tab = TabNavigator({
 });
 
 const App = StackNavigator({
-
+    PageStart:{screen: PageStart },
     Login: {screen: Login },
     Tab: {screen: Tab },
     ChatScreen: {screen: ChatScreen},
