@@ -249,7 +249,10 @@ const chatScreen = StyleSheet.create({
 });
 const myNotificationsScreen = StyleSheet.create({
     heartImg: {width: setScaleSize(120), height: setScaleSize(120), borderRadius:setScaleSize(60)},
-    noReadText: {backgroundColor:'red', top:setScaleSize(20), left:setScaleSize(80), textAlign:'center', fontSize:setScaleSize(25), color:"#fff", position:"absolute", width:setScaleSize(40), height:setScaleSize(40), borderRadius:setScaleSize(20)},
+    noReadTolView: {overflow:'hidden', backgroundColor:'red', alignItems:"center", justifyContent:"center", top:setScaleSize(0), left:setScaleSize(40),  position:"absolute", width:setScaleSize(30), height:setScaleSize(30), borderRadius:setScaleSize(15)},
+    noReadView: {backgroundColor:'red', alignItems:"center", justifyContent:"center", top:setScaleSize(20), left:setScaleSize(80),  position:"absolute", width:setScaleSize(40), height:setScaleSize(40), borderRadius:setScaleSize(20)},
+    noReadTolText: {textAlign:'center', fontSize:setScaleSize(3), color:"#fff", },
+    noReadText: {textAlign:'center', fontSize:setScaleSize(25), color:"#fff", },
 });
 const styles = {
     PageRegister: PageRegister,

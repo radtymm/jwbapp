@@ -22,6 +22,9 @@ class MyNotificationsScreen extends React.Component {
         <View>
             <Image source={require('../images/chat_list.png')}
                 style={[styles.tabbar.icon, {tintColor: tintColor}]} />
+            <View style={styles.myNotificationsScreen.noReadTolView}>
+                <Text style={styles.myNotificationsScreen.noReadText}>{20}</Text>
+            </View>
         </View>
     ),
   };
@@ -58,14 +61,17 @@ class MyNotificationsScreen extends React.Component {
       global.db.transaction((tx)=>{
         tx.executeSql("select * from MSGLIST WHERE selfUuid = '" + global.peruuid + "' ", [], (tx, results)=>{
           let len = results.rows.length;
+          let sumNoRead = 0;
           let msgData = [];
           for(let i=0; i < len; i++){
             let u = results.rows.item(i);
+            sumNoRead += u.countNoRead;
             msgData.push(u)
             //一般在数据查出来之后，  可能要 setState操作，重新渲染页面
           }
           msgData.reverse();
-          this.setState({msgData:msgData});
+          this.setState({msgData:msgData, sumNoRead:sumNoRead});
+          console.log(sumNoRead);
         });
       },(error)=>{//打印异常信息
         console.warn(error);
@@ -117,7 +123,8 @@ class MyNotificationsScreen extends React.Component {
                             <TouchableOpacity style={styles.pageLikeWho.flatTouch} onPress={() => {this.handleNavChat(item)}}>
                                 <View style={styles.pageLikeWho.flatItemView}>
                                     <CachedImage resizeMode="cover" style={ styles.myNotificationsScreen.heartImg} source={src}/>
-                                    {item.countNoRead==0?<View/>:<Text style={styles.myNotificationsScreen.noReadText}>{item.countNoRead}</Text>}
+                                    {item.countNoRead==0?<View/>:<View style={styles.myNotificationsScreen.noReadView}>
+                                        <Text style={styles.myNotificationsScreen.noReadText}>{item.countNoRead}</Text></View>}
                                     <View style={styles.pageLikeWho.itemTextView}>
                                         <View style={{flex:1, flexDirection:"row", justifyContent:'space-between'}}>
                                             <Text style={styles.pageLikeWho.realname}>{item.otherName}</Text>

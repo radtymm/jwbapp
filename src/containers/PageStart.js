@@ -20,12 +20,12 @@ class PageStart extends React.Component {
 
         };
         this.handleReceiveMsg = this.handleReceiveMsg.bind(this);
+        this.reqLoginHX = this.reqLoginHX.bind(this);
         this._get = this._get.bind(this);
     }
 
     componentDidMount() {
         this.webIMConnection();
-        this._get();
     }
 
     webIMConnection(){
@@ -92,6 +92,8 @@ class PageStart extends React.Component {
                 that.handleReceiveMsg(message, 'img');
             }, //收到图片消息
         });
+        this._get();
+
     }
 
     reqLogout(){
@@ -111,7 +113,7 @@ class PageStart extends React.Component {
                 this.props.navigation.navigate('Login');
             } else {
                 this._getUuid();
-                this.props.navigation.navigate('Tab');
+                // this.props.navigation.navigate('Tab');
             }
         } catch (error) {
             console.log('_get() error: ', error.message);
@@ -123,6 +125,7 @@ class PageStart extends React.Component {
             var value = await AsyncStorage.getItem('loginUP');
             if (value !== null){
                 global.peruuid = JSON.parse(value).uuid;
+                this.reqLoginHX(JSON.parse(value).uuid, JSON.parse(value).password);
             } else {
             }
         } catch (error) {
@@ -130,7 +133,20 @@ class PageStart extends React.Component {
         }
     }
 
+    reqLoginHX(uuid, pwd){
+        global.peruuid = uuid;
+        let options = {
+            apiUrl: WebIM.config.apiURL,
+            user: uuid,
+            pwd: pwd,
+            appKey: WebIM.config.appkey
+        };
+        WebIM.conn.open(options);
+        this.props.navigation.navigate('Tab');
+    }
+
     handleReceiveMsg(msg, type){
+        console.log("=============================");
         let message = msg;
         let that = this;
         if (!message.delay) {

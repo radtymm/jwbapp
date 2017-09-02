@@ -105,7 +105,7 @@ class PagePerInfo extends React.Component {
             {title: "昵称", value:'nickname', contentKey:1},
             {title: "微信号", value:'wechat', contentKey:1},
             {title: "职业", value:'occupation', contentKey:1},
-            {title: "出生日期", value:'birthdate', contentKey:4, arrContent:date},
+            {title: "出生日期", value:'birthdate', contentKey:4, },
             {title: "家乡", value:'hometown', contentKey:3, arrContent:this._createAreaData()},
             {title: "婚姻状况", value:'marry', contentKey:2, arrContent:marry},
             {title: "学历", value:'education', contentKey:2, arrContent:education},
@@ -199,13 +199,16 @@ class PagePerInfo extends React.Component {
             onPickerConfirm: (pickedValue, pickedIndex) => {
                 console.log(JSON.stringify(pickedValue));
                 console.log(JSON.stringify(pickedIndex));
-                callback(pickedValue, pickedIndex);
+                callback(pickedValue, this.state.pickedIndex);
             },
             onPickerCancel: (pickedValue, pickedIndex) => {
                 console.log(JSON.stringify(pickedValue));
                 console.log(JSON.stringify(pickedIndex));
             },
             onPickerSelect: (pickedValue, pickedIndex) => {
+                this.setState({
+                    pickedIndex:pickedIndex
+                });
                 console.log(JSON.stringify(pickedValue));
                 console.log(JSON.stringify(pickedIndex));
             }
@@ -313,6 +316,7 @@ class PagePerInfo extends React.Component {
                     // console.log(pickedIndex[0]);
                     // console.log(JSON.stringify(pickedIndex));
                     // console.log(area[pickedIndex[0]]);
+                    // console.log(JSON.stringify(area));
                     param[item.value+"id"] = area[pickedIndex[0]].city[pickedIndex[1]].name;
                     param[item.value] = area[pickedIndex[0]].city[pickedIndex[1]].name;
                     this.setState(param);
