@@ -52,6 +52,9 @@ class ChatScreen extends React.Component {
     }
 
     componentDidUpdate(){
+        if (this.state.isShowCopyDel > -1) {
+            return;
+        }
         if (this.state.scrollToEnd) {
             this.setState({scrollToEnd:false});
         }
@@ -63,18 +66,6 @@ class ChatScreen extends React.Component {
         this.keyboardDidShowListener && this.keyboardDidShowListener.remove();
         this.keyboardDidHideListener && this.keyboardDidHideListener.remove();
     }
-
-    reqLogout(){
-        requestData("https://app.jiaowangba.com/login_out", (res)=>{
-            if (res.status != 'error') {
-                storage.save('isLogin', 'false');
-                global.WebIM.conn.close();
-                this.props.navigation.navigate("Login");
-            }
-        });
-    }
-
-
 
     selectMsgData(){
         //开启数据库
@@ -259,6 +250,7 @@ class ChatScreen extends React.Component {
     }
 
     handleCopyDel(index){
+        console.log("----------------");
         this.setState({isShowCopyDel:index});
         this.selectMsgData();
     }
@@ -305,7 +297,8 @@ class ChatScreen extends React.Component {
             sendTime = item.delay.substring(5, 10) + " " + hour + item.delay.substring(13, 16);
         }
 
-        let copyDel = <View style={styles.chatScreen.copyDel}>
+        let copyDelStyle = (item.isOther=='true')?({left:styles.setScaleSize(100),}):({right:styles.setScaleSize(100),});
+        let copyDel = <View style={[styles.chatScreen.copyDel, copyDelStyle]}>
                 <TouchableOpacity onPress={()=>{this.handleDel(item)}}>
                     <View style={styles.chatScreen.copyDelView}>
                         <Text style={styles.chatScreen.copyDelText}>删除</Text>
@@ -329,15 +322,18 @@ class ChatScreen extends React.Component {
                     <View onLayout={(event, index)=>{this.handleItemLayoutHeight(event, index)}}
                          style={[styles.chatScreen.itemView, {justifyContent:!(item.isOther=='true')?'flex-end':'flex-start', }]}>
                         {(item.isOther=='true')?<CachedImage style={styles.chatScreen.headImg} source={headImage}/>:<View/>}
-                        <TouchableWithoutFeedback onLongPress={()=>this.handleCopyDel(index)}>
+                        <TouchableWithoutFeedback onPressIn={()=>{
+                                // this.handleCopyDel(index);
+                                this.copyDel=setTimeout(()=>this.handleCopyDel(index), 1000);
+                            }} onPressOut={()=>{clearTimeout(this.copyDel)}}>
                             <View>
                                 {ComMsg}
-                                {this.state.isShowCopyDel==index?copyDel:<View/>}
                             </View>
                         </TouchableWithoutFeedback>
                         {(item.msgType=='txt')?(!(item.isOther=='true')?<View style={styles.chatScreen.tipView}/>:<View style={styles.chatScreen.tipOtherView}/>):<View/>}
                         {!(item.isOther=='true')?<CachedImage style={styles.chatScreen.headImg} source={headImage}/>:<View/>}
                     </View>
+                    {this.state.isShowCopyDel==index?copyDel:<View/>}
                 </View>
             </TouchableWithoutFeedback>
         );
