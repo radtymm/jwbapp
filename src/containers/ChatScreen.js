@@ -52,6 +52,9 @@ class ChatScreen extends React.Component {
     }
 
     componentDidUpdate(){
+        if (this.state.isShowCopyDel > -1) {
+            return;
+        }
         if (this.state.scrollToEnd) {
             this.setState({scrollToEnd:false});
         }
