@@ -55,11 +55,11 @@ class Live extends React.Component {
     componentDidMount() {
         this.handleRefresh();
         this.props.navigation.state.param = this.handleDoublePressTab; //({navigatePress :this.handleDoublePressTab, title:"live"})
-        BackHandler.addEventListener('hardwareBackPress', this.onBackHandler);
+        // BackHandler.addEventListener('hardwareBackPress', this.onBackHandler);
     }
 
     componentWillUnmount(){
-        BackHandler.removeEventListener('hardwareBackPress', this.onBackHandler);
+        // BackHandler.removeEventListener('hardwareBackPress', this.onBackHandler);
         firstClick = null;
     }
 

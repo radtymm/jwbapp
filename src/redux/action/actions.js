@@ -25,13 +25,11 @@ const msgList = (data)=>{
     if(!global.db){
       global.db = sqLite.open();
     }
-    console.log("-----------------------------------------");
     if(data.countNoRead == 0){
         global.db.transaction((tx)=>{
           tx.executeSql("delete from MSGLIST WHERE selfAndOtherid = '" + data.selfAndOtherid + "' ",[],()=>{
               let userData = [];
               userData.push(data);
-              console.log("------action" + JSON.stringify(userData));
               //插入数据
               sqLite.insertMessageList(userData);
 
@@ -45,8 +43,6 @@ const msgList = (data)=>{
               for(let i=0; i < len; i++){
                 let u = results.rows.item(i);
                 msgData.push(u)
-                console.log("------------" + JSON.stringify(u));
-                console.log(len);
               }
               let data2 = Object.assign({}, data);
               data2.countNoRead = msgData[0].countNoRead?(msgData[0].countNoRead + 1):1;

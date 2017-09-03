@@ -14,20 +14,20 @@ import { connect } from 'react-redux';
 let sqLite = new SQLite();
 
 class MyNotificationsScreen extends React.Component {
-  static navigationOptions = {
+  static navigationOptions  = ({navigation, screenProps}) =>({
       headerTitle:"消息",
       headerStyle:styles.homePage.headerStyle,
-    tabBarLabel: ()=><View style={styles.tabbar.iconTextTouch}><Text>消息</Text></View>,
+    tabBarLabel: ()=>{console.log(screenProps.num);return <View style={styles.tabbar.iconTextTouch}><Text>消息</Text></View>},
     tabBarIcon: ({tintColor}) => (
         <View>
             <Image source={require('../images/chat_list.png')}
                 style={[styles.tabbar.icon, {tintColor: tintColor}]} />
-            <View style={styles.myNotificationsScreen.noReadTolView}>
-                <Text style={styles.myNotificationsScreen.noReadText}>{20}</Text>
-            </View>
+            {/*<View style={styles.myNotificationsScreen.noReadTolView}>
+                <Text style={styles.myNotificationsScreen.noReadText}>{100}</Text>
+            </View>*/}
         </View>
     ),
-  };
+  });
 
   // 映射redux中的数值到页面的Props中的值
   static mapStateToProps(state) {
@@ -71,7 +71,6 @@ class MyNotificationsScreen extends React.Component {
           }
           msgData.reverse();
           this.setState({msgData:msgData, sumNoRead:sumNoRead});
-          console.log(sumNoRead);
         });
       },(error)=>{//打印异常信息
         console.warn(error);

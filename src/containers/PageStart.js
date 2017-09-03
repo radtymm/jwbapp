@@ -146,7 +146,6 @@ class PageStart extends React.Component {
     }
 
     handleReceiveMsg(msg, type){
-        console.log("=============================");
         let message = msg;
         let that = this;
         if (!message.delay) {

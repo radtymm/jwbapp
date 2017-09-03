@@ -26,6 +26,7 @@ class PagePerInfo extends React.Component {
         this.state = {
             page:0,
             data:[],
+            pickedIndex:[0, 0],
             isRefreshing:false,
             live:params.live,
             nickname:params.nickname,
