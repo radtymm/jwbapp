@@ -18,7 +18,6 @@ let setScaleSize = (size)=>{
     return size / defaultPixel;
 }
 
-
 const homePage = StyleSheet.create({
     icon: {width: 30, height: 30,},
     flatViewImage: { width: (WIDTH - setScaleSize(62))/2, height: (WIDTH - setScaleSize(62))/2,  borderRadius:setScaleSize(10),},
@@ -231,6 +230,9 @@ const pageChangePwd = StyleSheet.create({
     submitText:{color:"#fff", fontSize:setScaleSize(30)},
 });
 const chatScreen = StyleSheet.create({
+    copyDelText:{color:"#fff"},
+    copyDelView:{borderRadius:setScaleSize(8), marginLeft:1,  backgroundColor:"#333",  paddingVertical:setScaleSize(10), paddingHorizontal:setScaleSize(15),},
+    copyDel:{position:'absolute', height:setScaleSize(50), width:setScaleSize(130), flexDirection:"row", top:-setScaleSize(55), left:-setScaleSize(30)},
     itemView:{minHeight:setScaleSize(80), flexDirection:"row", alignItems:"center",  padding:setScaleSize(20),},
     headImg:{alignSelf:'flex-start', marginTop:setScaleSize(20), width:setScaleSize(90), height:setScaleSize(90), marginHorizontal:setScaleSize(20)},
     msgText:{backgroundColor:"#e0edd1", maxWidth:setScaleSize(490), fontSize:setScaleSize(30), color:"#333", textAlign:'left', paddingVertical:setScaleSize(25), paddingHorizontal:setScaleSize(20), borderRadius:setScaleSize(5), borderWidth:1, borderColor:"#aab1a1"},

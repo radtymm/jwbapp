@@ -135,6 +135,7 @@ class PageStart extends React.Component {
 
     reqLoginHX(uuid, pwd){
         global.peruuid = uuid;
+        global.perpwd = pwd;
         let options = {
             apiUrl: WebIM.config.apiURL,
             user: uuid,

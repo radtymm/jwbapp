@@ -1,6 +1,6 @@
 import React from 'react';
 import {
-    StyleSheet, Modal, ScrollView, Keyboard, LayoutAnimation,  Alert, View, Text, Button, FlatList, Dimensions, TouchableOpacity, Platform,
+    StyleSheet, Modal, ScrollView, Clipboard, Keyboard, LayoutAnimation,  Alert, View, Text, Button, FlatList, Dimensions, TouchableOpacity, Platform,
     TouchableWithoutFeedback, PermissionsAndroid, CameraRoll, Image, TextInput, Animated, Easing, RefreshControl, KeyboardAvoidingView, AsyncStorage,
 } from 'react-native';
 
@@ -258,6 +258,28 @@ class ChatScreen extends React.Component {
         // console.log(event.nativeEvent.layout.height);
     }
 
+    handleCopyDel(index){
+        this.setState({isShowCopyDel:index});
+        this.selectMsgData();
+    }
+
+    handleDel(item){
+        //开启数据库
+        if(!global.db){
+          global.db = sqLite.open();
+        }
+        global.db.transaction((tx)=>{
+          tx.executeSql("delete from USER WHERE id = '" + item.id + "' ",[],()=>{
+              this.handleCopyDel(-1);
+          });
+        });
+    }
+
+    handleCopy(item, index){
+        Clipboard.setString(item.data);
+        this.handleCopyDel(-1);
+    }
+
     renderItem(item, index){
         let {params} = this.props.navigation.state;
         let headImage = {uri: 'https://cdn.jiaowangba.com/' + params.avatar + '?imageView2/1/w/250/h/250/interlace/1/q/96|imageslim', cache:'force-cache'};
@@ -283,8 +305,21 @@ class ChatScreen extends React.Component {
             sendTime = item.delay.substring(5, 10) + " " + hour + item.delay.substring(13, 16);
         }
 
+        let copyDel = <View style={styles.chatScreen.copyDel}>
+                <TouchableOpacity onPress={()=>{this.handleDel(item)}}>
+                    <View style={styles.chatScreen.copyDelView}>
+                        <Text style={styles.chatScreen.copyDelText}>删除</Text>
+                    </View>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={()=>{this.handleCopy(item, index)}}>
+                    <View style={styles.chatScreen.copyDelView}>
+                        <Text style={styles.chatScreen.copyDelText}>复制</Text>
+                    </View>
+                </TouchableOpacity>
+            </View>;
+
         return (
-            <TouchableWithoutFeedback onPress={()=>this.setState({showPicker:false})}>
+            <TouchableWithoutFeedback onPress={()=>{this.setState({showPicker:false, isShowCopyDel:-1});this.selectMsgData();}}>
                 <View style={{marginVertical:styles.setScaleSize(20)}}>
                     <View style={styles.chatScreen.timeBorView}>
                         <View style={styles.chatScreen.timeView}><Text style={styles.chatScreen.timeText}>
@@ -294,7 +329,12 @@ class ChatScreen extends React.Component {
                     <View onLayout={(event, index)=>{this.handleItemLayoutHeight(event, index)}}
                          style={[styles.chatScreen.itemView, {justifyContent:!(item.isOther=='true')?'flex-end':'flex-start', }]}>
                         {(item.isOther=='true')?<CachedImage style={styles.chatScreen.headImg} source={headImage}/>:<View/>}
-                        {ComMsg}
+                        <TouchableWithoutFeedback onLongPress={()=>this.handleCopyDel(index)}>
+                            <View>
+                                {ComMsg}
+                                {this.state.isShowCopyDel==index?copyDel:<View/>}
+                            </View>
+                        </TouchableWithoutFeedback>
                         {(item.msgType=='txt')?(!(item.isOther=='true')?<View style={styles.chatScreen.tipView}/>:<View style={styles.chatScreen.tipOtherView}/>):<View/>}
                         {!(item.isOther=='true')?<CachedImage style={styles.chatScreen.headImg} source={headImage}/>:<View/>}
                     </View>

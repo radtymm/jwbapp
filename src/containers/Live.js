@@ -1,7 +1,7 @@
 import React from 'react';
 import {
     StyleSheet, Alert, RefreshControl, BackHandler, ToastAndroid,
-    View,
+    View, AppState,
     Text,
     Button,
     SectionList,
@@ -50,10 +50,12 @@ class Live extends React.Component {
         this.scrollTotop = this.scrollTotop.bind(this);
         this.handleDoublePressTab = this.handleDoublePressTab.bind(this);
         this.onBackHandler = this.onBackHandler.bind(this);
+        this.handleAppStateChange = this.handleAppStateChange.bind(this);
     }
 
     componentDidMount() {
         this.handleRefresh();
+        AppState.addEventListener('change', this.handleAppStateChange);
         this.props.navigation.state.param = this.handleDoublePressTab; //({navigatePress :this.handleDoublePressTab, title:"live"})
         // BackHandler.addEventListener('hardwareBackPress', this.onBackHandler);
     }
@@ -61,6 +63,19 @@ class Live extends React.Component {
     componentWillUnmount(){
         // BackHandler.removeEventListener('hardwareBackPress', this.onBackHandler);
         firstClick = null;
+        AppState.removeEventListener('change', this.handleAppStateChange);
+    }
+
+    handleAppStateChange(appState){
+        if (appState == 'active') {
+            let options = {
+                apiUrl: WebIM.config.apiURL,
+                user: global.peruuid,
+                pwd: global.perpwd,
+                appKey: WebIM.config.appkey
+            };
+            WebIM.conn.open(options);
+        }
     }
 
     onBackHandler() {

@@ -66,6 +66,7 @@ class Login extends React.Component {
 
     reqLoginHX(uuid, pwd){
         global.peruuid = uuid;
+        global.perpwd = pwd;
         storage.save('isLogin', 'true');
         this.initMsgData();
         let options = {
