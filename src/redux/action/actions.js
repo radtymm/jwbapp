@@ -39,10 +39,14 @@ const msgList = (data)=>{
         global.db.transaction((tx)=>{
             tx.executeSql("select countNoRead from MSGLIST WHERE selfAndOtherid = '" + data.selfAndOtherid + "' ", [], (tx, results)=>{
               let len = results.rows.length;
+              console.log(len);
               let msgData = [];
               for(let i=0; i < len; i++){
                 let u = results.rows.item(i);
-                msgData.push(u)
+                msgData.push(u);
+              }
+              if (len == 0) {
+                  msgData.push({countNoRead:0});
               }
               let data2 = Object.assign({}, data);
               data2.countNoRead = msgData[0].countNoRead?(msgData[0].countNoRead + 1):1;
