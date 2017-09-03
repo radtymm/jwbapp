@@ -33,7 +33,8 @@ class Login extends React.Component {
     componentDidMount(){
         this.initMsgData();
         if(!styles.isIOS) this.jpush();
-        this.reqLogin(true);
+        // this.reqLogin(true);
+        this.reqLogout();
     }
 
     componentWillUnmount() {
