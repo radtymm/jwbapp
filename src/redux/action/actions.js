@@ -11,13 +11,24 @@ const msgData = (data)=>{
     if(!global.db){
       global.db = sqLite.open();
     }
-    let userData = [];
-    userData.push(data);
+    global.db.transaction((tx)=>{
+      tx.executeSql("select hxId from USER WHERE hxId = '" + data.hxId + "' ",[],(tx, results)=>{
+          let len = results.rows.length;
+          if (len != 0) {
+              return;
+          }
+          let userData = [];
+          userData.push(data);
+          //插入数据
+          sqLite.insertUserData(userData);
+
+      });
+    });
     //插入数据
-    sqLite.insertUserData(userData);
 
     return ({type:MSGDATA, data:data});
 };
+
 const initMsgData = (data)=>({type:INITMSGDATA, data:data});
 
 const msgList = (data)=>{

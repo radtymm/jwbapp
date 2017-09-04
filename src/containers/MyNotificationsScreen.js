@@ -46,13 +46,13 @@ class MyNotificationsScreen extends React.Component {
   }
 
   componentDidMount(){
-      this.selectMsgData();
-    //   setTimeout(()=>this.selectMsgData(), 1000);
+    //   this.selectMsgData();
+      setTimeout(()=>this.selectMsgData(), 1000);
   }
 
   componentWillReceiveProps(nextProps){
-      this.selectMsgData();
-    //   setTimeout(()=>this.selectMsgData(), 1000);
+    //   this.selectMsgData();
+      setTimeout(()=>this.selectMsgData(), 1000);
   }
 
   selectMsgData(){
@@ -134,7 +134,7 @@ class MyNotificationsScreen extends React.Component {
                             sendTime = item.time.substring(5, 10) + " " + hour + item.time.substring(13, 16);
                         }
                         return (
-                            <Swipeout backgroundColor="#fff" right={[{text:'删除', backgroundColor:"red",  onPress:()=>{this.handleDelete(item);}}]} >
+                            <Swipeout autoClose={true} backgroundColor="#fff" close={true} right={[{text:'删除', backgroundColor:"red",  onPress:()=>{this.handleDelete(item);}}]} >
                                 <TouchableOpacity style={styles.pageLikeWho.flatTouch} onPress={() => {this.handleNavChat(item)}}>
                                     <View style={styles.pageLikeWho.flatItemView}>
                                         <CachedImage autoClose={false} resizeMode="cover" style={ styles.myNotificationsScreen.heartImg} source={src}/>

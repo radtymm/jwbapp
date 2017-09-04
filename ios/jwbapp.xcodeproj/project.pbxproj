@@ -49,6 +49,7 @@
 		A9889A4E1F4B4E54001611CF /* libRCTCameraRoll.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A9889A301F4B4E0F001611CF /* libRCTCameraRoll.a */; };
 		A98CB1BE1F4C58F500F6638C /* libRNSound.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A9A2E5031F498C9C00BFAFAC /* libRNSound.a */; };
 		A98CB1BF1F4C590300F6638C /* libRNAudio.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A9A2E4CB1F49596800BFAFAC /* libRNAudio.a */; };
+		A9A109651F5D9D2C00B09FBC /* message.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = A9A109641F5D9D2C00B09FBC /* message.mp3 */; };
 		FC032C95D31641AD8DACDD4B /* libSQLite.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1D802A8CD0734493895607C1 /* libSQLite.a */; };
 /* End PBXBuildFile section */
 
@@ -373,6 +374,7 @@
 		A93FB7FE1F3EB90D002917FA /* QBImagePicker.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = QBImagePicker.framework; sourceTree = "<group>"; };
 		A93FB7FF1F3EB90D002917FA /* RSKImageCropper.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = RSKImageCropper.framework; sourceTree = "<group>"; };
 		A9889A261F4B4E0E001611CF /* RCTCameraRoll.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTCameraRoll.xcodeproj; path = "../node_modules/react-native/Libraries/CameraRoll/RCTCameraRoll.xcodeproj"; sourceTree = "<group>"; };
+		A9A109641F5D9D2C00B09FBC /* message.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; name = message.mp3; path = ../src/sound/message.mp3; sourceTree = "<group>"; };
 		AC9C8B08DB3449DC8F7D3C46 /* libRNFetchBlob.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNFetchBlob.a; sourceTree = "<group>"; };
 		DC370AC2EDFD426F866C1F10 /* RNFetchBlob.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNFetchBlob.xcodeproj; path = "../node_modules/react-native-fetch-blob/ios/RNFetchBlob.xcodeproj"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -606,6 +608,7 @@
 		83CBB9F61A601CBA00E9B192 = {
 			isa = PBXGroup;
 			children = (
+				A9A109641F5D9D2C00B09FBC /* message.mp3 */,
 				A93FB7FD1F3EB90D002917FA /* ImageCropPickerSDK */,
 				13B07FAE1A68108700A75B9A /* jwbapp */,
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
@@ -1169,6 +1172,7 @@
 			files = (
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 				13B07FBD1A68108700A75B9A /* LaunchScreen.xib in Resources */,
+				A9A109651F5D9D2C00B09FBC /* message.mp3 in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

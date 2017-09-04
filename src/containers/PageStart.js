@@ -135,8 +135,12 @@ class PageStart extends React.Component {
     }
 
     async _play() {
+        console.log(Sound.MAIN_BUNDLE);
+        console.log(Sound.DOCUMENT);
+        console.log(Sound.LIBRARY);
+        console.log(Sound.CACHES);
         setTimeout(() => {
-          var sound = new Sound('../sound/message.mp3', '', (error) => {
+          var sound = new Sound(require('../sound/message.mp3'), '', (error) => {
             if (error) {
               console.log('failed to load the sound', error);
             }
@@ -214,7 +218,7 @@ class PageStart extends React.Component {
                     countNoRead:1,
                 }));
             }else {
-                Alert.alert("提示", "网络异常");
+                Alert.alert("提示", "网络异常， 请重新登录");
             }
         });
     }

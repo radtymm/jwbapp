@@ -48,7 +48,8 @@ class ChatScreen extends React.Component {
     }
 
     componentWillReceiveProps(nextProps){
-        this.selectMsgData();
+        setTimeout(()=>this.selectMsgData(), 10);
+        // this.selectMsgData();
     }
 
     componentDidUpdate(){
