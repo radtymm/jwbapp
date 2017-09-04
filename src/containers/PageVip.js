@@ -74,6 +74,20 @@ class PageVip extends React.Component {
 
     render() {
 
+        let {params} = this.props.navigation.state;
+        let joinVipView = <View/>;
+        if (params.is_vip == "No") {
+            joinVipView = (
+                <View style={styles.pageVip.joinVipView}>
+                    <Text style={styles.pageVip.joinText}>坚持2年免费婚恋网，由于巨额的服务器开支，VIP会员象征性收费：19元/年。</Text>
+                    <View style={styles.pageVip.joinVipWetchat}>
+                        <Text style={styles.pageVip.joinText}>办理VIP，加客服微信：</Text>
+                        <Text style={[styles.pageVip.joinText, {color:'#111'}]}>ruoaiwang</Text>
+                    </View>
+                </View>
+            );
+        }
+
         return (
             <View style={{flex: 1, backgroundColor:"#fff"}}>
                 {styles.isIOS?<View style={styles.homePage.iosTab}/>:<View/>}
@@ -83,7 +97,9 @@ class PageVip extends React.Component {
                     </TouchableOpacity>
                     <Text style={styles.homePage.title}>开通会员</Text>
                 </View>
+
                 <ScrollView style={{flex: 1, backgroundColor:"#fff"}}>
+                    {joinVipView}
                     {this.renderIsVip()}
                     <View style={styles.pageVip.titleView}>
                         <Text style={styles.pageVip.titleText}>VIP会员特权</Text>

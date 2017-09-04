@@ -9,6 +9,7 @@ import WebIM from '../../WebIM';
 import {requestData, requestDataPost,} from '../libs/request.js';
 import { connect } from 'react-redux';
 import {initMsgData, msgData, msgList} from '../redux/action/actions';
+import Sound from 'react-native-sound';
 
 global.WebIM = WebIM;
 
@@ -133,6 +134,26 @@ class PageStart extends React.Component {
         }
     }
 
+    async _play() {
+        setTimeout(() => {
+          var sound = new Sound('../sound/message.mp3', '', (error) => {
+            if (error) {
+              console.log('failed to load the sound', error);
+            }
+          });
+
+          setTimeout(() => {
+            sound.play((success) => {
+              if (success) {
+                console.log('successfully finished playing');
+              } else {
+                console.log('playback failed due to audio decoding errors');
+              }
+            });
+          }, 100);
+        }, 100);
+    }
+
     reqLoginHX(uuid, pwd){
         global.peruuid = uuid;
         global.perpwd = pwd;
@@ -147,6 +168,7 @@ class PageStart extends React.Component {
     }
 
     handleReceiveMsg(msg, type){
+        this._play();
         let message = msg;
         let that = this;
         if (!message.delay) {

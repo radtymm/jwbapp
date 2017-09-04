@@ -323,8 +323,7 @@ class ChatScreen extends React.Component {
                          style={[styles.chatScreen.itemView, {justifyContent:!(item.isOther=='true')?'flex-end':'flex-start', }]}>
                         {(item.isOther=='true')?<CachedImage style={styles.chatScreen.headImg} source={headImage}/>:<View/>}
                         <TouchableWithoutFeedback onPressIn={()=>{
-                                // this.handleCopyDel(index);
-                                this.copyDel=setTimeout(()=>this.handleCopyDel(index), 1000);
+                                this.copyDel=setTimeout(()=>this.handleCopyDel(index), 500);
                             }} onPressOut={()=>{clearTimeout(this.copyDel)}}>
                             <View>
                                 {ComMsg}

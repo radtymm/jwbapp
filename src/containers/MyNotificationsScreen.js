@@ -1,6 +1,6 @@
 import React from 'react';
 import {
-    StyleSheet, FlatList,TouchableOpacity,
+    StyleSheet, FlatList,TouchableOpacity,Alert,
     View,
     Text,
     Button,
@@ -11,13 +11,14 @@ import SQLite from '../components/SQLite';
 import CachedImage from 'react-native-cached-image';
 import {msgData, msgList} from '../redux/action/actions';
 import { connect } from 'react-redux';
+import Swipeout from 'react-native-swipeout';
 let sqLite = new SQLite();
 
 class MyNotificationsScreen extends React.Component {
   static navigationOptions  = ({navigation, screenProps}) =>({
       headerTitle:"消息",
       headerStyle:styles.homePage.headerStyle,
-    tabBarLabel: ()=>{console.log(screenProps.num);return <View style={styles.tabbar.iconTextTouch}><Text>消息</Text></View>},
+    tabBarLabel: ()=>{return <View style={styles.tabbar.iconTextTouch}><Text>消息</Text></View>},
     tabBarIcon: ({tintColor}) => (
         <View>
             <Image source={require('../images/chat_list.png')}
@@ -45,11 +46,13 @@ class MyNotificationsScreen extends React.Component {
   }
 
   componentDidMount(){
-      setTimeout(()=>this.selectMsgData(), 1000);
+      this.selectMsgData();
+    //   setTimeout(()=>this.selectMsgData(), 1000);
   }
 
   componentWillReceiveProps(nextProps){
-      setTimeout(()=>this.selectMsgData(), 1000);
+      this.selectMsgData();
+    //   setTimeout(()=>this.selectMsgData(), 1000);
   }
 
   selectMsgData(){
@@ -98,6 +101,19 @@ class MyNotificationsScreen extends React.Component {
         (global.perInfo)?this.props.navigation.navigate("ChatScreen", code):null;
     }
 
+    handleDelete(item){
+
+        //开启数据库
+        if(!global.db){
+          global.db = sqLite.open();
+        }
+        global.db.transaction((tx)=>{
+          tx.executeSql("delete from MSGLIST WHERE id = '" + item.id + "' ",[],()=>{
+            this.selectMsgData();
+          });
+        });
+    }
+
     renderMsgList(){
 
         return (
@@ -117,22 +133,23 @@ class MyNotificationsScreen extends React.Component {
                             let hour = (8 + hourChina) > 24?(8 + hourChina - 24):(hourChina + 8);
                             sendTime = item.time.substring(5, 10) + " " + hour + item.time.substring(13, 16);
                         }
-
                         return (
-                            <TouchableOpacity style={styles.pageLikeWho.flatTouch} onPress={() => {this.handleNavChat(item)}}>
-                                <View style={styles.pageLikeWho.flatItemView}>
-                                    <CachedImage resizeMode="cover" style={ styles.myNotificationsScreen.heartImg} source={src}/>
-                                    {item.countNoRead==0?<View/>:<View style={styles.myNotificationsScreen.noReadView}>
-                                        <Text style={styles.myNotificationsScreen.noReadText}>{item.countNoRead}</Text></View>}
-                                    <View style={styles.pageLikeWho.itemTextView}>
-                                        <View style={{flex:1, flexDirection:"row", justifyContent:'space-between'}}>
-                                            <Text style={styles.pageLikeWho.realname}>{item.otherName}</Text>
-                                            <Text style={styles.pageLikeWho.timeago}>{sendTime}</Text>
+                            <Swipeout backgroundColor="#fff" right={[{text:'删除', backgroundColor:"red",  onPress:()=>{this.handleDelete(item);}}]} >
+                                <TouchableOpacity style={styles.pageLikeWho.flatTouch} onPress={() => {this.handleNavChat(item)}}>
+                                    <View style={styles.pageLikeWho.flatItemView}>
+                                        <CachedImage autoClose={false} resizeMode="cover" style={ styles.myNotificationsScreen.heartImg} source={src}/>
+                                        {item.countNoRead==0?<View/>:<View style={styles.myNotificationsScreen.noReadView}>
+                                            <Text style={styles.myNotificationsScreen.noReadText}>{item.countNoRead}</Text></View>}
+                                        <View style={styles.pageLikeWho.itemTextView}>
+                                            <View style={{flex:1, flexDirection:"row", justifyContent:'space-between'}}>
+                                                <Text style={styles.pageLikeWho.realname}>{item.otherName}</Text>
+                                                <Text style={styles.pageLikeWho.timeago}>{sendTime}</Text>
+                                            </View>
+                                            <Text style={styles.pageLikeWho.liveage}>{item.message}</Text>
                                         </View>
-                                        <Text style={styles.pageLikeWho.liveage}>{item.message}</Text>
                                     </View>
-                                </View>
-                            </TouchableOpacity>
+                                </TouchableOpacity>
+                            </Swipeout>
                         );
                     }}
                     getItemLayout={(data, index) => (

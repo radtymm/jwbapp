@@ -214,10 +214,10 @@ class PageBaseData extends React.Component {
             <View style={{flex:1}}>
                 {styles.isIOS?<View style={styles.homePage.iosTab}/>:<View/>}
                 <View style={styles.PagePerInfo.title}>
+                    <Text style={styles.homePage.title}>{this.props.navigation.state.params.nickname}</Text>
                     <TouchableOpacity style={styles.PagePerInfo.titleBack} onPress={()=>this.props.navigation.goBack(null)}>
                         <View style={styles.PagePerInfo.titleBackIcon}/>
                     </TouchableOpacity>
-                    <Text style={styles.homePage.title}>{this.props.navigation.state.params.nickname}</Text>
                 </View>
                 <ScrollView style={{flex:1, }}>
                     {this.renderHeadImg()}

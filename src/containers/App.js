@@ -41,6 +41,7 @@ const Tab = TabNavigator({
       },
   }, {
   tabBarPosition:'bottom',
+  swipeEnabled:false,
   tabBarOptions: {
     activeTintColor: 'red',
     showIcon: true,
