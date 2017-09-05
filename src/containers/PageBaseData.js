@@ -12,7 +12,6 @@ import {
 
 import styles from '../styleSheet/Styles';
 import {requestData} from '../libs/request.js';
-import DeviceInfo from 'react-native-device-info';
 import { createAnimatableComponent, Image as AnimatableImage} from 'react-native-animatable';
 const AnimatableView = createAnimatableComponent(View);
 import CachedImage from 'react-native-cached-image';

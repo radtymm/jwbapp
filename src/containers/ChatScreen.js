@@ -168,6 +168,9 @@ class ChatScreen extends React.Component {
     }
 
     handleSendMessage(message){
+        if (message = '') {
+            return;
+        }
         let id = WebIM.conn.getUniqueId();                 // 生成本地消息id
         let msg = new WebIM.message('txt', id);      // 创建文本消息
         this.handleRefreshMessage(message, false, 'txt');

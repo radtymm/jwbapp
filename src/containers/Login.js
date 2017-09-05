@@ -9,7 +9,6 @@ import WebIM from '../../WebIM';
 import storage from '../libs/storage';
 import { connect } from 'react-redux';
 import {initMsgData, msgData, msgList} from '../redux/action/actions';
-import JPushModule from 'jpush-react-native';
 import SQLite from '../components/SQLite';
 let sqLite = new SQLite();
 
@@ -32,7 +31,7 @@ class Login extends React.Component {
 
     componentDidMount(){
         this.initMsgData();
-        // if(!styles.isIOS) this.jpush();
+        
         // this.reqLogin(true);
         this.reqLogout();
     }
@@ -40,29 +39,6 @@ class Login extends React.Component {
     componentWillUnmount() {
         sqLite.close();
     }
-
-    jpush(){
-        JPushModule.initPush();
-        // 在收到点击事件之前调用此接口
-        JPushModule.notifyJSDidLoad((resultCode) => {
-            if (resultCode === 0) {
-            }
-        });
-        JPushModule.addReceiveNotificationListener((map) => {
-            console.log("alertContent: " + map.alertContent);
-            console.log("extras: " + map.extras);
-            // var extra = JSON.parse(map.extras);
-            // console.log(extra.key + ": " + extra.value);
-        });
-
-        JPushModule.addReceiveOpenNotificationListener((map) => {
-            console.log("Opening notification!");
-            console.log("map.extra: " + map.key);
-        });
-
-    }
-
-
 
     reqLoginHX(uuid, pwd){
         global.peruuid = uuid;

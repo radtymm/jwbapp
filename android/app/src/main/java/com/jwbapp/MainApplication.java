@@ -17,6 +17,7 @@ import com.facebook.react.shell.MainReactPackage;
 import org.lovebing.reactnative.baidumap.BaiduMapPackage;
 import com.facebook.soloader.SoLoader;
 import org.pgsqlite.SQLitePluginPackage;
+import com.dieam.reactnativepushnotification.ReactNativePushNotificationPackage;
 
 import java.util.Arrays;
 import java.util.List;
@@ -35,7 +36,7 @@ public class MainApplication extends Application implements ReactApplication {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
             new RealmReactPackage(),
-            new SQLitePluginPackage(), 
+            new SQLitePluginPackage(),
             new JPushPackage(SHUTDOWN_TOAST, SHUTDOWN_LOG),
             new RNSoundPackage(),
             new ReactNativeAudioPackage(),
@@ -43,6 +44,7 @@ public class MainApplication extends Application implements ReactApplication {
             new PickerViewPackage(),
             new PickerPackage(),
             new RNDeviceInfo(),
+            new ReactNativePushNotificationPackage(),
             new BaiduMapPackage(getApplicationContext())
       );
     }

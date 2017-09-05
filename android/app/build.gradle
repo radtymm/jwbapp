@@ -159,6 +159,10 @@ dependencies {
     compile project(':jpush-react-native')  // 添加 jpush 依赖
     compile project(':jcore-react-native')  // 添加 jcore 依赖
     compile fileTree(dir: "libs", include: ["*.jar"])
+    compile project(':react-native-push-notification')
+    compile ('com.google.android.gms:play-services-gcm:8.1.0') {
+        force = true;
+    }
     compile "com.android.support:appcompat-v7:23.0.1"
     compile "com.facebook.react:react-native:+"  // From node_modules
 }
