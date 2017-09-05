@@ -33,7 +33,7 @@ const Tab = TabNavigator({
       Live: {
         screen: Live,
       },
-      Notifications: {
+      MyNotificationsScreen: {
         screen: MyNotificationsScreen,
       },
       MinePage: {

@@ -5,8 +5,8 @@ import{
 import SQLiteStorage from 'react-native-sqlite-storage';
 SQLiteStorage.DEBUG(true);
 var database_name = "chat.db";//数据库文件
-var database_version = "2.0";//版本号
-var database_displayname = "MySQLite";
+var database_version = "3.0";//版本号
+var database_displayname = "MSGSQLite";
 var database_size = -1;//-1应该是表示无限制
 var db;
 
@@ -45,7 +45,7 @@ componentWillUnmount(){
           tx.executeSql('CREATE TABLE IF NOT EXISTS USER(' +
               'id INTEGER PRIMARY KEY  AUTOINCREMENT,' +
               'selfUuid varchar,'+
-              'hxId varchar,'+
+              'hxId varchar unique,'+
               'otherUuid VARCHAR,' +
               'isOther VARCHAR,' +
               'msgType VARCHAR,' +
@@ -76,7 +76,7 @@ createTableMessageList(){
             'id INTEGER PRIMARY KEY  AUTOINCREMENT,' +
             'selfUuid varchar,'+
             'otherUuid VARCHAR,' +
-            'selfAndOtherid VARCHAR,' +
+            'selfAndOtherid VARCHAR unique,' +
             'headUrl VARCHAR,' +
             'otherName VARCHAR,' +
             'isOther VARCHAR,' +

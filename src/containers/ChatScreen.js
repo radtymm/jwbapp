@@ -48,7 +48,7 @@ class ChatScreen extends React.Component {
     }
 
     componentWillReceiveProps(nextProps){
-        setTimeout(()=>this.selectMsgData(), 10);
+        setTimeout(()=>this.selectMsgData(), 100);
         // this.selectMsgData();
     }
 
@@ -75,7 +75,7 @@ class ChatScreen extends React.Component {
         }
         //查询
         global.db.transaction((tx)=>{
-          tx.executeSql("select * from user WHERE selfUuid = '" + global.peruuid + "' AND otherUuid = '" + this.props.navigation.state.params.uuid + "' ", [], (tx, results)=>{
+          tx.executeSql("select * from user WHERE otherUuid = '" + this.props.navigation.state.params.uuid + "' AND selfUuid = '" + global.peruuid + "' ", [], (tx, results)=>{
             let len = results.rows.length;
             let msgData = [];
             for(let i=0; i < len; i++){
@@ -168,7 +168,7 @@ class ChatScreen extends React.Component {
     }
 
     handleSendMessage(message){
-        if (message = '') {
+        if (message == '') {
             return;
         }
         let id = WebIM.conn.getUniqueId();                 // 生成本地消息id
@@ -254,7 +254,6 @@ class ChatScreen extends React.Component {
     }
 
     handleCopyDel(index){
-        console.log("----------------");
         this.setState({isShowCopyDel:index});
         this.selectMsgData();
     }

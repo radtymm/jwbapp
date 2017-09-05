@@ -67,7 +67,9 @@ class Live extends React.Component {
     }
 
     handleAppStateChange(appState){
+        console.log("-----" + appState);
         if (appState == 'active') {
+            // global.appState = active;
             let options = {
                 apiUrl: WebIM.config.apiURL,
                 user: global.peruuid,
