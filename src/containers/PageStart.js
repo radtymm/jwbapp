@@ -134,13 +134,15 @@ class PageStart extends React.Component {
         }
     }
 
+
+
     async _play() {
-        console.log(Sound.MAIN_BUNDLE);
-        console.log(Sound.DOCUMENT);
-        console.log(Sound.LIBRARY);
-        console.log(Sound.CACHES);
+        // console.log(Sound.MAIN_BUNDLE);
+        // console.log(Sound.DOCUMENT);
+        // console.log(Sound.LIBRARY);
+        // console.log(Sound.CACHES);
         setTimeout(() => {
-          var sound = new Sound(require('../sound/message.mp3'), '', (error) => {
+          var sound = new Sound('message.mp3', Sound.MAIN_BUNDLE, (error) => {
             if (error) {
               console.log('failed to load the sound', error);
             }
