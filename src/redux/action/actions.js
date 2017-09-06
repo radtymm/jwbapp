@@ -21,7 +21,21 @@ const msgData = (data)=>{
           userData.push(data);
           //插入数据
           sqLite.insertUserData(userData);
+          global.db.transaction((tx)=>{
+            tx.executeSql("select * from user WHERE otherUuid = '" + data.otherUuid + "' AND selfUuid = '" + global.peruuid + "' ", [], (tx, results)=>{
+              let len = results.rows.length;
+              let msgData = [];
+              for(let i=0; i < len; i++){
+                let u = results.rows.item(i);
+                msgData.push(u)
+                //一般在数据查出来之后，  可能要 setState操作，重新渲染页面
+              }
+              console.log("----------------" + JSON.stringify(msgData));
 
+            });
+          },(error)=>{//打印异常信息
+            console.warn(error);
+          });
       });
     });
     //插入数据
@@ -50,7 +64,6 @@ const msgList = (data)=>{
         global.db.transaction((tx)=>{
             tx.executeSql("select countNoRead from MSGLIST WHERE selfAndOtherid = '" + data.selfAndOtherid + "' ", [], (tx, results)=>{
               let len = results.rows.length;
-              console.log(len);
               let msgData = [];
               for(let i=0; i < len; i++){
                 let u = results.rows.item(i);
@@ -61,8 +74,6 @@ const msgList = (data)=>{
               }
               let data2 = Object.assign({}, data);
               data2.countNoRead = msgData[0].countNoRead?(msgData[0].countNoRead + 1):1;
-              console.log(data2.countNoRead);
-              console.log(JSON.stringify(data2));
               tx.executeSql("delete from MSGLIST WHERE selfAndOtherid = '" + data2.selfAndOtherid + "' ",[],()=>{
                   let userData = [];
                   userData.push(data2);
