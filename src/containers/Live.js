@@ -1,7 +1,7 @@
 import React from 'react';
 import {
-    StyleSheet, Alert, RefreshControl, 
-    View, AppState,
+    StyleSheet, Alert, RefreshControl,
+    View, AppState, BackHandler, ToastAndroid,
     Text,
     Button,
     SectionList,
@@ -48,6 +48,7 @@ class Live extends React.Component {
         };
         this.handleRefresh = this.handleRefresh.bind(this);
         this.scrollTotop = this.scrollTotop.bind(this);
+        this.onBackHandler = this.onBackHandler.bind(this);
         this.handleDoublePressTab = this.handleDoublePressTab.bind(this);
         this.handleAppStateChange = this.handleAppStateChange.bind(this);
     }
@@ -56,12 +57,41 @@ class Live extends React.Component {
         this.handleRefresh();
         AppState.addEventListener('change', this.handleAppStateChange);
         this.props.navigation.state.param = this.handleDoublePressTab; //({navigatePress :this.handleDoublePressTab, title:"live"})
+        BackHandler.addEventListener('hardwareBackPress', this.onBackHandler);
     }
 
     componentWillUnmount(){
         firstClick = null;
         AppState.removeEventListener('change', this.handleAppStateChange);
+        BackHandler.removeEventListener('hardwareBackPress', this.onBackHandler);
     }
+
+    onBackHandler() {
+        // alert(global.currentRouteName);
+        let routes = global.newState.routes;
+        if ((routes[routes.length - 1].routeName == 'Tab') && (routes[routes.length - 1].index == 0)) {
+            if (this.lastBackPressed && this.lastBackPressed + 2000 >= Date.now()) {
+                //最近2秒内按过back键，可以退出应用。
+                BackHandler.exitApp();
+                return false;
+            }
+            this.lastBackPressed = Date.now();
+            ToastAndroid.show('再按一次返回键退出交往吧婚恋', 2000);
+            return true;
+        }
+        if (routes[routes.length - 1].routeName == 'Login') {
+            if (this.lastBackPressed && this.lastBackPressed + 2000 >= Date.now()) {
+                //最近2秒内按过back键，可以退出应用。
+                BackHandler.exitApp();
+                return false;
+            }
+            this.lastBackPressed = Date.now();
+            ToastAndroid.show('再按一次返回键退出交往吧婚恋', 2000);
+            return true;
+        }
+        this.props.navigation.goBack(null);
+        return true;
+    };
 
     handleAppStateChange(appState){
         if (appState == 'active') {

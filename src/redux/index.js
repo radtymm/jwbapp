@@ -8,7 +8,7 @@ export default class index extends Component {
     return (
       <Provider store={store}>
         <App onNavigationStateChange={(preState, newState, action) => {
-            global.currentRouteName = action.routeName;
+            global.newState = newState;
             // console.log('-----preState:' + JSON.stringify(preState)
             //     + ',newState:' + JSON.stringify(newState) + ',action:' + JSON.stringify(action));
         }}/>

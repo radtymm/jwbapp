@@ -10,7 +10,7 @@ import {requestData, requestDataPost,} from '../libs/request.js';
 import { connect } from 'react-redux';
 import {initMsgData, msgData, msgList} from '../redux/action/actions';
 import Sound from 'react-native-sound';
-// import PushNotification from 'react-native-push-notification';
+import PushNotification from 'react-native-push-notification';
 import JPushModule from 'jpush-react-native';
 
 
@@ -26,7 +26,6 @@ class PageStart extends React.Component {
         this.handleReceiveMsg = this.handleReceiveMsg.bind(this);
         this.reqLoginHX = this.reqLoginHX.bind(this);
         this._get = this._get.bind(this);
-        this.onBackHandler = this.onBackHandler.bind(this);
         this.notificationConfig = this.notificationConfig.bind(this);
     }
 
@@ -34,28 +33,8 @@ class PageStart extends React.Component {
         this.webIMConnection();
         if(!styles.isIOS) this.notificationConfig();
         // if(!styles.isIOS) this.jpush();
-        BackHandler.addEventListener('hardwareBackPress', this.onBackHandler);
 
     }
-
-    componentWillUnmount() {
-        BackHandler.removeEventListener('hardwareBackPress', this.onBackHandler);
-
-    }
-
-    onBackHandler() {
-        if ((global.currentRouteName == 'HomePage') && (global.currentRouteName == 'Login')) {
-            if (this.lastBackPressed && this.lastBackPressed + 2000 >= Date.now()) {
-                //最近2秒内按过back键，可以退出应用。
-                BackHandler.exitApp();
-                return false;
-            }
-            this.lastBackPressed = Date.now();
-            ToastAndroid.show('再按一次返回键退出交往吧婚恋', 2000);
-        }
-        this.props.navigation.goBack(null);
-        return true;
-    };
 
     notificationConfig(){
         let that = this;

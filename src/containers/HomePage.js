@@ -55,7 +55,7 @@ class HomePage extends React.Component {
 
     componentDidMount() {
         this.handleRefresh();
-    	this.props.navigation.setParams({navigatePress:this.handleDoublePressTab, title:"qwe"});
+    	this.props.navigation.setParams({navigatePress:this.handleDoublePressTab});
     }
 
     componentWillUnmount(){
