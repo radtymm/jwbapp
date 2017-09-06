@@ -1,6 +1,6 @@
 import React from 'react';
 import {
-    StyleSheet, Modal, ScrollView, Clipboard, Keyboard, LayoutAnimation,  Alert, View, Text, Button, FlatList, Dimensions, TouchableOpacity, Platform,
+    StyleSheet, Modal, ScrollView, DeviceEventEmitter, Clipboard, Keyboard, LayoutAnimation,  Alert, View, Text, Button, FlatList, Dimensions, TouchableOpacity, Platform,
     TouchableWithoutFeedback, PermissionsAndroid, CameraRoll, Image, TextInput, Animated, Easing, RefreshControl, KeyboardAvoidingView, AsyncStorage,
 } from 'react-native';
 
@@ -27,6 +27,7 @@ class ChatScreen extends React.Component {
     }
 
     constructor(props, context) {
+        global.otherUuid = props.navigation.state.params.uuid;
         super(props, context);
         this.state = {
             msgData:[],
@@ -41,14 +42,14 @@ class ChatScreen extends React.Component {
     }
 
     componentDidMount() {
-
+        this.subscription = DeviceEventEmitter.addListener('finishinsert', ()=>this.selectMsgData());
         this.selectMsgData();
         this.keyboardDidShowListener = Keyboard.addListener('keyboardWillShow', this.keyboardDidShow);
         this.keyboardDidHideListener = Keyboard.addListener('keyboardWillHide', this.keyboardDidHide);
     }
 
     componentWillReceiveProps(nextProps){
-        setTimeout(()=>this.selectMsgData(), 100);
+        // setTimeout(()=>this.selectMsgData(), 100);
         // this.selectMsgData();
     }
 
@@ -63,6 +64,7 @@ class ChatScreen extends React.Component {
     }
 
     componentWillUnmount(){
+        this.subscription.remove();
         clearTimeout(this.timeout);
         this.keyboardDidShowListener && this.keyboardDidShowListener.remove();
         this.keyboardDidHideListener && this.keyboardDidHideListener.remove();

@@ -1,10 +1,8 @@
-import { INCREASE, DECREASE, RESET, MSGDATA, INITMSGDATA, MSGLIST } from './actionsTypes';
+import { MSGDATA, INITMSGDATA, MSGLIST } from './actionsTypes';
 import SQLite from '../../components/SQLite';
+import  {DeviceEventEmitter} from 'react-native';
 let sqLite = new SQLite();
 
-const increase = () => ({ type: INCREASE });
-const decrease = () => ({ type: DECREASE });
-const reset = () => ({ type: RESET });
 
 const msgData = (data)=>{
     //开启数据库
@@ -21,24 +19,10 @@ const msgData = (data)=>{
           userData.push(data);
           //插入数据
           sqLite.insertUserData(userData);
-          global.db.transaction((tx)=>{
-            tx.executeSql("select * from user WHERE otherUuid = '" + data.otherUuid + "' AND selfUuid = '" + global.peruuid + "' ", [], (tx, results)=>{
-              let len = results.rows.length;
-              let msgData = [];
-              for(let i=0; i < len; i++){
-                let u = results.rows.item(i);
-                msgData.push(u)
-                //一般在数据查出来之后，  可能要 setState操作，重新渲染页面
-              }
-              console.log("----------------" + JSON.stringify(msgData));
+          DeviceEventEmitter.emit('finishinsert');
 
-            });
-          },(error)=>{//打印异常信息
-            console.warn(error);
-          });
       });
     });
-    //插入数据
 
     return ({type:MSGDATA, data:data});
 };
@@ -90,9 +74,6 @@ const msgList = (data)=>{
 };
 
 export {
-    increase,
-    decrease,
-    reset,
     msgData,
     msgList,
     initMsgData

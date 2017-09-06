@@ -12,8 +12,8 @@ import {
 
 import styles from '../styleSheet/Styles';
 import {requestData} from '../libs/request.js';
-import { createAnimatableComponent, Image as AnimatableImage} from 'react-native-animatable';
-const AnimatableView = createAnimatableComponent(View);
+// import { createAnimatableComponent, Image as AnimatableImage} from 'react-native-animatable';
+// const AnimatableView = createAnimatableComponent(View);
 import CachedImage from 'react-native-cached-image';
 
 class PageBaseData extends React.Component {
@@ -136,7 +136,7 @@ class PageBaseData extends React.Component {
         }
 
         return <View style={styles.PageBaseData.headView}>
-            <CachedImage resizeMode="cover"  style={styles.PageBaseData.headImage} source={imageSrc}/>
+            <Image resizeMode="cover"  style={styles.PageBaseData.headImage} source={imageSrc}/>
             {isvip}
             <View style={styles.PageBaseData.nameIdView}>
                 <Text style={styles.PageBaseData.nicknameText}>{this.state.data?code.nickname:""}</Text>
