@@ -31,7 +31,7 @@ class PageBaseData extends React.Component {
             if (res.status == 'success') {
                 that.setState({data:res, is_like:res.code.is_like});
             }else {
-                Alert.alert("提示", "网络异常");
+                Alert.alert("网络异常", "请检查网络，或重新登录");
             }
         });
     }

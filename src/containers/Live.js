@@ -1,6 +1,6 @@
 import React from 'react';
 import {
-    StyleSheet, Alert, RefreshControl, BackHandler, ToastAndroid,
+    StyleSheet, Alert, RefreshControl, 
     View, AppState,
     Text,
     Button,
@@ -49,7 +49,6 @@ class Live extends React.Component {
         this.handleRefresh = this.handleRefresh.bind(this);
         this.scrollTotop = this.scrollTotop.bind(this);
         this.handleDoublePressTab = this.handleDoublePressTab.bind(this);
-        this.onBackHandler = this.onBackHandler.bind(this);
         this.handleAppStateChange = this.handleAppStateChange.bind(this);
     }
 
@@ -57,17 +56,14 @@ class Live extends React.Component {
         this.handleRefresh();
         AppState.addEventListener('change', this.handleAppStateChange);
         this.props.navigation.state.param = this.handleDoublePressTab; //({navigatePress :this.handleDoublePressTab, title:"live"})
-        // BackHandler.addEventListener('hardwareBackPress', this.onBackHandler);
     }
 
     componentWillUnmount(){
-        // BackHandler.removeEventListener('hardwareBackPress', this.onBackHandler);
         firstClick = null;
         AppState.removeEventListener('change', this.handleAppStateChange);
     }
 
     handleAppStateChange(appState){
-        console.log("-----" + appState);
         if (appState == 'active') {
             // global.appState = active;
             let options = {
@@ -80,19 +76,6 @@ class Live extends React.Component {
         }
     }
 
-    onBackHandler() {
-        console.log(this);
-
-        // if (this.lastBackPressed && this.lastBackPressed + 2000 >= Date.now()) {
-        //     //最近2秒内按过back键，可以退出应用。
-        //     BackHandler.exitApp();
-        //     return false;
-        // }
-        // this.lastBackPressed = Date.now();
-        // ToastAndroid.show('再按一次退出应用', 2000);
-        this.props.navigation.goBack(null);
-        return true;
-    };
 
     handleDoublePressTab(){
         let timestamp = (new Date()).valueOf();
@@ -195,6 +178,7 @@ class Live extends React.Component {
     }
 
     render() {
+        console.log(this.props.navigation.state.routeName);
         return (
             <View style={{flex: 1,}}>
                 {styles.isIOS?<View style={styles.homePage.iosTab} onPress={()=>this.scrollTotop()}/>:<View/>}
