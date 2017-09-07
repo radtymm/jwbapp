@@ -57,12 +57,31 @@ class MinePage extends React.Component {
     }
 
     refresh(){
+        let that = this;
         requestData("https://app.jiaowangba.com/info", (res) => {
             if (res.status == "success"){
                 this.setState({res: res});
                 global.perInfo = res.code;
             }else {
-                Alert.alert("提示", "个人信息获取失败，请检查网络或重新登录");
+                requestData(`https://app.jiaowangba.com/login?telephone=${global.tel}&password=${global.pwd}`, (res)=>{
+                    if (res.type) {
+                        alert("错误", res.target._response);
+                    }
+                    if (res.status != "error") {
+                        console.log('reqsuccess');
+                        requestData("https://app.jiaowangba.com/info", (res) => {
+                            if (res.status == "success"){
+                                this.setState({res: res});
+                                global.perInfo = res.code;
+                            }
+                        });
+                    }else {
+                        Alert.alert('提示', res.msg,
+                            [{text: 'OK', onPress: () => null},],
+                            { cancelable: false }
+                        );
+                    }
+                });
             }
         });
     }

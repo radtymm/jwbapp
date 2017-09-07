@@ -183,6 +183,9 @@ class HomePage extends React.Component {
                 {styles.isIOS?<View style={styles.homePage.iosTab} onPress={()=>this.scrollTotop()}/>:<View/>}
                 <View style={styles.homePage.centerView}>
                     <Text style={styles.homePage.title}>相遇</Text>
+                    <TouchableOpacity onPress={()=>this.props.navigation.navigate('PageSearch', {})} style={styles.homePage.searchTouch}>
+                        <Image source={require('../images/white_search_titlebar.png')}/>
+                    </TouchableOpacity>
                 </View>
                 {this.renderFlatList()}
             </View>

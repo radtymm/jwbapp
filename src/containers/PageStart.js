@@ -92,12 +92,13 @@ class PageStart extends React.Component {
                   if (WebIM.conn.autoReconnectNumTotal < WebIM.conn.autoReconnectNumMax) {
                     return;
                   }
-                  Alert.alert('错误', '请重新登录1'+ JSON.stringify(error), [
-                      {text:'确定', onPress:()=>{
-                          that.reqLogout();
-                          that.props.navigation.navigate("Login");
-                      }}
-                  ]);
+                  let options = {
+                      apiUrl: WebIM.config.apiURL,
+                      user: global.peruuid,
+                      pwd: global.perpwd,
+                      appKey: WebIM.config.appkey
+                  };
+                  WebIM.conn.open(options);
                 //   NavigationActions.login()
                   return;
                 }

@@ -27,7 +27,8 @@ const homePage = StyleSheet.create({
     liveCity:{fontSize:setScaleSize(22),  backgroundColor:"transparent",  color:"#fff",  position:"absolute", bottom:setScaleSize(15), left:setScaleSize(55)},
     flatViewTouch: {flex:1, paddingTop: setScaleSize(20)},
     iosTab: {height:setScaleSize(20), backgroundColor: "#e74f7b"},
-    centerView: {height:50, alignItems: 'center', justifyContent: 'center', backgroundColor: '#e74f7b',},
+    searchTouch:{position:"absolute", right:setScaleSize(20)},
+    centerView: {height:50,  alignItems: 'center', justifyContent: 'center', backgroundColor: '#e74f7b',},
     title: {fontSize: setScaleSize(34),  textAlign: 'center', color: '#fff',},
     flatView: {flex: 11, padding: 5, backgroundColor: '#efefef'},
     upImageTouch:{position:'absolute', bottom:40, right:50, width: 36, height: 36, borderRadius:18, },
@@ -56,6 +57,7 @@ const minePage = StyleSheet.create({
     icon: {width: 28, height: 28,},
     headImage: {flex: 1,},
 });
+
 const live = StyleSheet.create({
     flatListView: {flex: 11, backgroundColor: '#f5f5f5'},
     liveIn: {flexDirection:"row", height:50, backgroundColor: '#e74f7b', justifyContent: "center", alignItems: 'center',},
@@ -209,6 +211,19 @@ const PageRegister = StyleSheet.create({
     submitText: { height:setScaleSize(60),  textAlign: "center", color: "#fff", fontSize: setScaleSize(28),},
     boyView: {flex:1, borderWidth:1, borderColor:"#fff", borderRadius:2, alignItems: "center", justifyContent: "center"},
     backLogin:{marginTop: setScaleSize(30), justifyContent: "center",  alignItems: "flex-end",},});
+const pageSearch = StyleSheet.create({
+    flatItemView:{backgroundColor:"#fff", marginVertical:setScaleSize(14), borderWidth:2, borderRadius:setScaleSize(10), borderColor:"#7d5a60", flexDirection:"row", marginLeft:setScaleSize(30), marginRight:setScaleSize(30),  alignItems:"center",justifyContent:"space-between", },
+    titleleftView:{marginTop:setScaleSize(28), marginBottom:setScaleSize(28), },
+    itemTitle: {fontSize:setScaleSize(30), color:"#929090", marginLeft:setScaleSize(20)},
+    areaDate:{fontSize:setScaleSize(30), color:"#333", },
+
+    footerView:{ padding:setScaleSize(20), },
+    footView:{flexDirection:"row", justifyContent:"space-between", paddingHorizontal:setScaleSize(15)},
+    footResetBtn:{ backgroundColor:"#f06e6e", width:setScaleSize(200), height:setScaleSize(80), borderRadius:setScaleSize(4), justifyContent:"center", alignItems:"center",},
+    footSearchBtn:{backgroundColor:"#8bc24a", width:setScaleSize(450), height:setScaleSize(80),  borderRadius:setScaleSize(4), justifyContent:"center", alignItems:"center",},
+    footBtnText:{fontSize:setScaleSize(40), color:"#fff",},
+
+});
 const PagePerInfo = StyleSheet.create({
     title: {height: 50, justifyContent:"center", alignItems:"center", flexDirection: "row", width: WIDTH,  backgroundColor:"#e74f7b"},
     flatItemView:{flexDirection:"row", marginLeft:setScaleSize(20), marginRight:setScaleSize(20),  backgroundColor:"#fff", alignItems:"center",justifyContent:"space-between", borderBottomWidth:1,borderBottomColor:"#ebebeb", },
@@ -276,6 +291,7 @@ const styles = {
     minePage: minePage,
     live: live,
     tabbar: tabbar,
+    pageSearch:pageSearch,
     pageChangePwd: pageChangePwd,
     WIDTH: WIDTH,
     HEIGHT: HEIGHT,

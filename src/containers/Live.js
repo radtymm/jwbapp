@@ -95,6 +95,21 @@ class Live extends React.Component {
 
     handleAppStateChange(appState){
         if (appState == 'active') {
+            requestData(`https://app.jiaowangba.com/login?telephone=${global.tel}&password=${global.pwd}`, (res)=>{
+                if (res.type) {
+                    alert("错误", res.target._response);
+                }
+                if (res.status == "success") {
+                    console.log('reqsuccess');
+                }else if (res.status == "redirect") {
+                    console.log('reqredirect');
+                }else {
+                    Alert.alert('提示', res.msg,
+                        [{text: 'OK', onPress: () => null},],
+                        { cancelable: false }
+                    );
+                }
+            });
             // global.appState = active;
             let options = {
                 apiUrl: WebIM.config.apiURL,

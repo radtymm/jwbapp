@@ -61,6 +61,9 @@ class Login extends React.Component {
                 alert("错误", res.target._response);
             }
             if (res.status == "success") {
+                let telPwd = Object.assign({}, this.state);
+                global.tel = telPwd.tel;
+                global.pwd = telPwd.pwd;
                 storage.save('loginUP', JSON.stringify(res.code));
                 console.log('reqsuccess');
                 this.reqLoginHX(res.code.uuid, res.code.password);
