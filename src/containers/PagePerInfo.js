@@ -318,7 +318,7 @@ class PagePerInfo extends React.Component {
                     // console.log(JSON.stringify(pickedIndex));
                     // console.log(area[pickedIndex[0]]);
                     // console.log(JSON.stringify(area));
-                    param[item.value+"id"] = area[pickedIndex[0]].city[pickedIndex[1]].name;
+                    param[item.value+"id"] = area[pickedIndex[0]].city[pickedIndex[1]].id;
                     param[item.value] = area[pickedIndex[0]].city[pickedIndex[1]].name;
                     this.setState(param);
                 })}>

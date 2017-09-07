@@ -2,7 +2,79 @@ import { MSGDATA, INITMSGDATA, MSGLIST } from './actionsTypes';
 import SQLite from '../../components/SQLite';
 import  {DeviceEventEmitter} from 'react-native';
 let sqLite = new SQLite();
+let insertErrArr = [];
+let insertTimeout;
 
+
+const handleInsertMsgList = (data)=>{
+    //开启数据库
+    if(!global.db){
+      global.db = sqLite.open();
+    }
+    if(data.countNoRead == 0){
+        global.db.transaction((tx)=>{
+          tx.executeSql("delete from MSGLIST WHERE selfAndOtherid = '" + data.selfAndOtherid + "' ",[],()=>{
+              let userData = [];
+              userData.push(data);
+              //插入数据
+              sqLite.insertMessageList(userData);
+              DeviceEventEmitter.emit('finishInsertList');
+          });
+        });
+    }else {
+        global.db.transaction((tx)=>{
+            tx.executeSql("select countNoRead from MSGLIST WHERE selfAndOtherid = '" + data.selfAndOtherid + "' ", [], (tx, results)=>{
+              let len = results.rows.length;
+              let msgData = [];
+              for(let i=0; i < len; i++){
+                let u = results.rows.item(i);
+                msgData.push(u);
+              }
+              if (len == 0) {
+                  msgData.push({countNoRead:0});
+              }
+              let data2 = Object.assign({}, data);
+              data2.countNoRead = msgData[0].countNoRead?(msgData[0].countNoRead + data2.countNoRead):1;
+              tx.executeSql("delete from MSGLIST WHERE selfAndOtherid = '" + data2.selfAndOtherid + "' ",[],()=>{
+                  let userData = [];
+                  userData.push(data2);
+                  //插入数据
+                  sqLite.insertMessageList(userData, (err)=>{
+                      //如果同时收到多条数据时, 处理并发
+                      if (err && (err.message.substring(0, 6) == "UNIQUE")) {
+                          insertErrArr.push(data2);
+                          clearTimeout(insertTimeout);
+                          insertTimeout = setTimeout(()=>handleSameTimeMSG(), 500);
+                      }
+                  });
+                  DeviceEventEmitter.emit('finishInsertList');
+              });
+            });
+        });
+    }
+}
+
+const handleSameTimeMSG = ()=>{
+    
+    let newInsertArr = Object.assign([], insertErrArr);
+    insertErrArr = [];
+    let nextInsert = {};
+    for (let i = 0; i < newInsertArr.length; i++) {
+        if (nextInsert[newInsertArr[i].selfAndOtherid]) {
+            nextInsert[newInsertArr[i].selfAndOtherid].countNoRead++;
+            let oldTime = Number(Date.parse(nextInsert[newInsertArr[i].selfAndOtherid].time));
+            let newTime = Number(Date.parse(newInsertArr[i].time));
+            if (oldTime < newTime) {
+                nextInsert[newInsertArr[i].selfAndOtherid].time = newInsertArr[i].time;
+            }
+        }else {
+            nextInsert[newInsertArr[i].selfAndOtherid] = newInsertArr[i];
+        }
+    }
+    for (let i in nextInsert) {
+        handleInsertMsgList(nextInsert[i]);
+    }
+}
 
 const msgData = (data)=>{
     //开启数据库
@@ -30,48 +102,11 @@ const msgData = (data)=>{
 const initMsgData = (data)=>({type:INITMSGDATA, data:data});
 
 const msgList = (data)=>{
-    //开启数据库
-    if(!global.db){
-      global.db = sqLite.open();
-    }
-    if(data.countNoRead == 0){
-        global.db.transaction((tx)=>{
-          tx.executeSql("delete from MSGLIST WHERE selfAndOtherid = '" + data.selfAndOtherid + "' ",[],()=>{
-              let userData = [];
-              userData.push(data);
-              //插入数据
-              sqLite.insertMessageList(userData);
-
-          });
-        });
-    }else {
-        global.db.transaction((tx)=>{
-            tx.executeSql("select countNoRead from MSGLIST WHERE selfAndOtherid = '" + data.selfAndOtherid + "' ", [], (tx, results)=>{
-              let len = results.rows.length;
-              let msgData = [];
-              for(let i=0; i < len; i++){
-                let u = results.rows.item(i);
-                msgData.push(u);
-              }
-              if (len == 0) {
-                  msgData.push({countNoRead:0});
-              }
-              let data2 = Object.assign({}, data);
-              data2.countNoRead = msgData[0].countNoRead?(msgData[0].countNoRead + 1):1;
-              tx.executeSql("delete from MSGLIST WHERE selfAndOtherid = '" + data2.selfAndOtherid + "' ",[],()=>{
-                  let userData = [];
-                  userData.push(data2);
-                  //插入数据
-                  sqLite.insertMessageList(userData);
-
-              });
-            });
-        });
-    }
-
-
+    handleInsertMsgList(data);
     return ({type:MSGLIST, data:data});
 };
+
+
 
 export {
     msgData,

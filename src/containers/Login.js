@@ -31,7 +31,7 @@ class Login extends React.Component {
 
     componentDidMount(){
         this.initMsgData();
-        
+
         // this.reqLogin(true);
         this.reqLogout();
     }
@@ -179,7 +179,7 @@ class Login extends React.Component {
                         <View><Text style={styles.pageLogin.submitText}>登录</Text></View>
                     </TouchableOpacity>
                     <View style={styles.pageLogin.forgetpwd}>
-                        <Text style={styles.pageLogin.forgetpwdText} onPress={()=>Alert.alert("提示", "请加客服微信:hunlian21", [{text:"OK", onPress:()=>null}])}>忘记密码</Text>
+                        <Text style={styles.pageLogin.forgetpwdText} onPress={()=>{this.props.navigation.navigate("PageForgetPwd")}}>忘记密码</Text>
                         <Text style={styles.pageLogin.forgetpwdText} onPress={()=>{this.props.navigation.navigate("PageRegister", {logout:()=>that.reqLogout()})}}>用户注册</Text>
                     </View>
                 </View>

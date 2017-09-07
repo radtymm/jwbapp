@@ -46,6 +46,8 @@ class ChatScreen extends React.Component {
         this.selectMsgData();
         this.keyboardDidShowListener = Keyboard.addListener('keyboardWillShow', this.keyboardDidShow);
         this.keyboardDidHideListener = Keyboard.addListener('keyboardWillHide', this.keyboardDidHide);
+        setTimeout(()=>this.handleScrollToEnd(), 100);
+        this.handleScrollToEnd()
     }
 
     componentWillReceiveProps(nextProps){
@@ -133,12 +135,7 @@ class ChatScreen extends React.Component {
         message.selfUuid = global.peruuid;
         message.isReaded = 'true';
         let dateNow = new Date();
-        let month = ((dateNow.getMonth()+1) < 10)?("0"+(dateNow.getMonth()+1)):(dateNow.getMonth()+1);
-        let date = ((dateNow.getDate()) < 10)?("0"+dateNow.getDate()):(dateNow.getDate());
-        let hour = ((dateNow.getUTCHours()) < 10)?("0"+dateNow.getUTCHours()):(dateNow.getUTCHours());
-        let min = ((dateNow.getMinutes()) < 10)?("0"+dateNow.getMinutes()):(dateNow.getMinutes());
-        let second = ((dateNow.getSeconds()) < 10)?("0"+dateNow.getSeconds()):(dateNow.getSeconds());
-        message.delay = dateNow.getFullYear() + "-" + month + '-' + date + 'T' + hour + ':' + min + ':' + second;
+        message.delay = dateNow.toJSON();
         if (type == 'txt') {
             message.data = msg;
             message.url = ''
@@ -299,7 +296,14 @@ class ChatScreen extends React.Component {
         if (item.delay) {
             let hourChina = Number(item.delay.substring(11, 13));
             let hour = (8 + hourChina) > 24?(8 + hourChina - 24):(hourChina + 8);
-            sendTime = item.delay.substring(5, 10) + " " + hour + item.delay.substring(13, 16);
+            let day = Number(item.delay.substring(8, 10));
+            if ((8 + hourChina) > 24){
+                hour = 8 + hourChina - 24;
+                day++;
+            }else {
+                hour = hourChina + 8
+            }
+            sendTime = item.delay.substring(5, 8) + day + " " + hour + item.delay.substring(13, 16);
         }
 
         let copyDelStyle = (item.isOther=='true')?({left:styles.setScaleSize(100),}):({right:styles.setScaleSize(100),});

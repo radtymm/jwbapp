@@ -1,6 +1,6 @@
 import React from 'react';
 import {
-    StyleSheet, FlatList,TouchableOpacity,Alert,
+    StyleSheet, FlatList,TouchableOpacity,Alert, DeviceEventEmitter,
     View,
     Text,
     Button,
@@ -43,16 +43,21 @@ class MyNotificationsScreen extends React.Component {
           msgData:[],
       };
       this.handleNavChat = this.handleNavChat.bind(this);
+      this.selectMsgData = this.selectMsgData.bind(this);
   }
 
   componentDidMount(){
-    //   this.selectMsgData();
-      setTimeout(()=>this.selectMsgData(), 1000);
+      this.subscription = DeviceEventEmitter.addListener('finishInsertList', ()=>this.selectMsgData());
+      this.selectMsgData();
   }
 
   componentWillReceiveProps(nextProps){
     //   this.selectMsgData();
-      setTimeout(()=>this.selectMsgData(), 1000);
+    //   setTimeout(()=>this.selectMsgData(), 1000);
+  }
+
+  componentWillUnmount(){
+      this.subscription.remove();
   }
 
   selectMsgData(){

@@ -120,7 +120,7 @@ db.transaction((tx)=>{
     });
   }
 
-insertMessageList(userData){
+insertMessageList(userData, callBack){
   let len = userData.length;
   if (!db) {
       this.open();
@@ -149,7 +149,9 @@ insertMessageList(userData){
           );
       }
   },(error)=>{
-    this._errorCB('transaction', error);
+    //   alert(JSON.stringify(error));
+      callBack(error);
+    this._errorCB('transaction', JSON.stringify(error));
   //   ToastAndroid.show("数据插入失败",ToastAndroid.SHORT);
   },()=>{
     this._successCB('transaction insert data');

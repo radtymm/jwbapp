@@ -25,6 +25,7 @@ import PageVip from './PageVip';
 import PagePerInfo from './PagePerInfo';
 import PageChangePwd from './PageChangePwd';
 import PageStart from './PageStart';
+import PageForgetPwd from './PageForgetPwd';
 
 const Tab = TabNavigator({
       HomePage: {
@@ -56,6 +57,7 @@ const App = StackNavigator({
     PageStart:{screen: PageStart },
     Login: {screen: Login },
     Tab: {screen: Tab },
+    PageForgetPwd:{screen: PageForgetPwd},
     ChatScreen: {screen: ChatScreen},
     PageRegister: {screen: PageRegister},
     PageChangePwd:{screen: PageChangePwd},

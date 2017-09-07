@@ -266,13 +266,9 @@ class PageStart extends React.Component {
         let that = this;
         if (!message.delay) {
             let dateNow = new Date();
-            let month = ((dateNow.getMonth()+1) < 10)?("0"+(dateNow.getMonth()+1)):(dateNow.getMonth()+1);
-            let date = ((dateNow.getDate()) < 10)?("0"+dateNow.getDate()):(dateNow.getDate());
-            let hour = ((dateNow.getUTCHours()) < 10)?("0"+dateNow.getUTCHours()):(dateNow.getUTCHours());
-            let min = ((dateNow.getMinutes()) < 10)?("0"+dateNow.getMinutes()):(dateNow.getMinutes());
-            let second = ((dateNow.getSeconds()) < 10)?("0"+dateNow.getSeconds()):(dateNow.getSeconds());
-            message.delay = dateNow.getFullYear() + "-" + month + '-' + date + 'T' + hour + ':' + min + ':' + second;
+            message.delay = dateNow.toJSON();
         }
+
         if (type == 'txt') {
             message.url = '';
         }else if(type == 'img'){
@@ -314,8 +310,7 @@ class PageStart extends React.Component {
 
     render() {
         return (
-            <View style={{flex: 1, backgroundColor:"#fff"}} >
-            </View>
+            <View style={{flex: 1, backgroundColor:"#fff"}} />
         );
     }
 }

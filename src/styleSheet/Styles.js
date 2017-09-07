@@ -194,6 +194,13 @@ const pageLogin = StyleSheet.create({
     forgetpwd: {flexDirection: "row", justifyContent: "space-between", marginTop: setScaleSize(30),},
     forgetpwdText:{height:setScaleSize(60),  fontSize:setScaleSize(28), color:"#fff", },
 });
+const pageForgetPwd = StyleSheet.create({
+    submitText: {textAlign: "center", color: "#333", fontSize: setScaleSize(30),},
+    codeView:{flexDirection:'row',},
+    inputView:{borderBottomWidth: 1, borderBottomColor: '#fff', flexDirection:'row', flex:1, marginRight:setScaleSize(40)},
+    inputCode:{height:setScaleSize(80), fontSize: setScaleSize(35), color: "#fff", paddingVertical: setScaleSize(20), paddingLeft:0, flex:1, },
+    getCode:{paddingHorizontal:setScaleSize(15), borderRadius:setScaleSize(2), marginTop:setScaleSize(40), borderWidth: 1,borderColor: "#fff",height: setScaleSize(90),justifyContent: "center",alignItems: "center", backgroundColor:"#fff"},
+});
 const PageRegister = StyleSheet.create({
     containerView: {width: WIDTH, height:HEIGHT, justifyContent: 'flex-start',  backgroundColor: "rgba(0, 0, 0, 0.4)",  position:'absolute', top:0, },
     container: {flex:1, paddingTop:setScaleSize(234), paddingLeft: setScaleSize(85), paddingRight: setScaleSize(85), justifyContent: 'flex-start',},
@@ -263,6 +270,7 @@ const styles = {
     PageRegister: PageRegister,
     PagePerInfo:PagePerInfo,
     pageLogin: pageLogin,
+    pageForgetPwd: pageForgetPwd,
     PageBaseData: PageBaseData,
     homePage: homePage,
     minePage: minePage,

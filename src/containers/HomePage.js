@@ -5,7 +5,6 @@ import {
     Text,
     Button,
     FlatList,
-    Dimensions,
     TouchableOpacity,
     TouchableHighlight,
     Image
