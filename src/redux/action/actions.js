@@ -34,7 +34,10 @@ const handleInsertMsgList = (data)=>{
                   msgData.push({countNoRead:0});
               }
               let data2 = Object.assign({}, data);
-              data2.countNoRead = msgData[0].countNoRead?(msgData[0].countNoRead + data2.countNoRead):1;
+              if (data2.selfAndOtherid == global.chartId) {
+                  data2.countNoRead = 0;
+              }
+              data2.countNoRead = msgData[0].countNoRead?(msgData[0].countNoRead + data2.countNoRead):data2.countNoRead;
               tx.executeSql("delete from MSGLIST WHERE selfAndOtherid = '" + data2.selfAndOtherid + "' ",[],()=>{
                   let userData = [];
                   userData.push(data2);
@@ -55,7 +58,7 @@ const handleInsertMsgList = (data)=>{
 }
 
 const handleSameTimeMSG = ()=>{
-    
+
     let newInsertArr = Object.assign([], insertErrArr);
     insertErrArr = [];
     let nextInsert = {};
@@ -65,7 +68,9 @@ const handleSameTimeMSG = ()=>{
             let oldTime = Number(Date.parse(nextInsert[newInsertArr[i].selfAndOtherid].time));
             let newTime = Number(Date.parse(newInsertArr[i].time));
             if (oldTime < newTime) {
-                nextInsert[newInsertArr[i].selfAndOtherid].time = newInsertArr[i].time;
+                let newCountNoRead = nextInsert[newInsertArr[i].selfAndOtherid].countNoRead;
+                nextInsert[newInsertArr[i].selfAndOtherid] = newInsertArr[i];
+                nextInsert[newInsertArr[i].selfAndOtherid].countNoRead = newCountNoRead;
             }
         }else {
             nextInsert[newInsertArr[i].selfAndOtherid] = newInsertArr[i];

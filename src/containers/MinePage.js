@@ -210,12 +210,12 @@ class MinePage extends React.Component {
                             {isvip}
                         </CachedImage>
                     </View>
-                    </TouchableOpacity>
-                    <View style={styles.minePage.nameId}>
-                        <Text style={styles.minePage.name}>{this.state.res.code ? this.state.res.code.nickname : ""}</Text>
-                        <Text style={styles.minePage.id}>ID号：{this.state.res.code ? this.state.res.code.id : ""}</Text>
-                    </View>
-                    <View style={styles.minePage.spare}/>
+                </TouchableOpacity>
+                <View style={styles.minePage.nameId}>
+                    <Text style={styles.minePage.name}>{this.state.res.code ? this.state.res.code.nickname : ""}</Text>
+                    <Text style={styles.minePage.id}>ID号：{this.state.res.code ? this.state.res.code.id : ""}</Text>
+                </View>
+                <View style={styles.minePage.spare}/>
                 {this.ElementText()}
             </ScrollView>
         );

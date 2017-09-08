@@ -27,7 +27,7 @@ class ChatScreen extends React.Component {
     }
 
     constructor(props, context) {
-        global.otherUuid = props.navigation.state.params.uuid;
+
         super(props, context);
         this.state = {
             msgData:[],
@@ -47,12 +47,8 @@ class ChatScreen extends React.Component {
         this.keyboardDidShowListener = Keyboard.addListener('keyboardWillShow', this.keyboardDidShow);
         this.keyboardDidHideListener = Keyboard.addListener('keyboardWillHide', this.keyboardDidHide);
         setTimeout(()=>this.handleScrollToEnd(), 100);
-        this.handleScrollToEnd()
-    }
-
-    componentWillReceiveProps(nextProps){
-        // setTimeout(()=>this.selectMsgData(), 100);
-        // this.selectMsgData();
+        this.handleScrollToEnd();
+        global.chartId = global.peruuid + "&&" + this.props.navigation.state.params.uuid;
     }
 
     componentDidUpdate(){
@@ -70,6 +66,7 @@ class ChatScreen extends React.Component {
         clearTimeout(this.timeout);
         this.keyboardDidShowListener && this.keyboardDidShowListener.remove();
         this.keyboardDidHideListener && this.keyboardDidHideListener.remove();
+        global.chartId = -1;
     }
 
     selectMsgData(){
@@ -170,10 +167,11 @@ class ChatScreen extends React.Component {
         if (message == '') {
             return;
         }
+        this.setState({message:"", showPicker:false});
         let id = WebIM.conn.getUniqueId();                 // 生成本地消息id
         let msg = new WebIM.message('txt', id);      // 创建文本消息
         this.handleRefreshMessage(message, false, 'txt');
-        this.setState({message:"", showPicker:false});
+        // this.setState({message:"", showPicker:false});
 
         msg.set({
             msg: message,                  // 消息内容

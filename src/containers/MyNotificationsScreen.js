@@ -14,6 +14,7 @@ import { connect } from 'react-redux';
 import Swipeout from 'react-native-swipeout';
 let sqLite = new SQLite();
 
+let _this = null;
 class MyNotificationsScreen extends React.Component {
   static navigationOptions  = ({navigation, screenProps}) =>({
       headerTitle:"消息",
@@ -42,6 +43,7 @@ class MyNotificationsScreen extends React.Component {
       this.state = {
           msgData:[],
       };
+      _this = this;
       this.handleNavChat = this.handleNavChat.bind(this);
       this.selectMsgData = this.selectMsgData.bind(this);
   }
@@ -49,6 +51,7 @@ class MyNotificationsScreen extends React.Component {
   componentDidMount(){
       this.subscription = DeviceEventEmitter.addListener('finishInsertList', ()=>this.selectMsgData());
       this.selectMsgData();
+
   }
 
   componentWillReceiveProps(nextProps){
@@ -59,6 +62,8 @@ class MyNotificationsScreen extends React.Component {
   componentWillUnmount(){
       this.subscription.remove();
   }
+
+
 
   selectMsgData(){
       //开启数据库
@@ -167,6 +172,7 @@ class MyNotificationsScreen extends React.Component {
     }
 
   render() {
+
     return (
         <View style={{flex: 1,}}>
             {styles.isIOS?<View style={styles.homePage.iosTab}/>:<View/>}
@@ -174,7 +180,7 @@ class MyNotificationsScreen extends React.Component {
                 <View style={styles.homePage.centerView}><Text style={styles.homePage.title}>消息</Text></View>
                 <View style={styles.live.message}>
                     <Image resizeMode="cover"  style={{width:16, height:16}} source={require("../images/announce.png")}/>
-                    <Text  style={styles.live.messageText}>所有让发红包、让转账的都是骗子》</Text>
+                    <Text style={styles.live.messageText}>所有让发红包、让转账的都是骗子》</Text>
                 </View>
             </View>
             {this.renderMsgList()}
