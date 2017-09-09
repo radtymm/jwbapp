@@ -13,12 +13,39 @@ class PageForgetPwd extends React.Component {
     constructor(props, context) {
         super(props, context);
         this.state = {
-
+            tel:"",
+            pwd:"",
+            code:"",
         };
     }
 
     componentDidMount() {
 
+    }
+
+    handleGetCode(){
+        requestData("https://app.jiaowangba.com/forgot_password_send_sms.html?telephone=" + this.state.tel, (res)=>{
+            Alert.alert("提示", res.msg);
+        });
+    }
+
+    handleSubmit(){
+        if (this.state.tel == "") {
+            Alert.alert("提示", "请输入手机号");
+            return;
+        }
+        if (this.state.pwd == "") {
+            Alert.alert("提示", "请输入密码");
+            return;
+        }
+        if (this.state.code == "") {
+            Alert.alert("提示", "请输入验证码");
+            return;
+        }
+        requestData("https://app.jiaowangba.com/forgot_password.html?telephone="+this.state.tel+"&code="+this.state.code+"&password="+this.state.pwd, (res)=>{
+
+            Alert.alert("提示", res.msg);
+        })
     }
 
     renderImg(){
@@ -61,15 +88,15 @@ class PageForgetPwd extends React.Component {
                         </View>
                         <View style={styles.pageForgetPwd.codeView}>
                             <View style={[styles.pageForgetPwd.inputView, {marginTop:styles.setScaleSize(50)}]}>
-                                <TextInput onChangeText={(userName) => this.setState({userName: userName})}
+                                <TextInput onChangeText={(code) => this.setState({code: code})}
                                    underlineColorAndroid="transparent" placeholderTextColor="#fff" placeholder="输入验证码"
                                    style={styles.pageForgetPwd.inputCode}/>
                             </View>
-                            <TouchableOpacity style={[styles.pageForgetPwd.getCode,]}>
+                            <TouchableOpacity style={[styles.pageForgetPwd.getCode,]} onPress={()=>{this.handleGetCode()}}>
                                 <View><Text style={styles.pageForgetPwd.submitText}>获取验证码</Text></View>
                             </TouchableOpacity>
                         </View>
-                        <TouchableOpacity style={[styles.pageLogin.submit, {marginTop:styles.setScaleSize(150)}]}>
+                        <TouchableOpacity onPress={()=>{this.handleSubmit()}} style={[styles.pageLogin.submit, {marginTop:styles.setScaleSize(150)}]}>
                             <View><Text style={styles.pageLogin.submitText}>提交</Text></View>
                         </TouchableOpacity>
                         <View>

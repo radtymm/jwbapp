@@ -15,7 +15,6 @@ import {requestData} from '../libs/request.js';
 import {height, weight} from '../libs/data.js';
 import PickerAreaDate from 'react-native-picker';
 import area from '../libs/area.json';
-import {Geolocation} from 'react-native-baidu-map';
 
 class PageSearch extends React.Component {
 
@@ -48,30 +47,7 @@ class PageSearch extends React.Component {
     }
 
     componentDidMount() {
-        if(styles.isIOS){
-            navigator.geolocation.getCurrentPosition(
-             (position) => {
-               let initialPosition = JSON.stringify(position);
-                 requestData(`https://app.jiaowangba.com/mine_info?lng=${initialPosition.longitude}&lat=${initialPosition.latitude}`, (res)=>{
-                     if (res.status == "success"){
-                     }
-                 });
-             },
-             (error) => {console.log(JSON.stringify(error));},
-             {enableHighAccuracy: false, timeout: 5000, maximumAge: 1000}
-            );
-        }else {
-            Geolocation.getCurrentPosition().then(
-                (data) => {
-                     requestData(`https://app.jiaowangba.com/mine_info?lng=${data.longitude}&lat=${data.latitude}`, (res)=>{
-                         if (res.status == "success"){
-                         }
-                     });
-                }
-            ).catch(error => {
-                console.log(error,'error');
-            })
-        }
+
      }
 
     componentWillUnmount(){
