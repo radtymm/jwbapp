@@ -43,7 +43,6 @@ class Login extends React.Component {
     reqLoginHX(uuid, pwd){
         global.peruuid = uuid;
         global.perpwd = pwd;
-        storage.save('isLogin', 'true');
         this.initMsgData();
         let options = {
             apiUrl: WebIM.config.apiURL,
@@ -62,8 +61,11 @@ class Login extends React.Component {
             }
             if (res.status == "success") {
                 let telPwd = Object.assign({}, this.state);
+                telPwd.isLogin = true;
                 global.tel = telPwd.tel;
                 global.pwd = telPwd.pwd;
+
+                storage.save('isLogin', JSON.stringify(telPwd));
                 storage.save('loginUP', JSON.stringify(res.code));
                 console.log('reqsuccess');
                 this.reqLoginHX(res.code.uuid, res.code.password);
@@ -86,7 +88,11 @@ class Login extends React.Component {
     reqLogout(){
         requestData("https://app.jiaowangba.com/login_out", (res)=>{
             if (res.status != 'error') {
-                storage.save('isLogin', 'false');
+                let telPwd = {};
+                telPwd.isLogin = false;
+                telPwd.tel = "";
+                telPwd.pwd = "";
+                storage.save('isLogin', JSON.stringify(telPwd));
                 global.WebIM.conn.close();
             }
         });

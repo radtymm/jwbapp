@@ -10,7 +10,7 @@ import {requestData, requestDataPost,} from '../libs/request.js';
 import { connect } from 'react-redux';
 import {initMsgData, msgData, msgList} from '../redux/action/actions';
 import Sound from 'react-native-sound';
-import PushNotification from 'react-native-push-notification';
+// import PushNotification from 'react-native-push-notification';
 import JPushModule from 'jpush-react-native';
 
 
@@ -150,12 +150,29 @@ class PageStart extends React.Component {
 
     async _get() {
         try {// try catch 捕获异步执行的异常
-            var value = await AsyncStorage.getItem('isLogin');
+            let value = await AsyncStorage.getItem('isLogin');
+            value = JSON.parse(value);
             console.log(value);
-            if (value !== "true"){
+            if (!value.isLogin){
+                console.log(JSON.stringify(value));
                 this.props.navigation.navigate('Login');
             } else {
-                this._getUuid();
+                requestData(`https://app.jiaowangba.com/login?telephone=${value.tel}&password=${value.pwd}`, (res)=>{
+                    if (res.type) {
+                        this.props.navigation.navigate('Login');
+                    }
+                    if (res.status == "success") {
+                        global.tel = value.tel;
+                        global.pwd = value.pwd;
+                        this.reqLoginHX(res.code.uuid, res.code.password);
+                    }else if (res.status == "redirect") {
+                        console.log('reqredirect');
+                        this._getUuid();
+                    }else {
+                        this.props.navigation.navigate('Login');
+                    }
+                });
+
                 // this.props.navigation.navigate('Tab');
             }
         } catch (error) {
