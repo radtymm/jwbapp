@@ -66,6 +66,7 @@ class PageLuck extends React.Component {
             cards: [],
             outOfCards: false,
         };
+        this.data = {};
         this.cardRemoved = this.cardRemoved.bind(this);
         this.reqData = this.reqData.bind(this);
     }
@@ -132,9 +133,6 @@ class PageLuck extends React.Component {
     }
 
     renderPerson(cardData){
-        if (!this.data) {
-            return
-        }
         let data = this.data;
         let imageSrc = {uri: 'https://cdn.jiaowangba.com/' + data.avatar};
         return (
@@ -170,8 +168,9 @@ class PageLuck extends React.Component {
                   loop={false}
 
                   renderCard={(cardData) => this.renderPerson()}
-                  renderNoMoreCards={() => <NoMoreCards />}
+                  renderNoMoreCards={() => this.renderPerson()}
                   showYup={true}
+                  yupView={()=><Image style={styles.pageLuck.heartImg} source={require("../images/like.png")}/>}
                   showNope={true}
                   handleYup={this.handleYup}
                   handleNope={this.handleNope}

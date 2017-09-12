@@ -10,7 +10,7 @@ import {requestData, requestDataPost,} from '../libs/request.js';
 import { connect } from 'react-redux';
 import {initMsgData, msgData, msgList} from '../redux/action/actions';
 import Sound from 'react-native-sound';
-import PushNotification from 'react-native-push-notification';
+// import PushNotification from 'react-native-push-notification';
 import JPushModule from 'jpush-react-native';
 
 
