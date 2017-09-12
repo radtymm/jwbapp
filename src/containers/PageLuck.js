@@ -21,34 +21,32 @@ import {requestData} from '../libs/request';
 import CachedImage from 'react-native-cached-image';
 import SwipeCards from 'react-native-swipe-cards';
 
+let data = {};
 let Card = React.createClass({
+
   render() {
+    //   let data = this.props;
+    alert(JSON.stringify(data))
+      let imageSrc = {uri: 'https://cdn.jiaowangba.com/' + data.avatar};
       return (
-        <View style={styles.pageLuck.contentView}>
-          <Image style={styles.pageLuck.headImageLuck} source={{uri: this.props.image}} />
-          <Text >This is card {this.props.name}</Text>
-        </View>
+          <TouchableOpacity style={styles.pageLuck.headTouch} >
+              <View style={styles.pageLuck.contentView}>
+                  <CachedImage style={styles.pageLuck.headImageLuck} source={imageSrc}/>
+                  {(data.is_vip == "No")?<View/>:(<Image style={styles.minePage.isvip} source={require('../images/isvip.png')}/>)}
+                  <View style={styles.pageLuck.nameView}>
+                      <Text style={styles.pageLuck.nameText}>{data.nickname?data.nickname:""}</Text>
+                  </View>
+                  <View style={styles.pageLuck.ageLiveEduView}>
+                      {(!data.age)?<View/>:<View style={styles.pageLuck.ageView}><Text style={styles.pageLuck.ageLiveEdu}>{(data.age+'岁')}</Text></View>}
+                      <View style={styles.pageLuck.liveView}><Text style={styles.pageLuck.ageLiveEdu}>{data.live}</Text></View>
+                      <View style={styles.pageLuck.eduView}><Text style={styles.pageLuck.ageLiveEdu}>{data.education}</Text></View>
+                  </View>
+              </View>
+          </TouchableOpacity>
     )
   }
 })
 
-const Cards = [
-  {name: '1', image: 'https://media.giphy.com/media/GfXFVHUzjlbOg/giphy.gif'},
-  {name: '2', image: 'https://media.giphy.com/media/irTuv1L1T34TC/giphy.gif'},
-  {name: '3', image: 'https://media.giphy.com/media/LkLL0HJerdXMI/giphy.gif'},
-  {name: '4', image: 'https://media.giphy.com/media/fFBmUMzFL5zRS/giphy.gif'},
-  {name: '5', image: 'https://media.giphy.com/media/oDLDbBgf0dkis/giphy.gif'},
-  {name: '6', image: 'https://media.giphy.com/media/7r4g8V2UkBUcw/giphy.gif'},
-  {name: '7', image: 'https://media.giphy.com/media/K6Q7ZCdLy8pCE/giphy.gif'},
-  {name: '8', image: 'https://media.giphy.com/media/hEwST9KM0UGti/giphy.gif'},
-  {name: '9', image: 'https://media.giphy.com/media/3oEduJbDtIuA2VrtS0/giphy.gif'},
-]
-const Cards2 = [
-  {name: '10', image: 'https://media.giphy.com/media/12b3E4U9aSndxC/giphy.gif'},
-  {name: '11', image: 'https://media4.giphy.com/media/6csVEPEmHWhWg/200.gif'},
-  {name: '12', image: 'https://media4.giphy.com/media/AA69fOAMCPa4o/200.gif'},
-  {name: '13', image: 'https://media.giphy.com/media/OVHFny0I7njuU/giphy.gif'},
-]
 let NoMoreCards = React.createClass({
   render() {
     return (
@@ -75,9 +73,8 @@ class PageLuck extends React.Component {
     componentDidMount() {
         requestData('https://app.jiaowangba.com/luck', (res) => {
             if (res.status == "success") {
-                this.setState({dataNext:res.code, cards:[{
-                    name: '1', image: 'https://cdn.jiaowangba.com/' + res.code.avatar
-                }]});
+                this.setState({dataNext:res.code, cards:[res.code]});
+                this.index = -1;
                 this.reqData();
             }else {
                 Alert.alert('提示', '网络异常');
@@ -87,11 +84,13 @@ class PageLuck extends React.Component {
 
     reqData(isGood){
         let that = this;
+        this.index++;
         if (isGood == "good"){
             requestData('https://app.jiaowangba.com/add_ilike?id=' + this.state.data.id, (res) => {
 
             });
         }
+        this.data = Object.assign({}, this.state.dataNext);
         let data = Object.assign({}, this.state.dataNext);
         that.setState({data:data});
         requestData('https://app.jiaowangba.com/luck', (res) => {
@@ -99,9 +98,7 @@ class PageLuck extends React.Component {
                 let data = Object.assign({}, this.state.dataNext);
                 that.setState({dataNext:res.code});
                 this.setState({
-                  cards: [{
-                      name: '1', image: 'https://cdn.jiaowangba.com/' + res.code.avatar
-                  }],
+                  cards: this.state.cards.concat(res.code),
                 })
             }
         });
@@ -117,7 +114,7 @@ class PageLuck extends React.Component {
 
       console.log(`The index is ${index}`);
 
-      let CARD_REFRESH_LIMIT = 3
+      let CARD_REFRESH_LIMIT = 1
 
       if (this.state.cards.length - index <= CARD_REFRESH_LIMIT + 1) {
         console.log(`There are only ${this.state.cards.length - index - 1} cards left.`);
@@ -134,49 +131,58 @@ class PageLuck extends React.Component {
       }
     }
 
-
-    renderBody(){
-        if (!this.state.data) {
-            return;
+    renderPerson(cardData){
+        if (!this.data) {
+            return
         }
-        let imageSrc = {uri: 'https://cdn.jiaowangba.com/' + this.state.data.avatar};
-        let imgBad = require("../images/unlike.png");
-
-        let imgLoad = <View/>;
-        if (this.state.load == 'loading') {
-            imgLoad = <View style={[styles.pageLuck.headImageLuck, {backgroundColor:"#fff"}]}><ActivityIndicator size='large'/></View>;
-        }else if (this.state.load == 'loadSuccess') {
-            imgLoad = <View/>;
-        }else if (this.state.load == 'loadError'){
-            imgLoad = <View style={[styles.pageLuck.headImageLuck, {backgroundColor:"#fff"}]}><Text>图片加载失败。。。</Text></View>;
-        }
-
-        return (<View style={styles.pageLuck.bodyView}>
-            <TouchableOpacity style={styles.pageLuck.headTouch} onPress={()=>{this.props.navigation.navigate("PageBaseData" , this.state.data)}}>
+        let data = this.data;
+        let imageSrc = {uri: 'https://cdn.jiaowangba.com/' + data.avatar};
+        return (
+            <TouchableOpacity style={styles.pageLuck.headTouch} onPress={()=>{this.props.navigation.navigate("PageBaseData" , data)}}>
                 <View style={styles.pageLuck.contentView}>
                     <CachedImage onLoadStart={()=>this.setState({load:'loading'})}
                         onLoad={()=>this.setState({load:'loadSuccess'})}
                         onError={()=>this.setState({load:'loadError'})}
-                        style={styles.pageLuck.headImageLuck} source={imageSrc}>
-                        {imgLoad}
-                    </CachedImage>
-                    {(this.state.data.is_vip == "No")?<View/>:(<Image style={styles.minePage.isvip} source={require('../images/isvip.png')}/>)}
+                        style={styles.pageLuck.headImageLuck} source={imageSrc}/>
+                    {(data.is_vip == "No")?<View/>:(<Image style={styles.minePage.isvip} source={require('../images/isvip.png')}/>)}
                     <View style={styles.pageLuck.nameView}>
-                        <Text style={styles.pageLuck.nameText}>{this.state.data.nickname?this.state.data.nickname:""}</Text>
+                        <Text style={styles.pageLuck.nameText}>{data.nickname?data.nickname:""}</Text>
                     </View>
                     <View style={styles.pageLuck.ageLiveEduView}>
-                        {(!this.state.data.age)?<View/>:<View style={styles.pageLuck.ageView}><Text style={styles.pageLuck.ageLiveEdu}>{(this.state.data.age+'岁')}</Text></View>}
-                        <View style={styles.pageLuck.liveView}><Text style={styles.pageLuck.ageLiveEdu}>{this.state.data.live}</Text></View>
-                        <View style={styles.pageLuck.eduView}><Text style={styles.pageLuck.ageLiveEdu}>{this.state.data.education}</Text></View>
+                        {(!data.age)?<View/>:<View style={styles.pageLuck.ageView}><Text style={styles.pageLuck.ageLiveEdu}>{(data.age+'岁')}</Text></View>}
+                        <View style={styles.pageLuck.liveView}><Text style={styles.pageLuck.ageLiveEdu}>{data.live}</Text></View>
+                        <View style={styles.pageLuck.eduView}><Text style={styles.pageLuck.ageLiveEdu}>{data.education}</Text></View>
                     </View>
                 </View>
             </TouchableOpacity>
+        );
+    }
+
+    renderBody(){
+        if (!this.state.cards) {
+            return;
+        }
+
+
+        return (<View style={styles.pageLuck.bodyView}>
+                <SwipeCards
+                  cards={this.state.cards}
+                  loop={false}
+
+                  renderCard={(cardData) => this.renderPerson()}
+                  renderNoMoreCards={() => <NoMoreCards />}
+                  showYup={true}
+                  showNope={true}
+                  handleYup={this.handleYup}
+                  handleNope={this.handleNope}
+                  cardRemoved={this.reqData}
+                />
             <View style={styles.pageLuck.bottomView}/>
             <View style={[styles.pageLuck.bottomView, {width:styles.setScaleSize(580),}]}/>
             <View style={styles.pageLuck.heartView}>
                 <TouchableOpacity onPress={()=>{this.reqData("bad")}}>
                     <View>
-                        <Image style={styles.pageLuck.heartImg} source={imgBad}/>
+                        <Image style={styles.pageLuck.heartImg} source={require("../images/unlike.png")}/>
                     </View>
                 </TouchableOpacity>
                 <TouchableOpacity onPress={()=>{this.reqData("good")}}>
@@ -192,19 +198,6 @@ class PageLuck extends React.Component {
     render() {
         return (
             <View style={{flex:1, backgroundColor:"#f5f5f5"}}>
-            {/*<SwipeCards
-              cards={this.state.cards}
-              loop={false}
-
-              renderCard={(cardData) => <Card {...cardData} />}
-              renderNoMoreCards={() => <NoMoreCards />}
-              showYup={true}
-              showNope={true}
-
-              handleYup={this.handleYup}
-              handleNope={this.handleNope}
-              cardRemoved={this.reqData}
-            />*/}
                 {styles.isIOS?<View style={styles.homePage.iosTab}/>:<View/>}
                 <View style={styles.PagePerInfo.title}>
                     <TouchableOpacity style={styles.PagePerInfo.titleBack} onPress={()=>this.props.navigation.goBack(null)}>

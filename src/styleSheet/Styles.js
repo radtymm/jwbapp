@@ -96,7 +96,7 @@ const tabbar = StyleSheet.create({
 const pageLuck = StyleSheet.create({
     heartView: { marginTop:setScaleSize(30),  flexDirection:'row', justifyContent:'space-around', alignItems:'center'},
     heartImg: {width: setScaleSize(152), height: setScaleSize(152), marginLeft:setScaleSize(15), marginRight:setScaleSize(15), },
-    bodyView:{padding:setScaleSize(20), alignItems:"center", },
+    bodyView:{padding:setScaleSize(20), alignItems:"center", backgroundColor:"#fff"},
     bottomView:{borderWidth:2, borderColor:"#ebebeb", borderTopWidth:0, shadowColor:"#ebebeb", shadowRadius:setScaleSize(4), shadowOffset:{width:setScaleSize(4), height:setScaleSize(2),}, width:setScaleSize(660), height:setScaleSize(20), backgroundColor:"#fff", borderBottomLeftRadius:setScaleSize(8),  borderBottomRightRadius:setScaleSize(8),},
     headTouch:{borderRadius:setScaleSize(8),borderWidth:2, borderColor:"#ebebeb"},
     headImageLuck:{borderTopLeftRadius:setScaleSize(10), borderTopRightRadius:setScaleSize(10), width:(WIDTH - setScaleSize(40)), height:(WIDTH - setScaleSize(40)), alignItems:'center', justifyContent:"center"},
