@@ -96,9 +96,9 @@ const tabbar = StyleSheet.create({
 const pageLuck = StyleSheet.create({
     heartView: { marginTop:setScaleSize(30),  flexDirection:'row', justifyContent:'space-around', alignItems:'center'},
     heartImg: {width: setScaleSize(152), height: setScaleSize(152), marginLeft:setScaleSize(15), marginRight:setScaleSize(15), },
-    bodyView:{padding:setScaleSize(20), alignItems:"center", backgroundColor:"#fff"},
-    bottomView:{borderWidth:2, borderColor:"#ebebeb", borderTopWidth:0, shadowColor:"#ebebeb", shadowRadius:setScaleSize(4), shadowOffset:{width:setScaleSize(4), height:setScaleSize(2),}, width:setScaleSize(660), height:setScaleSize(20), backgroundColor:"#fff", borderBottomLeftRadius:setScaleSize(8),  borderBottomRightRadius:setScaleSize(8),},
-    headTouch:{borderRadius:setScaleSize(8),borderWidth:2, borderColor:"#ebebeb"},
+    bodyView:{padding:setScaleSize(20), alignItems:"center", backgroundColor:"#efefef"},
+    bottomView:{borderWidth:2, borderColor:"#ebebeb", borderTopWidth:0,  width:setScaleSize(660), height:setScaleSize(20), backgroundColor:"#fff", borderBottomLeftRadius:setScaleSize(8),  borderBottomRightRadius:setScaleSize(8),},
+    headTouch:{borderRadius:setScaleSize(8), height:setScaleSize(900), borderWidth:2, borderColor:"#ebebeb", paddingTop:0, backgroundColor:"#fff"},
     headImageLuck:{borderTopLeftRadius:setScaleSize(10), borderTopRightRadius:setScaleSize(10), width:(WIDTH - setScaleSize(40)), height:(WIDTH - setScaleSize(40)), alignItems:'center', justifyContent:"center"},
     nameView:{margin:setScaleSize(20)},
     nameText:{fontSize:setScaleSize(34), color:"#333"},
@@ -107,7 +107,7 @@ const pageLuck = StyleSheet.create({
     ageView:{marginRight:setScaleSize(10), backgroundColor:"#669ce3", height:setScaleSize(36), borderRadius:setScaleSize(4), paddingLeft:setScaleSize(16), paddingRight:setScaleSize(16)},
     liveView:{marginRight:setScaleSize(10), backgroundColor:"#ffb234", height:setScaleSize(36), borderRadius:setScaleSize(4), paddingLeft:setScaleSize(16), paddingRight:setScaleSize(16)},
     eduView:{backgroundColor:"#32ad19", height:setScaleSize(36), borderRadius:setScaleSize(4), paddingLeft:setScaleSize(16), paddingRight:setScaleSize(16)},
-    contentView:{shadowColor:"#ebebeb", shadowRadius:setScaleSize(4), shadowOffset:{width:setScaleSize(0), height:setScaleSize(2),}, backgroundColor:"#fff", borderRadius:setScaleSize(10)},
+    contentView:{ borderRadius:setScaleSize(10)},
 
 });
 const pageLikeWho = StyleSheet.create({

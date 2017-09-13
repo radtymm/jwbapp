@@ -21,41 +21,6 @@ import {requestData} from '../libs/request';
 import CachedImage from 'react-native-cached-image';
 import SwipeCards from 'react-native-swipe-cards';
 
-let data = {};
-let Card = React.createClass({
-
-  render() {
-    //   let data = this.props;
-    alert(JSON.stringify(data))
-      let imageSrc = {uri: 'https://cdn.jiaowangba.com/' + data.avatar};
-      return (
-          <TouchableOpacity style={styles.pageLuck.headTouch} >
-              <View style={styles.pageLuck.contentView}>
-                  <CachedImage style={styles.pageLuck.headImageLuck} source={imageSrc}/>
-                  {(data.is_vip == "No")?<View/>:(<Image style={styles.minePage.isvip} source={require('../images/isvip.png')}/>)}
-                  <View style={styles.pageLuck.nameView}>
-                      <Text style={styles.pageLuck.nameText}>{data.nickname?data.nickname:""}</Text>
-                  </View>
-                  <View style={styles.pageLuck.ageLiveEduView}>
-                      {(!data.age)?<View/>:<View style={styles.pageLuck.ageView}><Text style={styles.pageLuck.ageLiveEdu}>{(data.age+'岁')}</Text></View>}
-                      <View style={styles.pageLuck.liveView}><Text style={styles.pageLuck.ageLiveEdu}>{data.live}</Text></View>
-                      <View style={styles.pageLuck.eduView}><Text style={styles.pageLuck.ageLiveEdu}>{data.education}</Text></View>
-                  </View>
-              </View>
-          </TouchableOpacity>
-    )
-  }
-})
-
-let NoMoreCards = React.createClass({
-  render() {
-    return (
-      <View style={styles.noMoreCards}>
-        <Text>No more cards</Text>
-      </View>
-    )
-  }
-})
 
 class PageLuck extends React.Component {
 
@@ -92,47 +57,20 @@ class PageLuck extends React.Component {
             });
         }
         this.data = Object.assign({}, this.state.dataNext);
-        let data = Object.assign({}, this.state.dataNext);
-        that.setState({data:data});
+        that.setState({data:this.data});
         requestData('https://app.jiaowangba.com/luck', (res) => {
             if (res.status == "success") {
-                let data = Object.assign({}, this.state.dataNext);
                 that.setState({dataNext:res.code});
                 this.setState({
                   cards: this.state.cards.concat(res.code),
                 })
+            }else {
+                that.setState({dataNext:{}});
             }
         });
     }
 
-    handleYup (card) {
-      console.log("yup")
-    }
-    handleNope (card) {
-      console.log("nope")
-    }
-    cardRemoved (index) {
-
-      console.log(`The index is ${index}`);
-
-      let CARD_REFRESH_LIMIT = 1
-
-      if (this.state.cards.length - index <= CARD_REFRESH_LIMIT + 1) {
-        console.log(`There are only ${this.state.cards.length - index - 1} cards left.`);
-
-        if (!this.state.outOfCards) {
-          console.log(`Adding ${Cards2.length} more cards`)
-
-          this.setState({
-            cards: this.state.cards.concat(Cards2),
-            outOfCards: true
-          })
-        }
-
-      }
-    }
-
-    renderPerson(cardData){
+    renderPerson(){
         let data = this.data;
         let imageSrc = {uri: 'https://cdn.jiaowangba.com/' + data.avatar};
         return (
@@ -160,22 +98,22 @@ class PageLuck extends React.Component {
         if (!this.state.cards) {
             return;
         }
-
-
         return (<View style={styles.pageLuck.bodyView}>
+            <View style={styles.pageLuck.headTouch}>
                 <SwipeCards
                   cards={this.state.cards}
                   loop={false}
 
-                  renderCard={(cardData) => this.renderPerson()}
+                  renderCard={() => this.renderPerson()}
                   renderNoMoreCards={() => this.renderPerson()}
                   showYup={true}
                   yupView={()=><Image style={styles.pageLuck.heartImg} source={require("../images/like.png")}/>}
                   showNope={true}
-                  handleYup={this.handleYup}
-                  handleNope={this.handleNope}
-                  cardRemoved={this.reqData}
+                  handleYup={() => this.reqData("good")}
+                  handleNope={() => this.reqData("bad")}
+                  cardRemoved={()=>{console.log(111);}}
                 />
+            </View>
             <View style={styles.pageLuck.bottomView}/>
             <View style={[styles.pageLuck.bottomView, {width:styles.setScaleSize(580),}]}/>
             <View style={styles.pageLuck.heartView}>
