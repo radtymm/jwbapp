@@ -132,7 +132,7 @@ class PageBaseData extends React.Component {
 
         let imgLike = require('../images/likeother.png');
         if (this.state.is_like){
-            imgLike = require('../images/liked_before.png');
+            imgLike = require('../images/scrolike.png');
         }
 
         return <View style={styles.PageBaseData.headView}>
@@ -153,12 +153,6 @@ class PageBaseData extends React.Component {
     }
 
     renderBaseData(){
-        let imgLike = require('../images/like_pre.png');
-        if (this.state.is_like){
-            imgLike = require('../images/liked_before.png');
-        }
-
-
         return <View style={styles.PageBaseData.contentView}>
             {this.renderIdea()}
             <View style={styles.PageBaseData.loveStory}>

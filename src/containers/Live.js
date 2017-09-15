@@ -1,6 +1,6 @@
 import React from 'react';
 import {
-    StyleSheet, Alert, RefreshControl,
+    StyleSheet, Alert, RefreshControl,DeviceEventEmitter,
     View, AppState, BackHandler, ToastAndroid,
     Text,
     Button,
@@ -12,6 +12,7 @@ import {
 } from 'react-native';
 import  PageBaseData from './PageBaseData';
 import styles from '../styleSheet/Styles';
+import PagePerInfo from './PagePerInfo';
 import {requestData} from '../libs/request';
 import CachedImage from 'react-native-cached-image';
 
@@ -54,7 +55,7 @@ class Live extends React.Component {
     }
 
     componentDidMount() {
-        this.handleRefresh();
+        DeviceEventEmitter.addListener('refreshLive', ()=>this.handleRefresh());
         AppState.addEventListener('change', this.handleAppStateChange);
         this.props.navigation.state.param = this.handleDoublePressTab; //({navigatePress :this.handleDoublePressTab, title:"live"})
         BackHandler.addEventListener('hardwareBackPress', this.onBackHandler);
@@ -124,6 +125,11 @@ class Live extends React.Component {
 
 
     handleDoublePressTab(){
+        if(!global.perInfo.live){
+            let perInfoParams = Object.assign({}, global.perInfo);
+            Alert.alert("提示", "请选择居住城市", [{text: '确定', onPress: () => this.props.navigation.navigate('PagePerInfo', perInfoParams)},])
+            return;
+        }
         let timestamp = (new Date()).valueOf();
         if (timestamp - firstClick > 2000) {
             firstClick = timestamp;
@@ -224,7 +230,7 @@ class Live extends React.Component {
     }
 
     render() {
-        console.log(this.props.navigation.state.routeName);
+
         return (
             <View style={{flex: 1,}}>
                 {styles.isIOS?<View style={styles.homePage.iosTab} onPress={()=>this.scrollTotop()}/>:<View/>}

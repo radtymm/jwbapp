@@ -14,6 +14,11 @@ for (let i=40; i < 100; i++ ){
     weight.push(strHeight);
 }
 
+let birthYear = [];
+for (let i = 1950; i < 2010; i++) {
+    let strYear = i;
+    birthYear.push(strYear);
+}
+birthYear.push('不限');
 
-
-export {height, weight, };
+export {height, weight, birthYear};

@@ -1,7 +1,7 @@
 import React from 'react';
 import {
     StyleSheet, ScrollView, RefreshControl, Alert, Picker, TextInput, KeyboardAvoidingView,
-    View, DatePickerAndroid, DatePickerIOS, Modal,
+    View, DatePickerAndroid, DatePickerIOS, Modal, DeviceEventEmitter,
     Text,
     Button,
     FlatList,
@@ -161,7 +161,7 @@ class PagePerInfo extends React.Component {
         requestData(`https://app.jiaowangba.com/mine_info?birthdate=${this.state.birthdate}${liveParam}${hometownParam}&nickname=${this.state.nickname}&wechat=${this.state.wechat}&marry=${marry}&occupation=${this.state.occupation}&education=${education}&height=${height}&weight=${weight}&income=${income}&house=${house}&idea=${this.state.idea}`, (res)=>{
             if (res.status == "success"){
                 Alert.alert("提示", "保存个人信息成功", [{text:"确定", onPress:()=>{
-                    this.props.navigation.state.params.refresh();
+                    DeviceEventEmitter.emit('refresh');
                     this.props.navigation.goBack();
                 }}]);
             }else {

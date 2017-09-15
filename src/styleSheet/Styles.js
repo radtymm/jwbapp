@@ -19,6 +19,7 @@ let setScaleSize = (size)=>{
 }
 
 const homePage = StyleSheet.create({
+    searchImg:{width:setScaleSize(60), height:setScaleSize(60)},
     icon: {width: 30, height: 30,},
     flatViewImage: { width: (WIDTH - setScaleSize(62))/2, height: (WIDTH - setScaleSize(62))/2,  borderRadius:setScaleSize(10),},
     flatViewOne: {flex:1, backgroundColor: "#fff",},
@@ -114,11 +115,11 @@ const pageLikeWho = StyleSheet.create({
     flatView:{flex:1, padding:setScaleSize(20), paddingTop:0, backgroundColor:"#fff"},
     flatTouch:{},
     flatItemView: {paddingTop:setScaleSize(20), paddingBottom:setScaleSize(20), borderBottomWidth:1, borderBottomColor:"#ebebeb",  width:(WIDTH - setScaleSize(40)),  flexDirection:'row',  alignItems:'center'},
-    heartImg: {width: setScaleSize(120), height: setScaleSize(120),},
-    realname: {color:"#333", fontSize:setScaleSize(28),},
-    liveage: {color:"#888", fontSize:setScaleSize(24),},
-    timeago: {color:"#888", fontSize:setScaleSize(22),},
-    itemTextView: {flex:1, height: setScaleSize(120), paddingTop:setScaleSize(10), marginLeft:setScaleSize(20), justifyContent:"space-between"},
+    heartImg: {width: setScaleSize(180), height: setScaleSize(180),},
+    realname: {color:"#333", fontSize:setScaleSize(31),},
+    liveage: {color:"#888", fontSize:setScaleSize(27),},
+    timeago: {color:"#888", fontSize:setScaleSize(25),},
+    itemTextView: {flex:1, height: setScaleSize(180), paddingTop:setScaleSize(10), marginLeft:setScaleSize(20), justifyContent:"space-between"},
 });
 const pageVip = StyleSheet.create({
     joinText:{fontSize:setScaleSize(30)},
@@ -216,7 +217,7 @@ const pageSearch = StyleSheet.create({
     titleleftView:{marginTop:setScaleSize(28), marginBottom:setScaleSize(28), },
     itemTitle: {fontSize:setScaleSize(30), color:"#929090", marginLeft:setScaleSize(20)},
     areaDate:{fontSize:setScaleSize(30), color:"#333", },
-
+    birthYearView:{flexDirection:'row', justifyContent:'center', alignItems:'center'},
     footerView:{ padding:setScaleSize(20), },
     footView:{flexDirection:"row", justifyContent:"space-between", paddingHorizontal:setScaleSize(15)},
     footResetBtn:{ backgroundColor:"#f06e6e", width:setScaleSize(200), height:setScaleSize(80), borderRadius:setScaleSize(4), justifyContent:"center", alignItems:"center",},
@@ -276,6 +277,10 @@ const chatScreen = StyleSheet.create({
 });
 const myNotificationsScreen = StyleSheet.create({
     heartImg: {width: setScaleSize(120), height: setScaleSize(120), borderRadius:setScaleSize(60)},
+    realname: {color:"#333", fontSize:setScaleSize(28),},
+    liveage: {color:"#888", fontSize:setScaleSize(27),},
+    timeago: {color:"#888", fontSize:setScaleSize(22),},
+    itemTextView: {flex:1, height: setScaleSize(120), paddingTop:setScaleSize(10), marginLeft:setScaleSize(20), justifyContent:"space-between"},
     noReadTolView: {overflow:'hidden', backgroundColor:'red', alignItems:"center", justifyContent:"center", top:setScaleSize(0), left:setScaleSize(40),  position:"absolute", width:setScaleSize(30), height:setScaleSize(30), borderRadius:setScaleSize(15)},
     noReadView: {backgroundColor:'red', alignItems:"center", justifyContent:"center", top:setScaleSize(20), left:setScaleSize(80),  position:"absolute", width:setScaleSize(40), height:setScaleSize(40), borderRadius:setScaleSize(20)},
     noReadTolText: {textAlign:'center', fontSize:setScaleSize(3), color:"#fff", },

@@ -150,12 +150,12 @@ class MyNotificationsScreen extends React.Component {
                                         <CachedImage autoClose={false} resizeMode="cover" style={ styles.myNotificationsScreen.heartImg} source={src}/>
                                         {item.countNoRead==0?<View/>:<View style={styles.myNotificationsScreen.noReadView}>
                                             <Text style={styles.myNotificationsScreen.noReadText}>{item.countNoRead}</Text></View>}
-                                        <View style={styles.pageLikeWho.itemTextView}>
+                                        <View style={styles.myNotificationsScreen.itemTextView}>
                                             <View style={{flex:1, flexDirection:"row", justifyContent:'space-between'}}>
-                                                <Text style={styles.pageLikeWho.realname}>{item.otherName}</Text>
-                                                <Text style={styles.pageLikeWho.timeago}>{sendTime}</Text>
+                                                <Text style={styles.myNotificationsScreen.realname}>{item.otherName}</Text>
+                                                <Text style={styles.myNotificationsScreen.timeago}>{sendTime}</Text>
                                             </View>
-                                            <Text style={styles.pageLikeWho.liveage}>{item.message}</Text>
+                                            <Text style={styles.myNotificationsScreen.liveage}>{item.message}</Text>
                                         </View>
                                     </View>
                                 </TouchableOpacity>

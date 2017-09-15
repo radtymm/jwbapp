@@ -1,7 +1,7 @@
 import React from 'react';
 import {
     StyleSheet, ScrollView, navigator, Alert, View, Text, Button, FlatList, Dimensions, TouchableOpacity,
-    TouchableHighlight, Image, TextInput, Modal, ImageBackground,
+    TouchableHighlight, Image, TextInput, Modal, ImageBackground, DeviceEventEmitter,
 } from 'react-native';
 import {requestData, requestDataPost} from '../libs/request';
 import styles from '../styleSheet/Styles';
@@ -53,7 +53,11 @@ class MinePage extends React.Component {
 
     componentDidMount() {
         this.refresh();
+        this.refreshListener = DeviceEventEmitter.addListener('refresh', ()=>this.refresh());
+    }
 
+    componentWillUnmount(){
+        this.refreshListener.remove();
     }
 
     refresh(){
@@ -62,6 +66,7 @@ class MinePage extends React.Component {
             if (res.status == "success"){
                 this.setState({res: res});
                 global.perInfo = res.code;
+                DeviceEventEmitter.emit('refreshLive');
             }else {
                 requestData(`https://app.jiaowangba.com/login?telephone=${global.tel}&password=${global.pwd}`, (res)=>{
                     if (res.type) {
@@ -73,6 +78,7 @@ class MinePage extends React.Component {
                             if (res.status == "success"){
                                 this.setState({res: res});
                                 global.perInfo = res.code;
+                                DeviceEventEmitter.emit('refreshLive');
                             }
                         });
                     }else {
@@ -171,10 +177,6 @@ class MinePage extends React.Component {
                                             storage.save('isLogin', 'false');
                                         }
                                     });
-                            }else if (item.title == "个人资料") {
-                                let perInfoParams = Object.assign({}, this.state.res.code);
-                                perInfoParams.refresh = this.refresh;
-                                this.props.navigation.navigate(item.navi, perInfoParams);
                             }else{
                                 this.props.navigation.navigate(item.navi, this.state.res.code);
                             }

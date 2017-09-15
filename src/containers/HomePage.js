@@ -27,7 +27,6 @@ class HomePage extends React.Component {
             navigation.state.params.navigatePress();}}>
             <Text>相遇</Text>
         </TouchableOpacity>,
-        // Note: By default the icon is only shown on iOS. Search the showIcon option below.
         tabBarIcon: ({tintColor}) => (
             <TouchableOpacity onPress={()=>{
                 navigation.navigate("HomePage");
@@ -46,6 +45,7 @@ class HomePage extends React.Component {
             data:[],
             isRefreshing:false,
         };
+
         props.navigatePress = this.navigatePress;
         this.handleRefresh = this.handleRefresh.bind(this);
         this.scrollTotop = this.scrollTotop.bind(this);
@@ -53,6 +53,7 @@ class HomePage extends React.Component {
     }
 
     componentDidMount() {
+        global.searchHomeParam = '';
         this.handleRefresh();
     	this.props.navigation.setParams({navigatePress:this.handleDoublePressTab});
     }
@@ -77,7 +78,7 @@ class HomePage extends React.Component {
     handleRefresh(){
         let that = this;
         that.setState({isRefreshing: true});
-        requestData('https://app.jiaowangba.com/?page=1', (res) => {
+        requestData('https://app.jiaowangba.com/?page=1' + global.searchHomeParam, (res) => {
             if (res.status == 'success') {
                 that.setState({data: res.code.data, page:1, isRefreshing:false});
             }else {
@@ -90,7 +91,7 @@ class HomePage extends React.Component {
     loadMore(){
         let that = this;
         that.setState({isRefreshing: true});
-        requestData('https://app.jiaowangba.com/?page=' + (this.state.page + 1), (res) => {
+        requestData('https://app.jiaowangba.com/?page=' + (this.state.page + 1) + global.searchHomeParam, (res) => {
             if (res.status == "success") {
                 let data = Object.assign([], that.state.data);
                 for (let i in res.code.data){
@@ -176,17 +177,26 @@ class HomePage extends React.Component {
         return;
     }
 
-    render() {
-
+    renderHead(){
+        let perInfo = Object.assign({}, global.perInfo);
+        perInfo.handleRefresh = ()=>this.handleRefresh();
         return (
-            <View style={styles.homePage.container}>
+            <View>
                 {styles.isIOS?<View style={styles.homePage.iosTab} onPress={()=>this.scrollTotop()}/>:<View/>}
                 <View style={styles.homePage.centerView}>
                     <Text style={styles.homePage.title}>相遇</Text>
-                    <TouchableOpacity onPress={()=>{global.perInfo?this.props.navigation.navigate('PageSearch', global.perInfo):null;}} style={styles.homePage.searchTouch}>
-                        <Image source={require('../images/white_search_titlebar.png')}/>
+                    <TouchableOpacity onPress={()=>{global.perInfo?this.props.navigation.navigate('PageSearch', perInfo):null;}} style={styles.homePage.searchTouch}>
+                        <Image style={styles.homePage.searchImg} resizeMode="stretch" source={require('../images/white_search_titlebar.png')}/>
                     </TouchableOpacity>
                 </View>
+            </View>
+        );
+    }
+
+    render() {
+        return (
+            <View style={styles.homePage.container}>
+                {this.renderHead()}
                 {this.renderFlatList()}
             </View>
         );
