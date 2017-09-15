@@ -126,10 +126,10 @@ class PageSearch extends React.Component {
         }
         let incomeParam = `&income=${income}`
 
-        let age_fromParam = (this.state.age_from != '不限')?`&age_from=${this.state.age_from}`:"";
-        let age_toParam = (this.state.age_to != '不限')?`&age_to=${this.state.age_to}`:"";
-        let liveParam = (this.state.live != '不限')?`&live=${this.state.liveid}`:"";
-        let hometownParam = (this.state.hometown != '不限')?`&hometown=${this.state.hometownid}`:"";
+        let age_fromParam = (this.state.age_from != '不限')?`&age_from=${this.state.age_from}`:"&age_from=";
+        let age_toParam = (this.state.age_to != '不限')?`&age_to=${this.state.age_to}`:"&age_to=";
+        let liveParam = (this.state.live != '不限')?`&live=${this.state.liveid}`:"&live=";
+        let hometownParam = (this.state.hometown != '不限')?`&hometown=${this.state.hometownid}`:"&hometown=";
 
         global.searchHomeParam = educationParam+marryParam+incomeParam+age_fromParam+age_toParam+liveParam+hometownParam;
         alert(global.searchHomeParam);

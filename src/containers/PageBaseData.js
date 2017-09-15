@@ -27,11 +27,17 @@ class PageBaseData extends React.Component {
 
     componentDidMount() {
         let that = this;
-        requestData('https://app.jiaowangba.com/info?id='+this.props.navigation.state.params.id, (res)=>{
+        requestData('https://app.jiaowangba.com/info?id='+that.props.navigation.state.params.id, (res)=>{
             if (res.status == 'success') {
                 that.setState({data:res, is_like:res.code.is_like});
             }else {
-                Alert.alert("网络异常", "请检查网络，或重新登录");
+                requestData('https://app.jiaowangba.com/info?id='+that.props.navigation.state.params.id, (res)=>{
+                    if (res.status == 'success') {
+                        that.setState({data:res, is_like:res.code.is_like});
+                    }else {
+                        // Alert.alert("网络异常");
+                    }
+                });
             }
         });
     }
@@ -57,6 +63,7 @@ class PageBaseData extends React.Component {
             let data1 = [
                 {title: '出生年月', content: params.birthdate},
                 {title: '居住：', content: params.live,},
+                {title: '家乡：', content: params.hometown,},
                 {title: '职业：', content: params.occupation,},
                 {title: '收入：', content: params.income,},
                 {title: '婚况：', content: params.marry,},

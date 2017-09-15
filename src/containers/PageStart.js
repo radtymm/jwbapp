@@ -124,7 +124,6 @@ class PageStart extends React.Component {
                         }}
                     ]);
                 }
-
             },
             onTextMessage: function ( message ) {
                 console.log(JSON.stringify(message));
