@@ -151,11 +151,7 @@ class PageStart extends React.Component {
         try {// try catch 捕获异步执行的异常
             let value = await AsyncStorage.getItem('isLogin');
             value = JSON.parse(value);
-            console.log(value);
-            if (!value.isLogin){
-                console.log(JSON.stringify(value));
-                this.props.navigation.navigate('Login');
-            } else {
+            if (value && value.isLogin) {
                 requestData(`https://app.jiaowangba.com/login?telephone=${value.tel}&password=${value.pwd}`, (res)=>{
                     if (res.type) {
                         this.props.navigation.navigate('Login');
@@ -171,10 +167,13 @@ class PageStart extends React.Component {
                         this.props.navigation.navigate('Login');
                     }
                 });
-
-                // this.props.navigation.navigate('Tab');
+            }else {
+                this.props.navigation.navigate('Login');
             }
+
         } catch (error) {
+            alert(error.message);
+
             console.log('_get() error: ', error.message);
         }
     }
@@ -193,10 +192,7 @@ class PageStart extends React.Component {
     }
 
     async _play() {
-        // console.log(Sound.MAIN_BUNDLE);
-        // console.log(Sound.DOCUMENT);
-        // console.log(Sound.LIBRARY);
-        // console.log(Sound.CACHES);
+
         setTimeout(() => {
           var sound = new Sound('message.mp3', Sound.MAIN_BUNDLE, (error) => {
             if (error) {
