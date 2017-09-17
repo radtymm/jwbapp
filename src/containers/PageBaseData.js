@@ -1,7 +1,7 @@
 import React from 'react';
 import {
     StyleSheet, Alert, View, Text, Animated, Easing, ImageBackground, Modal, Clipboard,
-    Button,
+    Button, ToastAndroid,
     FlatList,
     Dimensions,
     TouchableOpacity,
@@ -171,6 +171,7 @@ class PageBaseData extends React.Component {
 
     copyStr(string){
       Clipboard.setString(string);
+      ToastAndroid.show('复制成功');
     }
 
     renderModal(){

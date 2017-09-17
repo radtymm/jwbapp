@@ -21,7 +21,9 @@ class PageChangePwd extends React.Component {
         let {params} = this.props.navigation.state;
         // console.log(JSON.stringify(params));
         this.state = {
-
+            oldPwd:'',
+            newPwd:'',
+            conNewPwd:'',
         };
     }
 
@@ -34,6 +36,27 @@ class PageChangePwd extends React.Component {
     }
 
     handleChangeText(){
+        if (this.state.oldPwd == '') {
+            Alert.alert('提示', '请输入原密码');
+            return;
+        }
+        if (this.state.newPwd == '') {
+            Alert.alert('提示', '请输入新密码');
+            return;
+        }
+        if (this.state.newPwd.length < 6) {
+            Alert.alert('提示', '密码长度不能小于6位');
+            return;
+        }
+        if (this.state.newPwd != this.state.conNewPwd) {
+            Alert.alert('提示', '两次新密码输入不一致');
+            return;
+        }
+        requestData('https://app.jiaowangba.com/change_password?current_password=' + this.state.oldPwd + '&new_password=' + this.state.newPwd, (res)=>{
+            if (res) {
+                Alert.alert('提示', res.msg);
+            }
+        });
 
     }
 
@@ -49,9 +72,9 @@ class PageChangePwd extends React.Component {
                     <Text style={styles.homePage.title}>修改密码</Text>
                 </View>
                 <ScrollView style={styles.pageChangePwd.changeView}>
-                    <TextInput style={styles.pageChangePwd.changeText} secureTextEntry={true} underlineColorAndroid="transparent" placeholderTextColor="#929292" placeholder="旧密码" ></TextInput>
-                    <TextInput style={styles.pageChangePwd.changeText} secureTextEntry={true} underlineColorAndroid="transparent" placeholderTextColor="#929292" placeholder="新密码" ></TextInput>
-                    <TextInput style={styles.pageChangePwd.changeText} secureTextEntry={true} underlineColorAndroid="transparent" placeholderTextColor="#929292" placeholder="再次输入新密码" ></TextInput>
+                    <TextInput onChangeText={(pwd)=>this.setState({oldPwd:pwd})} style={styles.pageChangePwd.changeText} secureTextEntry={true} underlineColorAndroid="transparent" placeholderTextColor="#929292" placeholder="旧密码" ></TextInput>
+                    <TextInput onChangeText={(pwd)=>this.setState({newPwd:pwd})} style={styles.pageChangePwd.changeText} secureTextEntry={true} underlineColorAndroid="transparent" placeholderTextColor="#929292" placeholder="新密码" ></TextInput>
+                    <TextInput onChangeText={(pwd)=>this.setState({conNewPwd:pwd})} style={styles.pageChangePwd.changeText} secureTextEntry={true} underlineColorAndroid="transparent" placeholderTextColor="#929292" placeholder="再次输入新密码" ></TextInput>
                     <TouchableOpacity style={styles.pageChangePwd.submitTouch} onPress={()=>this.handleChangeText()}>
                         <Text style={styles.pageChangePwd.submitText}>提交</Text>
                     </TouchableOpacity>

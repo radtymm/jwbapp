@@ -38,6 +38,10 @@ class PageForgetPwd extends React.Component {
             Alert.alert("提示", "请输入密码");
             return;
         }
+        if (this.state.pwd.length < 6) {
+            Alert.alert("提示", "密码不能小于6位");
+            return;
+        }
         if (this.state.code == "") {
             Alert.alert("提示", "请输入验证码");
             return;
@@ -81,11 +85,6 @@ class PageForgetPwd extends React.Component {
                                placeholderTextColor="#fff" keyboardType='numeric' placeholder="输入手机号"
                                style={styles.pageLogin.input}/>
                         </View>
-                        <View style={[styles.pageLogin.inputView, {marginTop:styles.setScaleSize(50)}]}>
-                            <TextInput onChangeText={(pwd) => this.setState({pwd: pwd})} secureTextEntry={true}
-                               underlineColorAndroid="transparent" placeholderTextColor="#fff" placeholder="设置新密码"
-                               style={styles.pageLogin.input}/>
-                        </View>
                         <View style={styles.pageForgetPwd.codeView}>
                             <View style={[styles.pageForgetPwd.inputView, {marginTop:styles.setScaleSize(50)}]}>
                                 <TextInput onChangeText={(code) => this.setState({code: code})}
@@ -95,6 +94,11 @@ class PageForgetPwd extends React.Component {
                             <TouchableOpacity style={[styles.pageForgetPwd.getCode,]} onPress={()=>{this.handleGetCode()}}>
                                 <View><Text style={styles.pageForgetPwd.submitText}>获取验证码</Text></View>
                             </TouchableOpacity>
+                        </View>
+                        <View style={[styles.pageLogin.inputView, {marginTop:styles.setScaleSize(50)}]}>
+                            <TextInput onChangeText={(pwd) => this.setState({pwd: pwd})} secureTextEntry={true}
+                               underlineColorAndroid="transparent" placeholderTextColor="#fff" placeholder="设置新密码"
+                               style={styles.pageLogin.input}/>
                         </View>
                         <TouchableOpacity onPress={()=>{this.handleSubmit()}} style={[styles.pageLogin.submit, {marginTop:styles.setScaleSize(150)}]}>
                             <View><Text style={styles.pageLogin.submitText}>提交</Text></View>
