@@ -13,6 +13,7 @@ import {msgData, msgList} from '../redux/action/actions';
 import { connect } from 'react-redux';
 import Swipeout from 'react-native-swipeout';
 let sqLite = new SQLite();
+import dateShow from '../libs/myFun';
 
 let _this = null;
 class MyNotificationsScreen extends React.Component {
@@ -137,12 +138,7 @@ class MyNotificationsScreen extends React.Component {
                         if (item.headUrl){
                             src = {uri: 'https://cdn.jiaowangba.com/' + item.headUrl + '?imageView2/1/w/250/h/250/interlace/1/q/96|imageslim'};
                         }
-                        let sendTime = "";
-                        if (item.time) {
-                            let hourChina = Number(item.time.substring(11, 13));
-                            let hour = (8 + hourChina) > 24?(8 + hourChina - 24):(hourChina + 8);
-                            sendTime = item.time.substring(5, 10) + " " + hour + item.time.substring(13, 16);
-                        }
+                        let sendTime = dateShow(item.time);
                         return (
                             <Swipeout autoClose={true} backgroundColor="#fff" close={true} right={[{text:'删除', backgroundColor:"red",  onPress:()=>{this.handleDelete(item);}}]} >
                                 <TouchableOpacity style={styles.pageLikeWho.flatTouch} onPress={() => {this.handleNavChat(item)}}>

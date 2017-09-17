@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Created by Administrator on 2017/7/16/016.
  */
 import React from 'react';
@@ -32,7 +32,6 @@ class PageLuck extends React.Component {
             outOfCards: false,
         };
         this.data = {};
-        this.cardRemoved = this.cardRemoved.bind(this);
         this.reqData = this.reqData.bind(this);
     }
 
