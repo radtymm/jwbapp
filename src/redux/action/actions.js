@@ -111,7 +111,69 @@ const msgList = (data)=>{
     return ({type:MSGLIST, data:data});
 };
 
+export default class actions {
 
+    static MSGLIST = 'MSGLIST';
+    static INSERTMSGLIST = 'INSERTMSGLIST';
+
+    static insertMsgList(data){
+        //开启数据库
+        if(!global.db){
+          global.db = sqLite.open();
+        }
+        if(data.countNoRead == 0){
+            global.db.transaction((tx)=>{
+              tx.executeSql("delete from MSGLIST WHERE selfAndOtherid = '" + data.selfAndOtherid + "' ",[],()=>{
+                  let userData = [];
+                  userData.push(data);
+                  //插入数据
+                  sqLite.insertMessageList(userData);
+                  DeviceEventEmitter.emit('finishInsertList');
+              });
+            });
+        }else {
+            global.db.transaction((tx)=>{
+                tx.executeSql("select countNoRead from MSGLIST WHERE selfAndOtherid = '" + data.selfAndOtherid + "' ", [], (tx, results)=>{
+                  let len = results.rows.length;
+                  let msgData = [];
+                  for(let i=0; i < len; i++){
+                    let u = results.rows.item(i);
+                    msgData.push(u);
+                  }
+                  if (len == 0) {
+                      msgData.push({countNoRead:0});
+                  }
+                  let data2 = Object.assign({}, data);
+                  if (data2.selfAndOtherid == global.chartId) {
+                      data2.countNoRead = 0;
+                  }
+                  data2.countNoRead = msgData[0].countNoRead?(msgData[0].countNoRead + data2.countNoRead):data2.countNoRead;
+                  tx.executeSql("delete from MSGLIST WHERE selfAndOtherid = '" + data2.selfAndOtherid + "' ",[],()=>{
+                      let userData = [];
+                      userData.push(data2);
+                      //插入数据
+                      sqLite.insertMessageList(userData, (err)=>{
+                          //如果同时收到多条数据时, 处理并发
+                          if (err && (err.message.substring(0, 6) == "UNIQUE")) {
+                              insertErrArr.push(data2);
+                              clearTimeout(insertTimeout);
+                              insertTimeout = setTimeout(()=>handleSameTimeMSG(), 500);
+                          }
+                      });
+                      DeviceEventEmitter.emit('finishInsertList');
+                  });
+                });
+            });
+        }
+    }
+
+    static msgList(data) {
+      return dispatch => {
+        dispatch(actions.insertMsgList(data));
+      }
+    }
+
+}
 
 export {
     msgData,
