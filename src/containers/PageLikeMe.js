@@ -16,6 +16,7 @@ import  PageBaseData from './PageBaseData';
 import styles from '../styleSheet/Styles';
 import CachedImage from 'react-native-cached-image';
 import {requestData} from '../libs/request';
+import dateShow from '../libs/myFun';
 
 class PageLikeMe extends React.Component {
 
@@ -97,7 +98,7 @@ class PageLikeMe extends React.Component {
                                         <View style={styles.pageLikeWho.itemTextView}>
                                             <View style={{flex:1, flexDirection:"row", justifyContent:'space-between'}}>
                                                 <Text style={styles.pageLikeWho.realname}>{item.users_i.nickname}</Text>
-                                                <Text style={styles.pageLikeWho.timeago}>{item.like_time}</Text>
+                                                <Text style={styles.pageLikeWho.timeago}>{dateShow(item.like_time)}</Text>
                                             </View>
                                             <Text style={styles.pageLikeWho.liveage}>{(item.users_i.age!="Unknown")?(item.users_i.age + "岁" + "&nbsp;&nbsp;"):"" }{item.users_i.live}</Text>
                                         </View>
@@ -120,7 +121,7 @@ class PageLikeMe extends React.Component {
                         onEndReachedThreshold={styles.isIOS?(-1):0.1}
                         onEndReached={(info) => {
                             this.loadMore();
-                        } }
+                        }}
                         getItemLayout={(data, index) => (
                             // 120 是被渲染 item 的高度 ITEM_HEIGHT。
                             {length: (1 + styles.setScaleSize(290)), offset: 120 * index, index}

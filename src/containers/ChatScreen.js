@@ -14,6 +14,7 @@ import Sound from 'react-native-sound';
 import ImageCropPicker from 'react-native-image-crop-picker';
 import { connect } from 'react-redux';
 import {msgData, msgList} from '../redux/action/actions';
+import dateShow from '../libs/myFun';
 import SQLite from '../components/SQLite';
 let sqLite = new SQLite();
 
@@ -290,19 +291,7 @@ class ChatScreen extends React.Component {
                 </TouchableOpacity>
             );
         }
-        let sendTime = "";
-        if (item.delay) {
-            let hourChina = Number(item.delay.substring(11, 13));
-            let hour = (8 + hourChina) > 24?(8 + hourChina - 24):(hourChina + 8);
-            let day = Number(item.delay.substring(8, 10));
-            if ((8 + hourChina) > 24){
-                hour = 8 + hourChina - 24;
-                day++;
-            }else {
-                hour = hourChina + 8
-            }
-            sendTime = item.delay.substring(5, 8) + day + " " + hour + item.delay.substring(13, 16);
-        }
+        let sendTime = dateShow(item.delay);
 
         let copyDelStyle = (item.isOther=='true')?({left:styles.setScaleSize(100),}):({right:styles.setScaleSize(100),});
         let copyDel = <View style={[styles.chatScreen.copyDel, copyDelStyle]}>
