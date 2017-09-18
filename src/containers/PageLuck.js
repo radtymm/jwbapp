@@ -32,7 +32,6 @@ class PageLuck extends React.Component {
             outOfCards: false,
         };
         this.data = {};
-        this.cardRemoved = this.cardRemoved.bind(this);
         this.reqData = this.reqData.bind(this);
     }
 
@@ -67,6 +66,7 @@ class PageLuck extends React.Component {
             }else {
                 that.setState({dataNext:{}});
             }
+            alert(JSON.stringify(res))
         });
     }
 
