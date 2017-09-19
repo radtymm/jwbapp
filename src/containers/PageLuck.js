@@ -101,7 +101,6 @@ class PageLuck extends React.Component {
                 <SwipeCards
                   cards={this.state.cards}
                   loop={false}
-
                   renderCard={() => this.renderPerson()}
                   renderNoMoreCards={() => this.renderPerson()}
                   showYup={true}
