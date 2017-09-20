@@ -171,7 +171,7 @@ class PageBaseData extends React.Component {
 
     copyStr(string){
       Clipboard.setString(string);
-      ToastAndroid.show('复制成功');
+      ToastAndroid.show('复制成功', 500);
     }
 
     renderModal(){
@@ -203,7 +203,7 @@ class PageBaseData extends React.Component {
     }
 
     handleWetchat(){
-        if (global.perInfo.is_vip == "No") {
+        if (global.perInfo.is_vip != "No") {
             Alert.alert("提示", "VIP用户可查看微信号");
         }else {
             this.setState({isVisibleModal:true});

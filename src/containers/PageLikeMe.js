@@ -121,7 +121,7 @@ class PageLikeMe extends React.Component {
                         onEndReachedThreshold={styles.isIOS?(-1):0.1}
                         onEndReached={(info) => {
                             this.loadMore();
-                        } }
+                        }}
                         getItemLayout={(data, index) => (
                             // 120 是被渲染 item 的高度 ITEM_HEIGHT。
                             {length: (1 + styles.setScaleSize(290)), offset: 120 * index, index}
