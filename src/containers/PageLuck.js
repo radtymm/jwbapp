@@ -52,7 +52,6 @@ class PageLuck extends React.Component {
         this.index++;
         if (isGood == "good"){
             requestData('https://app.jiaowangba.com/add_ilike?id=' + this.state.data.id, (res) => {
-
             });
         }
         this.data = Object.assign({}, this.state.dataNext);
@@ -75,7 +74,7 @@ class PageLuck extends React.Component {
         return (
             <TouchableOpacity style={styles.pageLuck.headTouch} onPress={()=>{this.props.navigation.navigate("PageBaseData" , data)}}>
                 <View style={styles.pageLuck.contentView}>
-                    <CachedImage onLoadStart={()=>this.setState({load:'loading'})}
+                    <Image onLoadStart={()=>this.setState({load:'loading'})}
                         onLoad={()=>this.setState({load:'loadSuccess'})}
                         onError={()=>this.setState({load:'loadError'})}
                         style={styles.pageLuck.headImageLuck} source={imageSrc}/>
@@ -102,7 +101,6 @@ class PageLuck extends React.Component {
                 <SwipeCards
                   cards={this.state.cards}
                   loop={false}
-
                   renderCard={() => this.renderPerson()}
                   renderNoMoreCards={() => this.renderPerson()}
                   showYup={true}
