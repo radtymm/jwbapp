@@ -272,11 +272,22 @@ class PagePerInfo extends React.Component {
         let ComContent = <View/>;
 
         if (item.contentKey == 1){
-            ComContent = <View style={styles.PagePerInfo.flatItemView}>
-                <View style={styles.PagePerInfo.titleleftView}>
-                    <Text style={styles.PagePerInfo.itemTitle}>{item.title}</Text>
-                </View>
-                <View style={{paddingRight:styles.setScaleSize(10)}}>
+            let ComTextInput = (
+                <TextInput
+                    style={styles.PagePerInfo.itemTextInput}
+                    onChangeText={(text) => {
+                        let param = {};
+                        param[item.value] = text;
+                        this.setState(param);
+                    }}
+                    onFocus={()=>PickerAreaDate.hide()}
+                    placeholder={"请输入"}
+                    value={this.state[item.value]}
+                    underlineColorAndroid='transparent'
+                />
+            );
+            if (item.title == '昵称') {
+                ComTextInput = (
                     <TextInput
                         style={styles.PagePerInfo.itemTextInput}
                         onChangeText={(text) => {
@@ -286,9 +297,19 @@ class PagePerInfo extends React.Component {
                         }}
                         onFocus={()=>PickerAreaDate.hide()}
                         placeholder={"请输入"}
+                        maxLength={10}
                         value={this.state[item.value]}
                         underlineColorAndroid='transparent'
                     />
+                );
+            }
+
+            ComContent = <View style={styles.PagePerInfo.flatItemView}>
+                <View style={styles.PagePerInfo.titleleftView}>
+                    <Text style={styles.PagePerInfo.itemTitle}>{item.title}</Text>
+                </View>
+                <View style={{paddingRight:styles.setScaleSize(10)}}>
+                    {ComTextInput}
                 </View>
             </View>
         }else if(item.contentKey == 2){

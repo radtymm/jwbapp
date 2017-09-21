@@ -111,8 +111,8 @@ class PageLikeWho extends React.Component {
                                                source={src}/>
                                         <View style={styles.pageLikeWho.itemTextView}>
                                             <View style={{flex:1, flexDirection:"row", justifyContent:'space-between'}}>
-                                                <Text style={styles.pageLikeWho.realname}>{}</Text>
-                                                <Text style={styles.pageLikeWho.timeago}>{dateShow(item.like_time)}</Text>
+                                                <Text style={styles.pageLikeWho.realname}>{item.users.nickname}</Text>
+                                                <Text style={styles.pageLikeWho.timeago}>{dateShow(item.like_time, true)}</Text>
                                             </View>
                                             <Text style={styles.pageLikeWho.liveage}>{(item.users.age!="Unknown")?(item.users.age + "岁" + "&nbsp;&nbsp;"):"" }{item.users.live}</Text>
                                         </View>

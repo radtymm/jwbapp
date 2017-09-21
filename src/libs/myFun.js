@@ -1,10 +1,17 @@
-export default dateShow = (delay)=>{
+export default dateShow = (delay, isLocalTime)=>{
     let sendTime = '';
     if (delay) {
         let timeDelay = Date.parse(delay);
+        if (isLocalTime) {
+          var new_str = delay.replace(/:/g,"-");
+          new_str = new_str.replace(/ /g,"-");
+          var arr = new_str.split("-");
+          var datum = new Date(Date.UTC(arr[0],arr[1]-1,arr[2],arr[3]-8,arr[4],arr[5]));
+          timeDelay = datum.getTime();
+          // timeDelay = timeDelay - 8*60*60*1000;
+
+        }
         let timeNow = Date.parse(new Date());
-        console.log(timeDelay);
-        console.log(timeNow);
         let cha = timeNow - timeDelay;
         if (cha < 1000*60*1) {
             sendTime = '刚刚';

@@ -21,6 +21,8 @@ class Login extends React.Component {
         };
 
         this.reqLogout = this.reqLogout.bind(this);
+        this.reqLogin = this.reqLogin.bind(this);
+        this.reqLoginHX = this.reqLoginHX.bind(this);
         if(!global.db){
           global.db = sqLite.open();
         }
@@ -151,6 +153,14 @@ class Login extends React.Component {
         this.reqLogin();
     }
 
+    async handleRegisterLogin(tel, pwd){
+        await this.setState({
+            tel:tel,
+            pwd:pwd,
+        });
+        this.reqLogin();
+    }
+
     renderImg(){
         let imageViews=[];
         let srcImg = [require('../images/img0.jpg'), require('../images/img1.jpg'), require('../images/img2.jpg'), ];
@@ -189,7 +199,7 @@ class Login extends React.Component {
                     </TouchableOpacity>
                     <View style={styles.pageLogin.forgetpwd}>
                         <Text style={styles.pageLogin.forgetpwdText} onPress={()=>{this.props.navigation.navigate("PageForgetPwd")}}>忘记密码</Text>
-                        <Text style={styles.pageLogin.forgetpwdText} onPress={()=>{this.props.navigation.navigate("PageRegister", {logout:()=>that.reqLogout()})}}>用户注册</Text>
+                        <Text style={styles.pageLogin.forgetpwdText} onPress={()=>{this.props.navigation.navigate("PageRegister", {login:(tel, pwd)=>that.handleRegisterLogin(tel, pwd)})}}>用户注册</Text>
                     </View>
                 </View>
             </View>

@@ -10,12 +10,6 @@ import Swiper from 'react-native-swiper';
 
 class PageRegister extends React.Component {
 
-    static navigationOptions = {
-        headerTitle: "注册",
-        headerMode: "float",
-
-    };
-
     constructor(props, context) {
         super(props, context);
         this.state = {
@@ -63,15 +57,15 @@ class PageRegister extends React.Component {
             )
             return;
         }
-
         requestData(`https://app.jiaowangba.com/signup?telephone=${this.state.tel}&password=${this.state.pwd}&nickname=${this.state.userName}&gender=${this.state.sex}`,
             (res) => {
                 if (res.status != "error") {
 
                     Alert.alert("提示", "注册成功",
-                        [{text: "返回登录", onPress: () => {
-                            this.props.navigation.state.params.logout();
-                            that.props.navigation.goBack(null)}}]);
+                        [{text: "直接登录", onPress: () => {
+                            this.props.navigation.state.params.login(that.state.tel, that.state.pwd);
+                            // that.props.navigation.goBack(null)
+                        }}]);
                     return;
                 }
                 Alert.alert('提示', res.msg,
@@ -120,7 +114,8 @@ class PageRegister extends React.Component {
                                style={styles.pageLogin.input}/>
                         </View>
                         <View style={[styles.pageLogin.inputView, {marginTop:styles.setScaleSize(50)}]}>
-                            <TextInput onChangeText={(userName) => this.setState({userName: userName})}
+                            <TextInput onChangeText={(userName) => {this.setState({userName: userName});}}
+                              maxLength={10}
                                underlineColorAndroid="transparent" placeholderTextColor="#fff" placeholder="昵称"
                                style={styles.pageLogin.input}/>
                         </View>
@@ -147,7 +142,7 @@ class PageRegister extends React.Component {
                             <View><Text style={styles.pageLogin.submitText}>注册</Text></View>
                         </TouchableOpacity>
                         <View>
-                            <TouchableOpacity onPress={() => {this.props.navigation.state.params.logout();this.props.navigation.goBack(null)}}
+                            <TouchableOpacity onPress={() => {this.props.navigation.goBack(null)}}
                                               style={styles.PageRegister.backLogin}>
                                 <Text style={styles.PageRegister.submitText}>返回登录</Text>
                             </TouchableOpacity>

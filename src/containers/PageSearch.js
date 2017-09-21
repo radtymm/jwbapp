@@ -132,7 +132,6 @@ class PageSearch extends React.Component {
         let hometownParam = (this.state.hometown != '不限')?`&hometown=${this.state.hometownid}`:"&hometown=";
 
         global.searchHomeParam = educationParam+marryParam+incomeParam+age_fromParam+age_toParam+liveParam+hometownParam;
-        alert(global.searchHomeParam);
         this.props.navigation.state.params.handleRefresh();
         this.props.navigation.goBack(null);
     }

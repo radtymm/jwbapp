@@ -16,6 +16,8 @@ class PageForgetPwd extends React.Component {
             tel:"",
             pwd:"",
             code:"",
+            disabledCode:false,
+            countDown:0,
         };
     }
 
@@ -23,9 +25,25 @@ class PageForgetPwd extends React.Component {
 
     }
 
+    componentWillUnmount(){
+        clearInterval(this.interval);
+    }
+
     handleGetCode(){
+        let that = this;
         requestData("https://app.jiaowangba.com/forgot_password_send_sms.html?telephone=" + this.state.tel, (res)=>{
             Alert.alert("提示", res.msg);
+            if (res.status == 'success') {
+                this.setState({disabledCode:true, countDown:59});
+                this.interval = setInterval(function () {
+                    if (that.state.countDown == 0) {
+                        that.setState({disabledCode:false});
+                        clearInterval(that.interval);
+                    }else {
+                        that.setState({countDown:that.state.countDown-1});
+                    }
+                }, 1000);
+            }
         });
     }
 
@@ -91,8 +109,8 @@ class PageForgetPwd extends React.Component {
                                    underlineColorAndroid="transparent" placeholderTextColor="#fff" placeholder="输入验证码"
                                    style={styles.pageForgetPwd.inputCode}/>
                             </View>
-                            <TouchableOpacity style={[styles.pageForgetPwd.getCode,]} onPress={()=>{this.handleGetCode()}}>
-                                <View><Text style={styles.pageForgetPwd.submitText}>获取验证码</Text></View>
+                            <TouchableOpacity disabled={this.state.disabledCode} style={[styles.pageForgetPwd.getCode,]} onPress={()=>{this.handleGetCode()}}>
+                                <View><Text style={styles.pageForgetPwd.submitText}>获取验证码{this.state.countDown==0?"":'('+this.state.countDown+'秒)'}</Text></View>
                             </TouchableOpacity>
                         </View>
                         <View style={[styles.pageLogin.inputView, {marginTop:styles.setScaleSize(50)}]}>
