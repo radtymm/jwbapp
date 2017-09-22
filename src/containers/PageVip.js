@@ -1,21 +1,15 @@
 
 import React from 'react';
 import {
-    StyleSheet, Alert, TextInput, ImageBackground,
+    TextInput, ImageBackground,
     View,
     Text,
-    Button,
-    SectionList,
-    FlatList,
     ScrollView,
     TouchableOpacity,
     Image
 } from 'react-native';
 
-import {StackNavigator, TabNavigator} from 'react-navigation';
-import  PageBaseData from './PageBaseData';
 import styles from '../styleSheet/Styles';
-import {requestData} from '../libs/request';
 
 class PageVip extends React.Component {
 
@@ -65,7 +59,7 @@ class PageVip extends React.Component {
                         <Text style={styles.pageVip.vipText2}>ID:{params.id}</Text>
                     </View>
                     <View style={[styles.pageVip.vipTextRowView, { paddingTop:styles.setScaleSize(130),}]}>
-                        <Text style={styles.pageVip.vipText3}>会员到期时间:{params.vip_end_time.substring(0, 10)}</Text>
+                        <Text style={styles.pageVip.vipText3}>会员到期时间:{params.vip_end_time?params.vip_end_time.substring(0, 10):''}</Text>
                     </View>
                 </Image>
             </View>

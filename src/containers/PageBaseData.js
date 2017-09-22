@@ -1,13 +1,7 @@
 import React from 'react';
 import {
-    StyleSheet, Alert, View, Text, Animated, Easing, ImageBackground, Modal, Clipboard,
-    Button, ToastAndroid,
-    FlatList,
-    Dimensions,
-    TouchableOpacity,
-    TouchableHighlight,
-    ScrollView,
-    Image
+    Alert, View, Text, ImageBackground, Modal, Clipboard, ToastAndroid, FlatList,
+    TouchableOpacity, ScrollView, Image
 } from 'react-native';
 
 import styles from '../styleSheet/Styles';

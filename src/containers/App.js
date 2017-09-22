@@ -1,15 +1,5 @@
 
-import React, { Component } from 'react';
-import {
-  StyleSheet,
-  Text,
-  View,
-  Button,
-  Image,
-} from 'react-native';
-
 import HomePage from './HomePage';
-import Around from './Around';
 import ChatScreen from './ChatScreen';
 import MinePage from './MinePage';
 import Live from './Live';

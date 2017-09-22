@@ -1,7 +1,6 @@
 import React from 'react';
 import {
-    StyleSheet, ScrollView, navigator, Alert, View, Text, Button, FlatList, Dimensions, TouchableOpacity,
-    TouchableHighlight, Image, TextInput, Animated, Easing,
+    ScrollView, Alert, View, Text, Button, FlatList, TouchableOpacity, Image, TextInput,
 } from 'react-native';
 
 import styles from '../styleSheet/Styles';
@@ -13,9 +12,7 @@ class PageRegister extends React.Component {
     constructor(props, context) {
         super(props, context);
         this.state = {
-            BFAnim: new Animated.Value(0),
-            fadeInWidth: new Animated.Value(styles.WIDTH/2-30),
-            fadeInWidthgirl: new Animated.Value(styles.WIDTH/2-30),
+
         };
     }
 

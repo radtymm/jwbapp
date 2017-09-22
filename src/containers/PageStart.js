@@ -1,6 +1,6 @@
 import React from 'react';
 import {
-    StyleSheet, ScrollView, Alert, View, AsyncStorage, BackHandler, ToastAndroid,
+    Alert, View, AsyncStorage,
 } from 'react-native';
 
 import styles from '../styleSheet/Styles';

@@ -3,12 +3,9 @@
  */
 import React from 'react';
 import {
-    StyleSheet, Alert, Animated, ActivityIndicator, ImageBackground,
+    Alert, ImageBackground,
     View,
-    Text,
-    Button,
-    SectionList,
-    FlatList,
+    Text,FlatList,
     ScrollView,
     TouchableOpacity,
     Image

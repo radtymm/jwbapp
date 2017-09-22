@@ -1,14 +1,6 @@
 import React from 'react';
 import {
-    StyleSheet, ScrollView, RefreshControl, Alert, Picker, TextInput, KeyboardAvoidingView,
-    View, DatePickerAndroid, DatePickerIOS, Modal,
-    Text,
-    Button,
-    FlatList,
-    Dimensions,
-    TouchableOpacity,
-    TouchableHighlight,
-    Image
+    ScrollView, Alert, TextInput, View, Modal, Text, FlatList, TouchableOpacity, Image
 } from 'react-native';
 import styles from '../styleSheet/Styles';
 import {requestData} from '../libs/request.js';

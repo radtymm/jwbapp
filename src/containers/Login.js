@@ -1,6 +1,5 @@
 import React from 'react';
-import {StyleSheet, ScrollView, Alert, View, Text, Button, FlatList, Dimensions, TouchableOpacity, Modal,
-    TouchableHighlight, Image, TextInput, BackHandler, ToastAndroid, AsyncStorage } from 'react-native';
+import {ScrollView, Alert, View, Text, FlatList,  TouchableOpacity, Image, TextInput,  AsyncStorage } from 'react-native';
 
 import styles from '../styleSheet/Styles';
 import {requestData, requestDataPost,} from '../libs/request.js';

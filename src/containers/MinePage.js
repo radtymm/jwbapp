@@ -1,7 +1,6 @@
 import React from 'react';
 import {
-    StyleSheet, ScrollView, navigator, Alert, View, Text, Button, FlatList, Dimensions, TouchableOpacity,
-    TouchableHighlight, Image, TextInput, Modal, ImageBackground, DeviceEventEmitter,
+    ScrollView, Alert, View, Text,  FlatList,  TouchableOpacity, Image, DeviceEventEmitter,
 } from 'react-native';
 import {requestData, requestDataPost} from '../libs/request';
 import styles from '../styleSheet/Styles';

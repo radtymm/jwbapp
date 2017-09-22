@@ -7,6 +7,7 @@ import {
 import styles from '../styleSheet/Styles';
 import {requestData, requestDataPost,} from '../libs/request.js';
 import Swiper from 'react-native-swiper';
+import storage from '../libs/storage';
 
 class PageForgetPwd extends React.Component {
 
@@ -19,6 +20,7 @@ class PageForgetPwd extends React.Component {
             disabledCode:false,
             countDown:0,
         };
+        this.reqLoginHX = this.reqLoginHX.bind(this);
     }
 
     componentDidMount() {
@@ -64,10 +66,38 @@ class PageForgetPwd extends React.Component {
             Alert.alert("提示", "请输入验证码");
             return;
         }
-        requestData("https://app.jiaowangba.com/forgot_password.html?telephone="+this.state.tel+"&code="+this.state.code+"&password="+this.state.pwd, (res)=>{
+        requestData("https://app.jiaowangba.com/forgot_password.html?telephone="+this.state.tel+"&code="+this.state.code+"&password="+this.state.pwd, (ress)=>{
 
-            Alert.alert("提示", res.msg);
+            Alert.alert("提示", ress.msg);
+            if (ress.status == 'success') {
+                requestData('https://app.jiaowangba.com/chat/user_details', (res)=>{
+                    if (res.status == 'success') {
+                        let telPwd = Object.assign({}, this.state);
+                        telPwd.isLogin = true;
+                        global.tel = telPwd.tel;
+                        global.pwd = telPwd.pwd;
+
+                        storage.save('isLogin', JSON.stringify(telPwd));
+                        storage.save('loginUP', JSON.stringify(res.code));
+                        console.log('reqsuccess');
+                        this.reqLoginHX(res.code.uuid, res.code.password);
+                    }
+                });
+            }
         })
+    }
+
+    reqLoginHX(uuid, pwd){
+        global.peruuid = uuid;
+        global.perpwd = pwd;
+        let options = {
+            apiUrl: WebIM.config.apiURL,
+            user: uuid,
+            pwd: pwd,
+            appKey: WebIM.config.appkey
+        };
+        WebIM.conn.open(options);
+        this.props.navigation.navigate('Tab');
     }
 
     renderImg(){

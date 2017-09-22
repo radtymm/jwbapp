@@ -1,16 +1,16 @@
 import React from 'react';
 import {
-    StyleSheet, Modal, ScrollView, DeviceEventEmitter, Clipboard, Keyboard, LayoutAnimation,  Alert, View, Text, Button, FlatList, Dimensions, TouchableOpacity, Platform,
-    TouchableWithoutFeedback, PermissionsAndroid, CameraRoll, Image, TextInput, Animated, Easing, RefreshControl, KeyboardAvoidingView, AsyncStorage,
+     Modal, ScrollView, DeviceEventEmitter, Clipboard, Keyboard, View, Text, FlatList, TouchableOpacity, Platform,
+    TouchableWithoutFeedback, Image, TextInput, RefreshControl,
 } from 'react-native';
 
 import styles from '../styleSheet/Styles';
-import {requestData, requestDataPost,} from '../libs/request.js';
+import {requestData, } from '../libs/request.js';
 import WebIM from '../../WebIM';
-import EmojiPicker, { EmojiOverlay } from 'react-native-emoji-picker';
+// import EmojiPicker from 'react-native-emoji-picker';
 import CachedImage from 'react-native-cached-image';
-import {AudioRecorder, AudioUtils} from 'react-native-audio';
-import Sound from 'react-native-sound';
+// import {AudioRecorder, AudioUtils} from 'react-native-audio';
+// import Sound from 'react-native-sound';
 import ImageCropPicker from 'react-native-image-crop-picker';
 import { connect } from 'react-redux';
 import {msgData, msgList} from '../redux/action/actions';
@@ -402,7 +402,7 @@ class ChatScreen extends React.Component {
                     </View>
                 </TouchableWithoutFeedback>
                 {this.renderBar()}
-                <View style={{height: height, }} >
+                {/*<View style={{height: height, }} >
                     <EmojiPicker
                       style={{
                         height: this.state.showPicker?150:0,
@@ -412,7 +412,7 @@ class ChatScreen extends React.Component {
                       horizontal={true}
                       onEmojiSelected={(emoji)=>this.handleEmojiSelected(emoji)}
                       />
-                </View>
+                </View>*/}
                 {this.renderModalImg()}
             </View>
         );

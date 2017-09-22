@@ -1,14 +1,7 @@
 import React from 'react';
 import {
-    StyleSheet, Alert, RefreshControl,DeviceEventEmitter,
-    View, AppState, BackHandler, ToastAndroid,
-    Text,
-    Button,
-    SectionList,
-    FlatList,
-    ScrollView,
-    TouchableOpacity,
-    Image
+    Alert, RefreshControl,DeviceEventEmitter, View, AppState, BackHandler, ToastAndroid, Text, FlatList,
+    ScrollView, TouchableOpacity, Image
 } from 'react-native';
 import  PageBaseData from './PageBaseData';
 import styles from '../styleSheet/Styles';

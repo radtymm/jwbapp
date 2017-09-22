@@ -1,18 +1,10 @@
 import React from 'react';
 import {
-    StyleSheet, ScrollView, RefreshControl, Alert,
-    View,
-    Text,
-    Button,
-    FlatList,
-    TouchableOpacity,
-    TouchableHighlight,
-    Image
+    ScrollView, RefreshControl, View, Text, FlatList, TouchableOpacity, Image
 } from 'react-native';
 import PageBaseData from './PageBaseData';
 import styles from '../styleSheet/Styles';
 import {requestData} from '../libs/request.js';
-import comHead from '../components/comHead';
 import CachedImage from 'react-native-cached-image';
 
 let firstClick = 0;

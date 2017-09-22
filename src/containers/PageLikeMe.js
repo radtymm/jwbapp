@@ -1,15 +1,7 @@
 
 import React from 'react';
 import {
-    StyleSheet, Alert, RefreshControl,
-    View,
-    Text,
-    Button,
-    SectionList,
-    FlatList,
-    ScrollView,
-    TouchableOpacity,
-    Image
+    RefreshControl, View, Text, FlatList, TouchableOpacity, Image
 } from 'react-native';
 
 import  PageBaseData from './PageBaseData';

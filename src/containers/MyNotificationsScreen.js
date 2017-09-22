@@ -1,10 +1,8 @@
 import React from 'react';
 import {
-    StyleSheet, FlatList,TouchableOpacity,Alert, DeviceEventEmitter,
+    FlatList,TouchableOpacity,Alert, DeviceEventEmitter,
     View,
-    Text,
-    Button,
-    Image
+    Text, Image
 } from 'react-native';
 import styles from '../styleSheet/Styles';
 import SQLite from '../components/SQLite';
