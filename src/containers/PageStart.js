@@ -319,7 +319,25 @@ class PageStart extends React.Component {
                     countNoRead:1,
                 }));
             }else {
-                Alert.alert("提示", "网络异常， 请重新登录");
+                requestData('https://app.jiaowangba.com/info?uuid=' + message.from, (res2)=>{
+                    if (res2.status == 'success') {
+
+                        that.props.dispatch(msgList({
+                            selfUuid:global.peruuid,
+                            otherUuid:message.from,
+                            selfAndOtherid:global.peruuid + "&&" + message.from,
+                            headUrl: res2.code.avatar,
+                            otherName:res2.code.nickname,
+                            isOther:'true',
+                            message:message.data,
+                            time:message.delay,
+                            msgType:type,
+                            countNoRead:1,
+                        }));
+                    }else {
+                        Alert.alert("提示", "网络异常， 请重新登录");
+                    }
+                });
             }
         });
     }

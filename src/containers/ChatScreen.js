@@ -17,6 +17,7 @@ import {msgData, msgList} from '../redux/action/actions';
 import dateShow from '../libs/myFun';
 import SQLite from '../components/SQLite';
 let sqLite = new SQLite();
+let firstClick = 0;
 
 class ChatScreen extends React.Component {
 
@@ -67,6 +68,7 @@ class ChatScreen extends React.Component {
         clearTimeout(this.timeout);
         this.keyboardDidShowListener && this.keyboardDidShowListener.remove();
         this.keyboardDidHideListener && this.keyboardDidHideListener.remove();
+        firstClick = null;
         global.chartId = -1;
     }
 
@@ -104,6 +106,7 @@ class ChatScreen extends React.Component {
         ImageCropPicker.openPicker({
             width: styles.WIDTH * 2,
             height: styles.WIDTH * 2,
+            // compressImageQuality:1,
             cropping: false,
         }).then(image => {
             this.handleSendImage(image, 'img');
@@ -114,8 +117,8 @@ class ChatScreen extends React.Component {
 
     pickSingleWithCamera() {
         ImageCropPicker.openCamera({
-            width: styles.WIDTH * 2,
-            height: styles.WIDTH * 2,
+            width: styles.WIDTH * 2 + 500,
+            height: styles.WIDTH * 2 + 500,
             cropping: false,
         }).then(image => {
             this.handleSendImage(image, 'img');
@@ -334,6 +337,17 @@ class ChatScreen extends React.Component {
         );
     }
 
+    openMycamera(){
+        let timestamp = (new Date()).valueOf();
+        if (timestamp - firstClick > 2000) {
+            firstClick = timestamp;
+            this.pickSingle();
+        } else {
+            return;
+        }
+
+    }
+
     renderBar(){
         return <View style={styles.chatScreen.barView}>
             {/*<TouchableOpacity style={styles.chatScreen.emojiView} onPress={() => this.handleShowEmoji()}>
@@ -346,7 +360,7 @@ class ChatScreen extends React.Component {
                 onFocus={()=>this.setState({scrollToEnd:true, showPicker:false})}
                 onBlur={()=>this.setState({scrollToEnd:true})}
             />
-            <TouchableOpacity style={styles.chatScreen.otherTouch} onPress={()=>this.pickSingle()}>
+            <TouchableOpacity style={styles.chatScreen.otherTouch} onPress={()=>this.openMycamera()}>
                 <Image resizeMode="contain" style={styles.chatScreen.voiceImg} source={require('../images/iconImage.png')}/>
             </TouchableOpacity>
             {/*<TouchableOpacity style={styles.chatScreen.otherTouch} onPress={()=>this.pickSingleWithCamera()}>

@@ -10,21 +10,7 @@ import Qiniu,{Auth,ImgOps,Conf,Rs,Rpc} from 'react-native-qiniu';
 import CachedImage from 'react-native-cached-image';
 import storage from '../libs/storage';
 
-
-let photoOptions = {
-    //底部弹出框选项
-    title:'请选择',
-    cancelButtonTitle:'取消',
-    takePhotoButtonTitle:'拍照',
-    chooseFromLibraryButtonTitle:'选择相册',
-    quality:0.75,
-    allowsEditing:true,
-    noData:false,
-    storageOptions: {
-        skipBackup: true,
-        path:'images'
-    }
-};
+let firstClick = 0;
 
 class MinePage extends React.Component {
     static navigationOptions = {
@@ -57,6 +43,7 @@ class MinePage extends React.Component {
 
     componentWillUnmount(){
         this.refreshListener.remove();
+        firstClick = null;
     }
 
     refresh(){
@@ -117,7 +104,13 @@ class MinePage extends React.Component {
     }
 
     openMycamera(){
-        this.pickSingle();
+        let timestamp = (new Date()).valueOf();
+        if (timestamp - firstClick > 2000) {
+            firstClick = timestamp;
+            this.pickSingle();
+        } else {
+            return;
+        }
 
     }
 
@@ -137,8 +130,8 @@ class MinePage extends React.Component {
 
     pickSingle( circular=false) {
         ImageCropPicker.openPicker({
-            width: styles.WIDTH + 500,
-            height: styles.WIDTH + 500,
+            width: styles.WIDTH * 2 + 500,
+            height: styles.WIDTH * 2 + 500,
             // compressImageQuality:1,
             hideBottomControls: false,
             cropping: true,
