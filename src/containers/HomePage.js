@@ -70,6 +70,7 @@ class HomePage extends React.Component {
     handleRefresh(){
         let that = this;
         that.setState({isRefreshing: true});
+        // alert('https://app.jiaowangba.com/?page=1' + global.searchHomeParam);
         requestData('https://app.jiaowangba.com/?page=1' + global.searchHomeParam, (res) => {
             if (res.status == 'success') {
                 that.setState({data: res.code.data, page:1, isRefreshing:false});
@@ -82,6 +83,10 @@ class HomePage extends React.Component {
     //上拉加载
     loadMore(){
         let that = this;
+        if (that.isRefreshing) {
+            return;
+        }
+        that.isRefreshing = true;
         that.setState({isRefreshing: true});
         requestData('https://app.jiaowangba.com/?page=' + (this.state.page + 1) + global.searchHomeParam, (res) => {
             if (res.status == "success") {
@@ -92,8 +97,8 @@ class HomePage extends React.Component {
                 that.setState({data: data, page:this.state.page+1, isRefreshing:false});
             }else {
                 that.setState({ isRefreshing:false});
-                return;
             }
+            that.isRefreshing = false;
         });
     }
 

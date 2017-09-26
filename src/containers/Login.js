@@ -1,5 +1,5 @@
 import React from 'react';
-import {ScrollView, Alert, View, Text, FlatList,  TouchableOpacity, Image, TextInput,  AsyncStorage } from 'react-native';
+import {ScrollView, Alert, View, Text, FlatList,  BackHandler, ToastAndroid, TouchableOpacity, Image, TextInput,  AsyncStorage } from 'react-native';
 
 import styles from '../styleSheet/Styles';
 import {requestData, requestDataPost,} from '../libs/request.js';
@@ -21,6 +21,7 @@ class Login extends React.Component {
 
         this.reqLogout = this.reqLogout.bind(this);
         this.reqLogin = this.reqLogin.bind(this);
+        this.onBackHandler = this.onBackHandler.bind(this);
         this.reqLoginHX = this.reqLoginHX.bind(this);
         if(!global.db){
           global.db = sqLite.open();
@@ -32,12 +33,14 @@ class Login extends React.Component {
 
     componentDidMount(){
         this.initMsgData();
+        BackHandler.addEventListener('hardwareBackPress', this.onBackHandler);
 
         // this.reqLogin(true);
         this.reqLogout();
     }
 
     componentWillUnmount() {
+        BackHandler.removeEventListener('hardwareBackPress', this.onBackHandler);
         sqLite.close();
     }
 
@@ -159,6 +162,33 @@ class Login extends React.Component {
         });
         this.reqLogin();
     }
+
+    onBackHandler() {
+        // alert(global.currentRouteName);
+        let routes = global.newState.routes;
+        if ((routes[routes.length - 1].routeName == 'Tab') && (routes[routes.length - 1].index == 0)) {
+            if (this.lastBackPressed && this.lastBackPressed + 2000 >= Date.now()) {
+                //最近2秒内按过back键，可以退出应用。
+                BackHandler.exitApp();
+                return false;
+            }
+            this.lastBackPressed = Date.now();
+            ToastAndroid.show('再按一次返回键退出交往吧婚恋', 2000);
+            return true;
+        }
+        if (routes[routes.length - 1].routeName == 'Login') {
+            if (this.lastBackPressed && this.lastBackPressed + 2000 >= Date.now()) {
+                //最近2秒内按过back键，可以退出应用。
+                BackHandler.exitApp();
+                return false;
+            }
+            this.lastBackPressed = Date.now();
+            ToastAndroid.show('再按一次返回键退出交往吧婚恋', 2000);
+            return true;
+        }
+        this.props.navigation.goBack(null);
+        return true;
+    };
 
     renderImg(){
         let imageViews=[];

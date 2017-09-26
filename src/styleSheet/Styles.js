@@ -180,7 +180,7 @@ const PageBaseData = StyleSheet.create({
     modalContent:{backgroundColor:"#fff", borderRadius:setScaleSize(10),  width:setScaleSize(600), height:setScaleSize(740), },
     modalHead:{borderTopLeftRadius:setScaleSize(10), borderTopRightRadius:setScaleSize(10), backgroundColor:"#FF5D62", width:setScaleSize(600), height:setScaleSize(250), alignItems:'center', justifyContent:"center", },
     modalHeadImg:{width:setScaleSize(134), height:setScaleSize(134), borderRadius:setScaleSize(67), borderWidth:2, borderColor:"#FFF"},
-    modalClose:{position:'absolute', right:setScaleSize(25), top:setScaleSize(5), color:"#FFF", fontSize:setScaleSize(50)},
+    modalClose:{position:'absolute', right:setScaleSize(0), top:setScaleSize(0), textAlign:'center', width:setScaleSize(100), height:setScaleSize(100), color:"#FFF", fontSize:setScaleSize(50)},
     modalWechatView:{justifyContent:"space-around", alignItems:"center", flex:1,},
     modalName:{fontSize:setScaleSize(30), color:"#222"},
     modalWechat:{fontSize:setScaleSize(45), color:"#111"},
@@ -213,7 +213,7 @@ const PageRegister = StyleSheet.create({
     boyView: {flex:1, borderWidth:1, borderColor:"#fff", borderRadius:2, alignItems: "center", justifyContent: "center"},
     backLogin:{marginTop: setScaleSize(30), justifyContent: "center",  alignItems: "flex-end",},});
 const pageSearch = StyleSheet.create({
-    flatItemView:{backgroundColor:"#fff", marginVertical:setScaleSize(14), borderWidth:2, borderRadius:setScaleSize(10), borderColor:"#7d5a60", flexDirection:"row", marginLeft:setScaleSize(30), marginRight:setScaleSize(30),  alignItems:"center",justifyContent:"space-between", },
+    flatItemView:{backgroundColor:"#fff", marginVertical:setScaleSize(14), borderBottomWidth:2, borderRadius:setScaleSize(10), borderBottomColor:"#e0e0e0", flexDirection:"row", marginLeft:setScaleSize(30), marginRight:setScaleSize(30),  alignItems:"center",justifyContent:"space-between", },
     titleleftView:{marginTop:setScaleSize(28), marginBottom:setScaleSize(28), },
     itemTitle: {fontSize:setScaleSize(30), color:"#929090", marginLeft:setScaleSize(20)},
     areaDate:{fontSize:setScaleSize(30), color:"#333", },

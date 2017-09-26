@@ -198,7 +198,11 @@ class PageBaseData extends React.Component {
 
     handleWetchat(){
         if (global.perInfo.is_vip == "No") {
-            Alert.alert("提示", "VIP用户可查看微信号");
+            Alert.alert("提示", "VIP用户可查看微信号", [{text:"确定", onPress:()=>{
+                if (global.perInfo) {
+                    this.props.navigation.navigate('PageVip', global.perInfo);
+                }
+            }}]);
         }else {
             this.setState({isVisibleModal:true});
         }

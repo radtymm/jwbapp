@@ -49,7 +49,6 @@ class ChatScreen extends React.Component {
         this.keyboardDidShowListener = Keyboard.addListener('keyboardWillShow', this.keyboardDidShow);
         this.keyboardDidHideListener = Keyboard.addListener('keyboardWillHide', this.keyboardDidHide);
         setTimeout(()=>this.handleScrollToEnd(), 100);
-        this.handleScrollToEnd();
         global.chartId = global.peruuid + "&&" + this.props.navigation.state.params.uuid;
     }
 
