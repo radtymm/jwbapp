@@ -213,15 +213,19 @@ const PageRegister = StyleSheet.create({
     boyView: {flex:1, borderWidth:1, borderColor:"#fff", borderRadius:2, alignItems: "center", justifyContent: "center"},
     backLogin:{marginTop: setScaleSize(30), justifyContent: "center",  alignItems: "flex-end",},});
 const pageSearch = StyleSheet.create({
-    flatItemView:{backgroundColor:"#fff", marginVertical:setScaleSize(14), borderBottomWidth:2, borderRadius:setScaleSize(10), borderBottomColor:"#e0e0e0", flexDirection:"row", marginLeft:setScaleSize(30), marginRight:setScaleSize(30),  alignItems:"center",justifyContent:"space-between", },
+    flatItemView:{backgroundColor:"#fff", marginVertical:setScaleSize(14), borderBottomWidth:1, borderBottomColor:"#dfdfdf", flexDirection:"row", marginLeft:setScaleSize(30), marginRight:setScaleSize(0),  alignItems:"center",justifyContent:"space-between", },
+    selectView:{backgroundColor:"#fff", marginVertical:setScaleSize(14), borderBottomWidth:1, borderBottomColor:"#dfdfdf", flexDirection:"row", marginLeft:setScaleSize(30), marginRight:setScaleSize(0),  alignItems:"center", },
     titleleftView:{marginTop:setScaleSize(28), marginBottom:setScaleSize(28), },
-    itemTitle: {fontSize:setScaleSize(30), color:"#929090", marginLeft:setScaleSize(20)},
-    areaDate:{fontSize:setScaleSize(30), color:"#333", },
+    itemTitle: {fontSize:setScaleSize(30), color:"#111",},
+    selectTitle: {fontSize:setScaleSize(32), color:"#DBB76B",},
+    areaDate:{fontSize:setScaleSize(30), color:"#777", },
+    vipText:{fontSize:setScaleSize(25), color:"#fff", },
+    vipView:{padding:setScaleSize(3), marginLeft:setScaleSize(18), backgroundColor:"#DBB76B", borderRadius:setScaleSize(5)},
     birthYearView:{flexDirection:'row', justifyContent:'center', alignItems:'center'},
-    footerView:{ padding:setScaleSize(20), },
+    footerView:{ padding:setScaleSize(20), marginTop:setScaleSize(80)},
     footView:{flexDirection:"row", justifyContent:"space-between", paddingHorizontal:setScaleSize(15)},
-    footResetBtn:{ backgroundColor:"#f06e6e", width:setScaleSize(200), height:setScaleSize(80), borderRadius:setScaleSize(4), justifyContent:"center", alignItems:"center",},
-    footSearchBtn:{backgroundColor:"#8bc24a", width:setScaleSize(450), height:setScaleSize(80),  borderRadius:setScaleSize(4), justifyContent:"center", alignItems:"center",},
+    footResetBtn:{ backgroundColor:"#fff", width:(WIDTH - setScaleSize(120))/2, height:setScaleSize(90), borderRadius:setScaleSize(4), borderWidth:1, borderColor:"#c7c7c7", justifyContent:"center", alignItems:"center",},
+    footSearchBtn:{backgroundColor:"#DBB76B", width:(WIDTH - setScaleSize(120))/2, height:setScaleSize(90),  borderRadius:setScaleSize(4), justifyContent:"center", alignItems:"center",},
     footBtnText:{fontSize:setScaleSize(40), color:"#fff",},
 
 });

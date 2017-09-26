@@ -86,7 +86,7 @@ class ChatScreen extends React.Component {
               msgData.push(u)
               //一般在数据查出来之后，  可能要 setState操作，重新渲染页面
             }
-            this.setState({msgData:msgData, len:len});
+            this.setState({msgData:msgData, });
           });
         },(error)=>{//打印异常信息
           console.warn(error);
@@ -161,7 +161,7 @@ class ChatScreen extends React.Component {
 
     handleScrollToEnd(){
         if (this.refs.flat && this.refs.flat.scrollToEnd) {
-            this.refs.flat.scrollToEnd({animated: false});
+            this.refs.flat.scrollToEnd({animated: true});
             return;
         }
     }
@@ -297,18 +297,17 @@ class ChatScreen extends React.Component {
 
         let copyDelStyle = (item.isOther=='true')?({left:styles.setScaleSize(100),}):({right:styles.setScaleSize(100),});
         let copyDel = <View style={[styles.chatScreen.copyDel, copyDelStyle]}>
-                <TouchableOpacity onPress={()=>{this.handleDel(item)}}>
-                    <View style={styles.chatScreen.copyDelView}>
-                        <Text style={styles.chatScreen.copyDelText}>删除</Text>
-                    </View>
-                </TouchableOpacity>
-                <TouchableOpacity onPress={()=>{this.handleCopy(item, index)}}>
-                    <View style={styles.chatScreen.copyDelView}>
-                        <Text style={styles.chatScreen.copyDelText}>复制</Text>
-                    </View>
-                </TouchableOpacity>
-            </View>;
-
+            <TouchableOpacity onPress={()=>{this.handleDel(item)}}>
+                <View style={styles.chatScreen.copyDelView}>
+                    <Text style={styles.chatScreen.copyDelText}>删除</Text>
+                </View>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={()=>{this.handleCopy(item, index)}}>
+                <View style={styles.chatScreen.copyDelView}>
+                    <Text style={styles.chatScreen.copyDelText}>复制</Text>
+                </View>
+            </TouchableOpacity>
+        </View>;
         return (
             <TouchableWithoutFeedback onPress={()=>{this.setState({showPicker:false, isShowCopyDel:-1});this.selectMsgData();}}>
                 <View style={{marginVertical:styles.setScaleSize(20)}}>

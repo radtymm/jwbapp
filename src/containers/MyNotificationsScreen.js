@@ -149,7 +149,7 @@ class MyNotificationsScreen extends React.Component {
                                                 <Text style={styles.myNotificationsScreen.realname}>{item.otherName}</Text>
                                                 <Text style={styles.myNotificationsScreen.timeago}>{sendTime}</Text>
                                             </View>
-                                            <Text style={styles.myNotificationsScreen.liveage}>{item.message}</Text>
+                                            <Text style={styles.myNotificationsScreen.liveage}>{(item.msgType=="img")?"【图片】":item.message}</Text>
                                         </View>
                                     </View>
                                 </TouchableOpacity>

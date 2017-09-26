@@ -273,11 +273,21 @@ class PageSearch extends React.Component {
     renderContent(){
         let ComContent = (
             <ScrollView style={{flex:1}} ref="scro">
+                <View style={styles.pageSearch.selectView}>
+                    <View style={styles.pageSearch.titleleftView}>
+                        <Text style={styles.pageSearch.selectTitle}>高级筛选</Text>
+                    </View>
+                    <View style={{paddingRight:styles.setScaleSize(50)}}>
+                        <View style={styles.pageSearch.vipView}>
+                            <Text style={styles.pageSearch.vipText}>仅加入会员可用</Text>
+                        </View>
+                    </View>
+                </View>
                 {this.renderFlatList()}
                 <View style={styles.pageSearch.footerView}>
                     <View style={styles.pageSearch.footView}>
                         <TouchableOpacity onPress={()=>this.handleReset()}>
-                            <View style={styles.pageSearch.footResetBtn}><Text style={styles.pageSearch.footBtnText}>重置</Text></View>
+                            <View style={styles.pageSearch.footResetBtn}><Text style={[styles.pageSearch.footBtnText, {color:"#555"}]}>重置</Text></View>
                         </TouchableOpacity>
                         <TouchableOpacity onPress={()=>this.handleSearch()}>
                             <View style={styles.pageSearch.footSearchBtn}><Text style={styles.pageSearch.footBtnText}>搜索</Text></View>
