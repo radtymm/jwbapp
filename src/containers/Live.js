@@ -92,7 +92,7 @@ class Live extends React.Component {
         if (appState == 'active') {
             requestData(`https://app.jiaowangba.com/login?telephone=${global.tel}&password=${global.pwd}`, (res)=>{
                 if (res.type) {
-                    alert("错误", res.target._response);
+                    Alert.alert("错误", res.target._response);
                 }
                 if (res.status == "success") {
                     console.log('reqsuccess');

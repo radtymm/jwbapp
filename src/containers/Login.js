@@ -61,7 +61,8 @@ class Login extends React.Component {
     reqLogin(isFirst){
         requestData(`https://app.jiaowangba.com/login?telephone=${this.state.tel}&password=${this.state.pwd}`, (res)=>{
             if (res.type) {
-                alert("错误", res.target._response);
+                Alert.alert("错误", res.target._response);
+                return;
             }
             if (res.status == "success") {
                 let telPwd = Object.assign({}, this.state);

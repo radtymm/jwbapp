@@ -136,7 +136,7 @@ class PageForgetPwd extends React.Component {
                         <View style={styles.pageForgetPwd.codeView}>
                             <View style={[styles.pageForgetPwd.inputView, {marginTop:styles.setScaleSize(50)}]}>
                                 <TextInput onChangeText={(code) => this.setState({code: code})}
-                                   underlineColorAndroid="transparent" placeholderTextColor="#fff" placeholder="输入验证码"
+                                   underlineColorAndroid="transparent" keyboardType='numeric' placeholderTextColor="#fff" placeholder="输入验证码"
                                    style={styles.pageForgetPwd.inputCode}/>
                             </View>
                             <TouchableOpacity disabled={this.state.disabledCode} style={[styles.pageForgetPwd.getCode,]} onPress={()=>{this.handleGetCode()}}>

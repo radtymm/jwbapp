@@ -56,7 +56,7 @@ class MinePage extends React.Component {
             }else {
                 requestData(`https://app.jiaowangba.com/login?telephone=${global.tel}&password=${global.pwd}`, (res)=>{
                     if (res.type) {
-                        alert("错误", res.target._response);
+                        Alert.alert("错误", res.target._response);
                     }
                     if (res.status != "error") {
                         console.log('reqsuccess');

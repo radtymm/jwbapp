@@ -277,11 +277,11 @@ class PageSearch extends React.Component {
                     <View style={styles.pageSearch.titleleftView}>
                         <Text style={styles.pageSearch.selectTitle}>高级筛选</Text>
                     </View>
-                    <View style={{paddingRight:styles.setScaleSize(50)}}>
+                    {/*<View style={{paddingRight:styles.setScaleSize(50)}}>
                         <View style={styles.pageSearch.vipView}>
                             <Text style={styles.pageSearch.vipText}>仅加入会员可用</Text>
                         </View>
-                    </View>
+                    </View>*/}
                 </View>
                 {this.renderFlatList()}
                 <View style={styles.pageSearch.footerView}>
