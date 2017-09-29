@@ -260,7 +260,9 @@ const pageChangePwd = StyleSheet.create({
     submitText:{color:"#fff", fontSize:setScaleSize(30)},
 });
 const chatScreen = StyleSheet.create({
+    FLView:{flex:1, transform:[{rotate:'-180deg'}],},
     copyDelText:{color:"#fff"},
+    itemTotalView:{marginVertical:setScaleSize(20), transform:[{rotate:'-180deg'}],},
     copyDelView:{borderRadius:setScaleSize(8), marginLeft:1,  backgroundColor:"#333",  paddingVertical:setScaleSize(10), paddingHorizontal:setScaleSize(20),},
     copyDel:{position:'absolute', top:setScaleSize(15),  flexDirection:"row", },
     itemView:{minHeight:setScaleSize(80), flexDirection:"row", alignItems:"center",  padding:setScaleSize(20),},

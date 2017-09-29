@@ -81,7 +81,7 @@ class ChatScreen extends React.Component {
           tx.executeSql("select * from user WHERE otherUuid = '" + this.props.navigation.state.params.uuid + "' AND selfUuid = '" + global.peruuid + "' ", [], (tx, results)=>{
             let len = results.rows.length;
             let msgData = [];
-            for(let i=0; i < len; i++){
+            for(let i=(len-1); i >= 0; i--){
               let u = results.rows.item(i);
               msgData.push(u)
               //一般在数据查出来之后，  可能要 setState操作，重新渲染页面
@@ -103,8 +103,8 @@ class ChatScreen extends React.Component {
 
     pickSingle( circular=false) {
         ImageCropPicker.openPicker({
-            width: styles.WIDTH * 2,
-            height: styles.WIDTH * 2,
+            width: Math.round(styles.WIDTH * 2 + 500),
+            height: Math.round(styles.WIDTH * 2 + 500),
             // compressImageQuality:1,
             cropping: false,
         }).then(image => {
@@ -116,8 +116,8 @@ class ChatScreen extends React.Component {
 
     pickSingleWithCamera() {
         ImageCropPicker.openCamera({
-            width: styles.WIDTH * 2 + 500,
-            height: styles.WIDTH * 2 + 500,
+            width: Math.round(styles.WIDTH * 2 + 500),
+            height: Math.round(styles.WIDTH * 2 + 500),
             cropping: false,
         }).then(image => {
             this.handleSendImage(image, 'img');
@@ -160,10 +160,10 @@ class ChatScreen extends React.Component {
     }
 
     handleScrollToEnd(){
-        if (this.refs.flat && this.refs.flat.scrollToEnd) {
-            this.refs.flat.scrollToEnd({animated: true});
-            return;
-        }
+        // if (this.refs.flat && this.refs.flat.scrollToEnd) {
+        //     this.refs.flat.scrollToEnd({animated: true});
+        //     return;
+        // }
     }
 
     handleSendMessage(message){
@@ -310,7 +310,7 @@ class ChatScreen extends React.Component {
         </View>;
         return (
             <TouchableWithoutFeedback onPress={()=>{this.setState({showPicker:false, isShowCopyDel:-1});this.selectMsgData();}}>
-                <View style={{marginVertical:styles.setScaleSize(20)}}>
+                <View style={styles.chatScreen.itemTotalView}>
                     <View style={styles.chatScreen.timeBorView}>
                         <View style={styles.chatScreen.timeView}><Text style={styles.chatScreen.timeText}>
                             {sendTime}
@@ -402,15 +402,13 @@ class ChatScreen extends React.Component {
                     </TouchableOpacity>
                 </View>
                 <TouchableWithoutFeedback onPress={()=>{this.setState({showPicker:false});this.refs.textMsg.blur();}}>
-                    <View style={{flex:1}}>
-                        <View>
-                            <FlatList
-                                data={this.state.msgData}
-                                keyExtractor = {(item, index) => ""+index}
-                                ref={"flat"}
-                                renderItem={({item, index}) => this.renderItem(item, index)}
-                            />
-                        </View>
+                    <View style={styles.chatScreen.FLView}>
+                        <FlatList
+                            data={this.state.msgData}
+                            keyExtractor = {(item, index) => ""+index}
+                            ref={"flat"}
+                            renderItem={({item, index}) => this.renderItem(item, index)}
+                        />
                     </View>
                 </TouchableWithoutFeedback>
                 {this.renderBar()}

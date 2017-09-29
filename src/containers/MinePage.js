@@ -130,8 +130,8 @@ class MinePage extends React.Component {
 
     pickSingle( circular=false) {
         ImageCropPicker.openPicker({
-            width: styles.WIDTH * 2 + 500,
-            height: styles.WIDTH * 2 + 500,
+            width: Math.round(styles.WIDTH * 2 + 500),
+            height: Math.round(styles.WIDTH * 2 + 500),
             // compressImageQuality:1,
             hideBottomControls: false,
             cropping: true,
