@@ -40,6 +40,7 @@ class ChatScreen extends React.Component {
             isVisibleModal:false,
         };
         this.handleScrollToEnd = this.handleScrollToEnd.bind(this);
+        this.selectMsgData = this.selectMsgData.bind(this);
         this.handleRefreshMessage = this.handleRefreshMessage.bind(this);
     }
 
@@ -48,7 +49,6 @@ class ChatScreen extends React.Component {
         this.selectMsgData();
         this.keyboardDidShowListener = Keyboard.addListener('keyboardWillShow', this.keyboardDidShow);
         this.keyboardDidHideListener = Keyboard.addListener('keyboardWillHide', this.keyboardDidHide);
-        setTimeout(()=>this.handleScrollToEnd(), 100);
         global.chartId = global.peruuid + "&&" + this.props.navigation.state.params.uuid;
     }
 
@@ -59,7 +59,6 @@ class ChatScreen extends React.Component {
         if (this.state.scrollToEnd) {
             this.setState({scrollToEnd:false});
         }
-        setTimeout(()=>this.handleScrollToEnd(), 100);
     }
 
     componentWillUnmount(){
@@ -72,6 +71,7 @@ class ChatScreen extends React.Component {
     }
 
     selectMsgData(){
+        let that = this;
         //开启数据库
         if(!global.db){
           global.db = sqLite.open();
@@ -86,7 +86,8 @@ class ChatScreen extends React.Component {
               msgData.push(u)
               //一般在数据查出来之后，  可能要 setState操作，重新渲染页面
             }
-            this.setState({msgData:msgData, });
+            that.setState({msgData:msgData, });
+            that.handleScrollToEnd();
           });
         },(error)=>{//打印异常信息
           console.warn(error);
@@ -160,10 +161,10 @@ class ChatScreen extends React.Component {
     }
 
     handleScrollToEnd(){
-        // if (this.refs.flat && this.refs.flat.scrollToEnd) {
-        //     this.refs.flat.scrollToEnd({animated: true});
-        //     return;
-        // }
+        if (this.refs.flat && this.refs.flat.scrollToEnd) {
+            this.refs.flat.scrollToOffset({x: 0, y: 0, animated: true});
+            return;
+        }
     }
 
     handleSendMessage(message){

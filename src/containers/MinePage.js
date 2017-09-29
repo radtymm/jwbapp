@@ -50,7 +50,7 @@ class MinePage extends React.Component {
         let that = this;
         requestData("https://app.jiaowangba.com/info", (res) => {
             if (res.status == "success"){
-                this.setState({res: res});
+                that.setState({res: res});
                 global.perInfo = res.code;
                 DeviceEventEmitter.emit('refreshLive');
             }else {

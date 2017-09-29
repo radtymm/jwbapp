@@ -11,14 +11,14 @@ var database_size = -1;//-1应该是表示无限制
 var db;
 
 export default class  SQLite extends Component{
-componentWillUnmount(){
-    if(db){
-        this._successCB('close');
-        db.close();
-    }else {
-        console.log("SQLiteStorage not open");
+    componentWillUnmount(){
+        if(db){
+            this._successCB('close');
+            db.close();
+        }else {
+            console.log("SQLiteStorage not open");
+        }
     }
-}
 
   open(){
     db = SQLiteStorage.openDatabase(

@@ -48,23 +48,21 @@ class MyNotificationsScreen extends React.Component {
   }
 
   componentDidMount(){
+      global.db = sqLite.open();
       this.subscription = DeviceEventEmitter.addListener('finishInsertList', ()=>this.selectMsgData());
       this.selectMsgData();
 
   }
 
-  componentWillReceiveProps(nextProps){
-    //   this.selectMsgData();
-    //   setTimeout(()=>this.selectMsgData(), 1000);
-  }
-
   componentWillUnmount(){
       this.subscription.remove();
+    //   global.db = null;
   }
 
 
 
   selectMsgData(){
+      let that = this;
       //开启数据库
       if(!global.db){
         global.db = sqLite.open();
@@ -82,7 +80,7 @@ class MyNotificationsScreen extends React.Component {
             //一般在数据查出来之后，  可能要 setState操作，重新渲染页面
           }
           msgData.reverse();
-          this.setState({msgData:msgData, sumNoRead:sumNoRead});
+          that.setState({msgData:msgData, sumNoRead:sumNoRead});
         });
       },(error)=>{//打印异常信息
         console.warn(error);
