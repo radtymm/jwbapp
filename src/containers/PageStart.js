@@ -34,6 +34,7 @@ class PageStart extends React.Component {
         if(!styles.isIOS) this.notificationConfig();
         // if(!styles.isIOS) this.jpush();
         global.appState = 'active';
+        this.jpush();
     }
 
     notificationConfig(){

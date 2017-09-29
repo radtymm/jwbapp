@@ -208,6 +208,18 @@ class PageBaseData extends React.Component {
         }
     }
 
+    handleNavChat(){
+        if (global.perInfo.is_vip == "No") {
+            Alert.alert("提示", "VIP用户可与对方聊天", [{text:"确定", onPress:()=>{
+                if (global.perInfo) {
+                    this.props.navigation.navigate('PageVip', global.perInfo);
+                }
+            }}]);
+        }else {
+            (global.perInfo && this.state.data)?this.props.navigation.navigate("ChatScreen", this.state.data.code):null;
+        }
+    }
+
     render() {
         return (
             <View style={{flex:1}}>
@@ -223,7 +235,7 @@ class PageBaseData extends React.Component {
                     {this.renderBaseData()}
                 </ScrollView>
                 <View style={styles.PageBaseData.bottomBtn}>
-                    <TouchableOpacity style={styles.PageBaseData.bottomTouch} onPress={()=>{(global.perInfo && this.state.data)?this.props.navigation.navigate("ChatScreen", this.state.data.code):null;}}>
+                    <TouchableOpacity style={styles.PageBaseData.bottomTouch} onPress={()=>{this.handleNavChat()}}>
                         <Image style={styles.PageBaseData.bottomImage} resizeMode="contain" source={require('../images/chartother.png')}/>
                     </TouchableOpacity>
                     <TouchableOpacity style={styles.PageBaseData.bottomTouch} onPress={()=>{this.handleWetchat();}}>

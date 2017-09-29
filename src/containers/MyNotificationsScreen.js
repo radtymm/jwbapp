@@ -105,7 +105,16 @@ class MyNotificationsScreen extends React.Component {
         code.avatar = item.headUrl;
         code.nickname = item.otherName;
         code.uuid = item.otherUuid;
-        (global.perInfo)?this.props.navigation.navigate("ChatScreen", code):null;
+
+        if (global.perInfo && global.perInfo.is_vip == "Yes") {
+            this.props.navigation.navigate("ChatScreen", code)
+        }else {
+            Alert.alert("提示", "VIP用户可与对方聊天", [{text:"确定", onPress:()=>{
+                if (global.perInfo) {
+                    this.props.navigation.navigate('PageVip', global.perInfo);
+                }
+            }}]);
+        }
     }
 
     handleDelete(item){
