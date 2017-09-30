@@ -176,7 +176,7 @@ class ChatScreen extends React.Component {
         let msg = new WebIM.message('txt', id);      // 创建文本消息
         this.handleRefreshMessage(message, false, 'txt');
         // this.setState({message:"", showPicker:false});
-
+        alert(id)
         msg.set({
             msg: message,                  // 消息内容
             to: this.props.navigation.state.params.uuid,      // 接收消息对象（用户id）

@@ -291,6 +291,7 @@ class PageStart extends React.Component {
         }else if(type == 'img'){
             message.data = '';
         }
+        message.sendState = 'success';
 
         that.props.dispatch(msgData({
             selfUuid:global.peruuid,
