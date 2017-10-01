@@ -127,7 +127,7 @@ class ChatScreen extends React.Component {
         });
     }
 
-    handleRefreshMessage(msg, isOther, type){
+    handleRefreshMessage(msg, isOther, type, webIMId){
         let that = this;
         let message = {};
         message.isOther = isOther + "";
@@ -135,6 +135,8 @@ class ChatScreen extends React.Component {
         message.otherUuid = this.props.navigation.state.params.uuid;
         message.selfUuid = global.peruuid;
         message.isReaded = 'true';
+        message.hxId = webIMId;
+        message.sendState = 'sending';
         let dateNow = new Date();
         message.delay = dateNow.toJSON();
         if (type == 'txt') {
@@ -174,9 +176,7 @@ class ChatScreen extends React.Component {
         this.setState({message:"", showPicker:false});
         let id = WebIM.conn.getUniqueId();                 // 生成本地消息id
         let msg = new WebIM.message('txt', id);      // 创建文本消息
-        this.handleRefreshMessage(message, false, 'txt');
-        // this.setState({message:"", showPicker:false});
-        alert(id)
+        this.handleRefreshMessage(message, false, 'txt', id);
         msg.set({
             msg: message,                  // 消息内容
             to: this.props.navigation.state.params.uuid,      // 接收消息对象（用户id）
@@ -205,7 +205,7 @@ class ChatScreen extends React.Component {
           source = {path: response.path, isStatic: true};
         }
         response.path = source.path;
-        this.handleRefreshMessage(response, false, type);
+        this.handleRefreshMessage(response, false, type, id);
 
         var option = {
             apiUrl: WebIM.config.apiURL,
@@ -309,6 +309,10 @@ class ChatScreen extends React.Component {
                 </View>
             </TouchableOpacity>
         </View>;
+        let comSendState = <View/>;
+        if (item.sendState == 'sending') {
+            comSendState = <Text>sending</Text>;
+        }
         return (
             <TouchableWithoutFeedback onPress={()=>{this.setState({showPicker:false, isShowCopyDel:-1});this.selectMsgData();}}>
                 <View style={styles.chatScreen.itemTotalView}>
@@ -320,6 +324,7 @@ class ChatScreen extends React.Component {
                     <View onLayout={(event, index)=>{this.handleItemLayoutHeight(event, index)}}
                          style={[styles.chatScreen.itemView, {justifyContent:!(item.isOther=='true')?'flex-end':'flex-start', }]}>
                         {(item.isOther=='true')?<CachedImage style={styles.chatScreen.headImg} source={headImage}/>:<View/>}
+                        {comSendState}
                         <TouchableWithoutFeedback onPressIn={()=>{
                                 this.copyDel=setTimeout(()=>this.handleCopyDel(index), 500);
                             }} onPressOut={()=>{clearTimeout(this.copyDel)}}>

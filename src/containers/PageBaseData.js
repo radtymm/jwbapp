@@ -209,7 +209,7 @@ class PageBaseData extends React.Component {
     }
 
     handleNavChat(){
-        if (global.perInfo.is_vip == "No") {
+        if (global.perInfo.is_vip == "N2o") {
             Alert.alert("提示", "VIP用户可与对方聊天", [{text:"确定", onPress:()=>{
                 if (global.perInfo) {
                     this.props.navigation.navigate('PageVip', global.perInfo);

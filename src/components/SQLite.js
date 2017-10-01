@@ -4,8 +4,8 @@ import{
 } from 'react-native';
 import SQLiteStorage from 'react-native-sqlite-storage';
 SQLiteStorage.DEBUG(true);
-var database_name = "chat.db";//数据库文件
-var database_version = "4.0";//版本号
+var database_name = "chat2.db";//数据库文件
+var database_version = "4.1";//版本号
 var database_displayname = "MSGSQLite";
 var database_size = -1;//-1应该是表示无限制
 var db;
