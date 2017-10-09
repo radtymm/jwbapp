@@ -23,9 +23,13 @@ class MyNotificationsScreen extends React.Component {
         <View>
             <Image source={require('../images/chat_list.png')}
                 style={[styles.tabbar.icon, {tintColor: tintColor}]} />
-            {/*<View style={styles.myNotificationsScreen.noReadTolView}>
-                <Text style={styles.myNotificationsScreen.noReadText}>{100}</Text>
-            </View>*/}
+            {
+                (navigation.state.params && (navigation.state.params.sumNoRead!=0))?
+                <View style={styles.myNotificationsScreen.noReadTolView}>
+                    <Text style={styles.myNotificationsScreen.noReadText}>{navigation.state.params.sumNoRead}</Text>
+                </View>:null
+            }
+
         </View>
     ),
   });
@@ -80,7 +84,8 @@ class MyNotificationsScreen extends React.Component {
             //一般在数据查出来之后，  可能要 setState操作，重新渲染页面
           }
           msgData.reverse();
-          that.setState({msgData:msgData, sumNoRead:sumNoRead});
+          that.setState({msgData:msgData, });
+          that.props.navigation.setParams({sumNoRead:sumNoRead});
         });
       },(error)=>{//打印异常信息
         console.warn(error);

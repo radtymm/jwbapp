@@ -4,7 +4,7 @@
 import React from 'react';
 import {
     Alert, ImageBackground,
-    View,
+    View, Button,
     Text,FlatList,
     ScrollView,
     TouchableOpacity,
@@ -17,6 +17,7 @@ import styles from '../styleSheet/Styles';
 import {requestData} from '../libs/request';
 import CachedImage from 'react-native-cached-image';
 import SwipeCards from 'react-native-swipe-cards';
+import Swiper from 'react-native-deck-swiper'
 
 
 class PageLuck extends React.Component {
@@ -27,6 +28,11 @@ class PageLuck extends React.Component {
             page: 1,
             cards: [],
             outOfCards: false,
+            cards2: ['1', '2', '3'],
+            swipedAllCards: false,
+            swipeDirection: '',
+            isSwipingBack: false,
+            cardIndex: 0
         };
         this.data = {};
         this.reqData = this.reqData.bind(this);
@@ -126,6 +132,151 @@ class PageLuck extends React.Component {
 
     }
 
+    renderCard = card => {
+        let data = this.data;
+        let imageSrc = {uri: 'https://cdn.jiaowangba.com/' + data.avatar};
+        return (
+            <TouchableOpacity style={styles.pageLuck.headTouch} onPress={()=>{this.props.navigation.navigate("PageBaseData" , data)}}>
+                <View style={styles.pageLuck.contentView}>
+                    <Image onLoadStart={()=>this.setState({load:'loading'})}
+                        onLoad={()=>this.setState({load:'loadSuccess'})}
+                        onError={()=>this.setState({load:'loadError'})}
+                        style={styles.pageLuck.headImageLuck} source={imageSrc}/>
+                    {(data.is_vip == "No")?<View/>:(<Image style={styles.minePage.isvip} source={require('../images/isvip.png')}/>)}
+                    <View style={styles.pageLuck.nameView}>
+                        <Text style={styles.pageLuck.nameText}>{data.nickname?data.nickname:""}</Text>
+                    </View>
+                    <View style={styles.pageLuck.ageLiveEduView}>
+                        {(!data.age)?<View/>:<View style={styles.pageLuck.ageView}><Text style={styles.pageLuck.ageLiveEdu}>{(data.age+'岁')}</Text></View>}
+                        <View style={styles.pageLuck.liveView}><Text style={styles.pageLuck.ageLiveEdu}>{data.live}</Text></View>
+                        <View style={styles.pageLuck.eduView}><Text style={styles.pageLuck.ageLiveEdu}>{data.education}</Text></View>
+                    </View>
+                </View>
+            </TouchableOpacity>
+        );
+    };
+
+    onSwipedAllCards = () => {
+      this.setState({
+        swipedAllCards: true
+      })
+    };
+
+    jumpTo = () => {
+      this.swiper.swipeLeft()
+    };
+
+    renderBody2(){
+        return(
+              <View style={styles.pageLuck.bodyView}>
+                  <View style={styles.pageLuck.headTouch}/>
+                      <Swiper
+                          ref={swiper => {
+                              this.swiper = swiper
+                          }}
+                          onSwiped={this.onSwiped}
+                          onTapCard={this.jumpTo}
+                          cards={this.state.cards2}
+                          cardIndex={this.state.cardIndex}
+                          backgroundColor="transparent"
+                          cardVerticalMargin={80}
+                          renderCard={this.renderCard}
+                          cardVerticalMargin={styles.setScaleSize(20)}
+                          cardHorizontalMargin={styles.setScaleSize(20)}
+                          cardStyle={{height:styles.setScaleSize(900)}}
+                          onSwipedAll={this.onSwipedAllCards}
+                          overlayLabels={{
+                              bottom: {
+                                  title: 'BLEAH',
+                                  style: {
+                                      label: {
+                                          backgroundColor: 'black',
+                                          borderColor: 'black',
+                                          color: 'white',
+                                          borderWidth: 1
+                                      },
+                                      wrapper: {
+                                          flexDirection: 'column',
+                                          alignItems: 'center',
+                                          justifyContent: 'center'
+                                      }
+                                  }
+                              },
+                              left: {
+                                  title: 'NOPE',
+                                  style: {
+                                      label: {
+                                          backgroundColor: 'black',
+                                          borderColor: 'black',
+                                          color: 'white',
+                                          borderWidth: 1
+                                      },
+                                      wrapper: {
+                                          flexDirection: 'column',
+                                          alignItems: 'flex-end',
+                                          justifyContent: 'flex-start',
+                                          marginTop: 30,
+                                          marginLeft: -30
+                                      }
+                                  }
+                              },
+                              right: {
+                                  title: 'LIKE',
+                                  style: {
+                                      label: {
+                                          backgroundColor: 'black',
+                                          borderColor: 'black',
+                                          color: 'white',
+                                          borderWidth: 1
+                                      },
+                                      wrapper: {
+                                          flexDirection: 'column',
+                                          alignItems: 'flex-start',
+                                          justifyContent: 'flex-start',
+                                          marginTop: 30,
+                                          marginLeft: 30
+                                      }
+                                  }
+                              },
+                              top: {
+                                  title: 'SUPER LIKE',
+                                  style: {
+                                      label: {
+                                          backgroundColor: 'black',
+                                          borderColor: 'black',
+                                          color: 'white',
+                                          borderWidth: 1
+                                      },
+                                      wrapper: {
+                                          flexDirection: 'column',
+                                          alignItems: 'center',
+                                          justifyContent: 'center'
+                                      }
+                                  }
+                              }
+                          }}
+                          animateOverlayLabelsOpacity
+                          animateCardOpacity
+                          />
+
+                  <View style={styles.pageLuck.bottomView}/>
+                  <View style={[styles.pageLuck.bottomView, {width:styles.setScaleSize(580),}]}/>
+                  <View style={styles.pageLuck.heartView}>
+                      <TouchableOpacity onPress={()=>{this.reqData("bad")}}>
+                          <View>
+                              <Image style={styles.pageLuck.heartImg} source={require("../images/unlike.png")}/>
+                          </View>
+                      </TouchableOpacity>
+                      <TouchableOpacity onPress={()=>{this.reqData("good")}}>
+                          <View>
+                              <Image style={styles.pageLuck.heartImg} source={require("../images/like.png")}/>
+                          </View>
+                      </TouchableOpacity>
+                  </View>
+            </View>
+        );
+    }
+
     render() {
         return (
             <View style={{flex:1, backgroundColor:"#f5f5f5"}}>
@@ -137,7 +288,7 @@ class PageLuck extends React.Component {
                     <Text style={styles.homePage.title}>遇见缘分</Text>
                 </View>
                 <ScrollView style={{flex:1,}}>
-                    {this.renderBody()}
+                    {this.renderBody2()}
                 </ScrollView>
             </View>
         );

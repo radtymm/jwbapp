@@ -97,9 +97,9 @@ const tabbar = StyleSheet.create({
 const pageLuck = StyleSheet.create({
     heartView: { marginTop:setScaleSize(30),  flexDirection:'row', justifyContent:'space-around', alignItems:'center'},
     heartImg: {width: setScaleSize(152), height: setScaleSize(152), marginLeft:setScaleSize(15), marginRight:setScaleSize(15), },
-    bodyView:{padding:setScaleSize(20), alignItems:"center", backgroundColor:"#efefef"},
+    bodyView:{padding:setScaleSize(20), height:HEIGHT - setScaleSize(50), alignItems:"center", backgroundColor:"#efefef"},
     bottomView:{borderWidth:2, borderColor:"#ebebeb", borderTopWidth:0,  width:setScaleSize(660), height:setScaleSize(20), backgroundColor:"#fff", borderBottomLeftRadius:setScaleSize(8),  borderBottomRightRadius:setScaleSize(8),},
-    headTouch:{borderRadius:setScaleSize(8), height:setScaleSize(900), borderWidth:2, borderColor:"#ebebeb", paddingTop:0, backgroundColor:"#fff"},
+    headTouch:{borderRadius:setScaleSize(8), backgroundColor:"#fff", width:WIDTH - setScaleSize(40), height:setScaleSize(900), paddingTop:0,},
     headImageLuck:{borderTopLeftRadius:setScaleSize(10), borderTopRightRadius:setScaleSize(10), width:(WIDTH - setScaleSize(40)), height:(WIDTH - setScaleSize(40)), alignItems:'center', justifyContent:"center"},
     nameView:{margin:setScaleSize(20)},
     nameText:{fontSize:setScaleSize(34), color:"#333"},

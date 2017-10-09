@@ -41,6 +41,7 @@ const Tab = TabNavigator({
     style: {
       backgroundColor: '#fff',
     },
+    iconStyle:{width:150},
   },
 });
 

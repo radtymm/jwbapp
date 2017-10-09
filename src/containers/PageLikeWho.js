@@ -47,6 +47,10 @@ class PageLikeWho extends React.Component {
     //上拉加载
     loadMore(){
         let that = this;
+        if (that.isRefreshing) {
+            return;
+        }
+        that.isRefreshing = true;
         that.setState({isRefreshing: true});
         requestData('https://app.jiaowangba.com/ilike?page=' + (this.state.page + 1), (res) => {
             if (that.state != null){
@@ -60,6 +64,7 @@ class PageLikeWho extends React.Component {
                     that.setState({isRefreshing:false});
                 }
             }
+            that.isRefreshing = false;
         });
     }
 
