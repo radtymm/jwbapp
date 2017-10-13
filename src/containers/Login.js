@@ -66,6 +66,7 @@ class Login extends React.Component {
             }
             if (res.status == "success") {
                 let telPwd = Object.assign({}, this.state);
+
                 telPwd.isLogin = true;
                 global.tel = telPwd.tel;
                 global.pwd = telPwd.pwd;

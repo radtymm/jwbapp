@@ -97,7 +97,7 @@ const tabbar = StyleSheet.create({
 const pageLuck = StyleSheet.create({
     heartView: { marginTop:setScaleSize(30),  flexDirection:'row', justifyContent:'space-around', alignItems:'center'},
     heartImg: {width: setScaleSize(152), height: setScaleSize(152), marginLeft:setScaleSize(15), marginRight:setScaleSize(15), },
-    bodyView:{padding:setScaleSize(20), height:HEIGHT - setScaleSize(50), alignItems:"center", backgroundColor:"#efefef"},
+    bodyView:{padding:setScaleSize(20), height:HEIGHT - 50, alignItems:"center", backgroundColor:"#efefef"},
     bottomView:{borderWidth:2, borderColor:"#ebebeb", borderTopWidth:0,  width:setScaleSize(660), height:setScaleSize(20), backgroundColor:"#fff", borderBottomLeftRadius:setScaleSize(8),  borderBottomRightRadius:setScaleSize(8),},
     headTouch:{borderRadius:setScaleSize(8), backgroundColor:"#fff", width:WIDTH - setScaleSize(40), height:setScaleSize(900), paddingTop:0,},
     headImageLuck:{borderTopLeftRadius:setScaleSize(10), borderTopRightRadius:setScaleSize(10), width:(WIDTH - setScaleSize(40)), height:(WIDTH - setScaleSize(40)), alignItems:'center', justifyContent:"center"},
@@ -108,7 +108,7 @@ const pageLuck = StyleSheet.create({
     ageView:{marginRight:setScaleSize(10), backgroundColor:"#669ce3", height:setScaleSize(36), borderRadius:setScaleSize(4), paddingLeft:setScaleSize(16), paddingRight:setScaleSize(16)},
     liveView:{marginRight:setScaleSize(10), backgroundColor:"#ffb234", height:setScaleSize(36), borderRadius:setScaleSize(4), paddingLeft:setScaleSize(16), paddingRight:setScaleSize(16)},
     eduView:{backgroundColor:"#32ad19", height:setScaleSize(36), borderRadius:setScaleSize(4), paddingLeft:setScaleSize(16), paddingRight:setScaleSize(16)},
-    contentView:{ borderRadius:setScaleSize(10)},
+    contentView:{ borderRadius:setScaleSize(10), backgroundColor:"#fff"},
 
 });
 const pageLikeWho = StyleSheet.create({

@@ -3,7 +3,7 @@
  */
 import React from 'react';
 import {
-    Alert, ImageBackground,
+    Alert, ImageBackground, TouchableWithoutFeedback,
     View, Button,
     Text,FlatList,
     ScrollView,
@@ -27,8 +27,8 @@ class PageLuck extends React.Component {
         this.state = {
             page: 1,
             cards: [],
-            outOfCards: false,
             cards2: ['1', '2', '3'],
+            outOfCards: false,
             swipedAllCards: false,
             swipeDirection: '',
             isSwipingBack: false,
@@ -38,35 +38,28 @@ class PageLuck extends React.Component {
         this.reqData = this.reqData.bind(this);
     }
 
-    componentDidMount() {
-        requestData('https://app.jiaowangba.com/luck', (res) => {
-            if (res.status == "success") {
-                this.setState({dataNext:res.code, cards:[res.code]});
-                this.index = -1;
-                this.reqData();
-            }else {
-                Alert.alert('提示', '网络异常');
-            }
-        });
+    componentDidMount(){
+        this.reqData();
+        this.reqData();
+        this.reqData();
     }
 
     reqData(isGood){
         let that = this;
-        this.index++;
         if (isGood == "good"){
             requestData('https://app.jiaowangba.com/add_ilike?id=' + this.state.data.id, (res) => {
             });
         }
-        this.data = Object.assign({}, this.state.dataNext);
-        that.setState({data:this.data});
+
         requestData('https://app.jiaowangba.com/luck', (res) => {
             if (res.status == "success") {
-                that.setState({dataNext:res.code});
+                let cards = Object.assign([], this.state.cards);
+                cards.push(res.code);
                 this.setState({
-                  cards: this.state.cards.concat(res.code),
+                  cards: cards,
                 })
             }else {
-                that.setState({dataNext:{}});
+                // that.setState({dataNext:{}});
             }
         });
     }
@@ -133,15 +126,20 @@ class PageLuck extends React.Component {
     }
 
     renderCard = card => {
-        let data = this.data;
+        // return (
+        //   <View style={styles.card}>
+        //     <Text style={styles.text}>{card}</Text>
+        //   </View>
+        // )
+        if (!card) {
+            return;
+        }
+        let data = card;
         let imageSrc = {uri: 'https://cdn.jiaowangba.com/' + data.avatar};
         return (
-            <TouchableOpacity style={styles.pageLuck.headTouch} onPress={()=>{this.props.navigation.navigate("PageBaseData" , data)}}>
+            <TouchableWithoutFeedback style={styles.pageLuck.headTouch} onPress={()=>{this.props.navigation.navigate("PageBaseData" , data)}}>
                 <View style={styles.pageLuck.contentView}>
-                    <Image onLoadStart={()=>this.setState({load:'loading'})}
-                        onLoad={()=>this.setState({load:'loadSuccess'})}
-                        onError={()=>this.setState({load:'loadError'})}
-                        style={styles.pageLuck.headImageLuck} source={imageSrc}/>
+                    <Image style={styles.pageLuck.headImageLuck} source={imageSrc}/>
                     {(data.is_vip == "No")?<View/>:(<Image style={styles.minePage.isvip} source={require('../images/isvip.png')}/>)}
                     <View style={styles.pageLuck.nameView}>
                         <Text style={styles.pageLuck.nameText}>{data.nickname?data.nickname:""}</Text>
@@ -152,7 +150,7 @@ class PageLuck extends React.Component {
                         <View style={styles.pageLuck.eduView}><Text style={styles.pageLuck.ageLiveEdu}>{data.education}</Text></View>
                     </View>
                 </View>
-            </TouchableOpacity>
+            </TouchableWithoutFeedback>
         );
     };
 
@@ -166,108 +164,126 @@ class PageLuck extends React.Component {
       this.swiper.swipeLeft()
     };
 
+    onSwiped(index, isGood){
+        let that = this;
+        if (isGood == "good"){
+            requestData('https://app.jiaowangba.com/add_ilike?id=' + this.state.cards[index].id, (res) => {
+            });
+        }
+        requestData('https://app.jiaowangba.com/luck', (res) => {
+            if (res.status == "success") {
+                let cards = Object.assign([], this.state.cards);
+                this.state.cards.push(res.code);
+            }else {
+            }
+        });
+    }
+
     renderBody2(){
         return(
-              <View style={styles.pageLuck.bodyView}>
+            <View style={styles.pageLuck.bodyView}>
                   <View style={styles.pageLuck.headTouch}/>
-                      <Swiper
-                          ref={swiper => {
-                              this.swiper = swiper
-                          }}
-                          onSwiped={this.onSwiped}
-                          onTapCard={this.jumpTo}
-                          cards={this.state.cards2}
-                          cardIndex={this.state.cardIndex}
-                          backgroundColor="transparent"
-                          cardVerticalMargin={80}
-                          renderCard={this.renderCard}
-                          cardVerticalMargin={styles.setScaleSize(20)}
-                          cardHorizontalMargin={styles.setScaleSize(20)}
-                          cardStyle={{height:styles.setScaleSize(900)}}
-                          onSwipedAll={this.onSwipedAllCards}
-                          overlayLabels={{
-                              bottom: {
-                                  title: 'BLEAH',
-                                  style: {
-                                      label: {
-                                          backgroundColor: 'black',
-                                          borderColor: 'black',
-                                          color: 'white',
-                                          borderWidth: 1
-                                      },
-                                      wrapper: {
-                                          flexDirection: 'column',
-                                          alignItems: 'center',
-                                          justifyContent: 'center'
-                                      }
-                                  }
-                              },
-                              left: {
-                                  title: 'NOPE',
-                                  style: {
-                                      label: {
-                                          backgroundColor: 'black',
-                                          borderColor: 'black',
-                                          color: 'white',
-                                          borderWidth: 1
-                                      },
-                                      wrapper: {
-                                          flexDirection: 'column',
-                                          alignItems: 'flex-end',
-                                          justifyContent: 'flex-start',
-                                          marginTop: 30,
-                                          marginLeft: -30
-                                      }
-                                  }
-                              },
-                              right: {
-                                  title: 'LIKE',
-                                  style: {
-                                      label: {
-                                          backgroundColor: 'black',
-                                          borderColor: 'black',
-                                          color: 'white',
-                                          borderWidth: 1
-                                      },
-                                      wrapper: {
-                                          flexDirection: 'column',
-                                          alignItems: 'flex-start',
-                                          justifyContent: 'flex-start',
-                                          marginTop: 30,
-                                          marginLeft: 30
-                                      }
-                                  }
-                              },
-                              top: {
-                                  title: 'SUPER LIKE',
-                                  style: {
-                                      label: {
-                                          backgroundColor: 'black',
-                                          borderColor: 'black',
-                                          color: 'white',
-                                          borderWidth: 1
-                                      },
-                                      wrapper: {
-                                          flexDirection: 'column',
-                                          alignItems: 'center',
-                                          justifyContent: 'center'
-                                      }
-                                  }
-                              }
-                          }}
-                          animateOverlayLabelsOpacity
-                          animateCardOpacity
-                          />
-
                   <View style={styles.pageLuck.bottomView}/>
                   <View style={[styles.pageLuck.bottomView, {width:styles.setScaleSize(580),}]}/>
+                  <Swiper
+                      ref={swiper => {
+                          this.swiper = swiper
+                      }}
+                      onSwipedLeft={(index)=>this.onSwiped(index, 'bad')}
+                      onSwipedBottom={(index)=>this.onSwiped(index, 'bad')}
+                      onSwipedRight={(index)=>this.onSwiped(index, 'good')}
+                      onSwipedTop={(index)=>this.onSwiped(index, 'good')}
+                      onTapCard={this.jumpTo}
+                      verticalSwipe={true}
+                      cards={this.state.cards}
+                      cardIndex={this.state.cardIndex}
+                      backgroundColor="transparent"
+                      cardVerticalMargin={80}
+                      renderCard={this.renderCard}
+                      cardVerticalMargin={styles.setScaleSize(20)}
+                      cardHorizontalMargin={styles.setScaleSize(20)}
+                      cardStyle={{height:styles.setScaleSize(900)}}
+                      onSwipedAll={this.onSwipedAllCards}
+                      overlayLabels={{
+                          bottom: {
+                              title: 'UNLIKE',
+                              style: {
+                                  label: {
+                                      backgroundColor: 'black',
+                                      borderColor: 'black',
+                                      color: 'white',
+                                      borderWidth: 1
+                                  },
+                                  wrapper: {
+                                      flexDirection: 'column',
+                                      alignItems: 'center',
+                                      justifyContent: 'center'
+                                  }
+                              }
+                          },
+                          left: {
+                              title: 'UNLIKE',
+                              style: {
+                                  label: {
+                                      backgroundColor: 'black',
+                                      borderColor: 'black',
+                                      color: 'white',
+                                      borderWidth: 1
+                                  },
+                                  wrapper: {
+                                      flexDirection: 'column',
+                                      alignItems: 'flex-end',
+                                      justifyContent: 'flex-start',
+                                      marginTop: 30,
+                                      marginLeft: -30
+                                  }
+                              }
+                          },
+                          right: {
+                              title: 'LIKE',
+                              style: {
+                                  label: {
+                                      backgroundColor: 'black',
+                                      borderColor: 'black',
+                                      color: 'white',
+                                      borderWidth: 1
+                                  },
+                                  wrapper: {
+                                      flexDirection: 'column',
+                                      alignItems: 'flex-start',
+                                      justifyContent: 'flex-start',
+                                      marginTop: 30,
+                                      marginLeft: 30
+                                  }
+                              }
+                          },
+                          top: {
+                              title: 'LIKE',
+                              style: {
+                                  label: {
+                                      backgroundColor: 'black',
+                                      borderColor: 'black',
+                                      color: 'white',
+                                      borderWidth: 1
+                                  },
+                                  wrapper: {
+                                      flexDirection: 'column',
+                                      alignItems: 'center',
+                                      justifyContent: 'center'
+                                  }
+                              }
+                          }
+                      }}
+                      animateOverlayLabelsOpacity
+                      animateCardOpacity
+                  />
                   <View style={styles.pageLuck.heartView}>
-                      <TouchableOpacity onPress={()=>{this.reqData("bad")}}>
+                      <TouchableOpacity onPress={()=>{this.swiper.swipeLeft()}}>
                           <View>
                               <Image style={styles.pageLuck.heartImg} source={require("../images/unlike.png")}/>
                           </View>
                       </TouchableOpacity>
-                      <TouchableOpacity onPress={()=>{this.reqData("good")}}>
+                      <TouchableOpacity onPress={()=>{this.swiper.swipeRight()}}>
                           <View>
                               <Image style={styles.pageLuck.heartImg} source={require("../images/like.png")}/>
                           </View>
@@ -287,9 +303,9 @@ class PageLuck extends React.Component {
                     </TouchableOpacity>
                     <Text style={styles.homePage.title}>遇见缘分</Text>
                 </View>
-                <ScrollView style={{flex:1,}}>
+                <View style={{flex:1,}}>
                     {this.renderBody2()}
-                </ScrollView>
+                </View>
             </View>
         );
     }
