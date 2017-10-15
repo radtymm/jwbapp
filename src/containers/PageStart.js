@@ -26,9 +26,7 @@ class PageStart extends React.Component {
         this.handleReceiveMsg = this.handleReceiveMsg.bind(this);
         this.reqLoginHX = this.reqLoginHX.bind(this);
         this._get = this._get.bind(this);
-        this.webIMConnection = this.webIMConnection.bind(this);
         this.notificationConfig = this.notificationConfig.bind(this);
-        global.webIMConnection = ()=>this.webIMConnection;
     }
 
     componentDidMount() {
@@ -76,7 +74,6 @@ class PageStart extends React.Component {
     webIMConnection(){
 
         let that = this;
-        alert("------")
         WebIM.conn.listen({
             onOpened: function ( message ) {          //连接成功回调
                 // 如果isAutoLogin设置为false，那么必须手动设置上线，否则无法收消息
@@ -86,10 +83,6 @@ class PageStart extends React.Component {
             },
             onClosed: function ( message ) {
                 console.log("onClosed");
-                if (global.changePwdStatus) {
-                    // global.changePwdStatus = false;
-                    return;
-                }
                 that.reqLogout();
             },         //连接关闭回调
             onError: (error) => {
@@ -113,10 +106,6 @@ class PageStart extends React.Component {
                 // 8: offline by multi login
                 if (error.type == WebIM.statusCode.WEBIM_CONNCTION_SERVER_ERROR) {
                   console.log('WEBIM_CONNCTION_SERVER_ERROR');
-                  if (global.changePwdStatus) {
-                    //   global.changePwdStatus = false;
-                      return;
-                  }
                   Alert.alert('错误', '您的账号在其他设备上登录', [
                       {text:'确定', onPress:()=>{
                           that.reqLogout();

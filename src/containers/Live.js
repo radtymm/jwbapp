@@ -91,7 +91,6 @@ class Live extends React.Component {
     handleAppStateChange(appState){
         global.appState = appState;
         if (appState == 'active') {
-            alert(global.tel + "----" + global.pwd)
             requestData(`https://app.jiaowangba.com/login?telephone=${global.tel}&password=${global.pwd}`, (res)=>{
                 if (res.type) {
                     Alert.alert("错误", res.target._response);

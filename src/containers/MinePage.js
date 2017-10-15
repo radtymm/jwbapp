@@ -95,7 +95,7 @@ class MinePage extends React.Component {
                     if (res.status == "success"){
                         this.refresh();
                     }else {
-                        Alert.alert("提示", "图片上传失败");
+                        Alert.alert("提示", res.msg);
                     }
                 });
             })
@@ -188,8 +188,19 @@ class MinePage extends React.Component {
     render() {
         let that = this;
         let imageSrc = require("../images/headDef.jpg");
-        if (this.state.res.code && this.state.res.code.avatar != null){
-            imageSrc = {uri: 'https://cdn.jiaowangba.com/' + this.state.res.code.avatar};
+        let avatar_msg = '';
+        if (this.state.res.code ){
+            if (this.state.res.code.avatar_status == true) {
+
+            }else if (this.state.res.code.avatar_status.status == 'successful') {
+                imageSrc = {uri: 'https://cdn.jiaowangba.com/' + this.state.res.code.avatar_status.avatar};
+            }else if (this.state.res.code.avatar_status.status == 'waiting') {
+                imageSrc = {uri: 'https://cdn.jiaowangba.com/' + this.state.res.code.avatar_status.avatar};
+                avatar_msg = '您的相亲照片，正在审核中';
+            }else if (this.state.res.code.avatar_status.status == 'failed') {
+                imageSrc = {uri: 'https://cdn.jiaowangba.com/' + this.state.res.code.avatar_status.avatar};
+                avatar_msg = this.state.res.code.avatar_status.msg;
+            }
         }
         let isvip = <View/>;
         if (this.state.res.code && (this.state.res.code.is_vip != "No")){
@@ -197,6 +208,11 @@ class MinePage extends React.Component {
         }
         return (
             <ScrollView style={styles.minePage.flex}>
+                {avatar_msg==''?null:(
+                    <View style={styles.live.liveIn}>
+                        <Text style={[styles.live.titleText,]}>{avatar_msg}</Text>
+                    </View>
+                )}
                 <TouchableOpacity onPress={()=>that.openMycamera()}>
                     <View style={{alignItems: 'flex-start', justifyContent: 'center'}}>
                         <CachedImage resizeMode="cover" style={ styles.homePage.headImage}

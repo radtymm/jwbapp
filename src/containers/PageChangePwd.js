@@ -46,33 +46,24 @@ class PageChangePwd extends React.Component {
             Alert.alert('提示', '两次新密码输入不一致');
             return;
         }
-        global.changePwdStatus = true;
         requestData('https://app.jiaowangba.com/change_password?current_password=' + this.state.oldPwd + '&new_password=' + this.state.newPwd, (ress)=>{
             if (ress) {
+                Alert.alert('提示', ress.msg);
                 if (ress.status == 'success') {
                     requestData('https://app.jiaowangba.com/chat/user_details', (res)=>{
-                        Alert.alert('提示', JSON.stringify(res));
-
                         if (res.status == 'success') {
-                            alert(global.tel + "----" + global.pwd)
-
                             let telPwd = {};
                             telPwd.isLogin = true;
                             telPwd.tel = global.tel;
                             telPwd.pwd = this.state.newPwd;
                             global.pwd = telPwd.pwd;
-                            alert(global.tel + "----" + global.pwd)
 
                             storage.save('isLogin', JSON.stringify(telPwd));
                             storage.save('loginUP', JSON.stringify(res.code));
                             console.log('reqsuccess');
-                            global.webIMConnection();
                             this.reqLoginHX(res.code.uuid, res.code.password);
-                        }else {
                         }
                     });
-                }else {
-                    Alert.alert('提示', ress.msg);
                 }
             }
         });
@@ -89,7 +80,6 @@ class PageChangePwd extends React.Component {
             appKey: WebIM.config.appkey
         };
         WebIM.conn.open(options);
-        global.changePwdStatus = false;
         // this.props.navigation.navigate('Tab');
     }
 
