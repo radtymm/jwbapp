@@ -5,7 +5,7 @@ import {
 import {requestData, requestDataPost} from '../libs/request';
 import styles from '../styleSheet/Styles';
 // import ImagePicker from 'react-native-image-picker'; //第三方相机
-import ImageCropPicker from 'react-native-image-crop-picker';
+// import ImageCropPicker from 'react-native-image-crop-picker';
 import Qiniu,{Auth,ImgOps,Conf,Rs,Rpc} from 'react-native-qiniu';
 import CachedImage from 'react-native-cached-image';
 import storage from '../libs/storage';
@@ -115,35 +115,35 @@ class MinePage extends React.Component {
     }
 
     pickSingleWithCamera() {
-        ImageCropPicker.openCamera({
-            cropping: true,
-            width: styles.WIDTH,
-            height: styles.WIDTH,
-        }).then(image => {
-            requestData("https://app.jiaowangba.com/qiniu/uptoken", (res)=>{
-                if (res.status == 'success'){
-                    this.updateImage(image.path, res.code);
-                }
-            });
-        }).catch(e => alert(e));
+        // ImageCropPicker.openCamera({
+        //     cropping: true,
+        //     width: styles.WIDTH,
+        //     height: styles.WIDTH,
+        // }).then(image => {
+        //     requestData("https://app.jiaowangba.com/qiniu/uptoken", (res)=>{
+        //         if (res.status == 'success'){
+        //             this.updateImage(image.path, res.code);
+        //         }
+        //     });
+        // }).catch(e => alert(e));
     }
 
     pickSingle( circular=false) {
-        ImageCropPicker.openPicker({
-            width: Math.round(styles.WIDTH * 2 + 500),
-            height: Math.round(styles.WIDTH * 2 + 500),
-            // compressImageQuality:1,
-            hideBottomControls: false,
-            cropping: true,
-        }).then(image => {
-            requestData("https://app.jiaowangba.com/qiniu/uptoken", (res)=>{
-                if (res.status == 'success'){
-                    this.updateImage(image.path, res.code, );
-                }
-            });
-        }).catch(e => {
-            console.log(e);
-        });
+        // ImageCropPicker.openPicker({
+        //     width: Math.round(styles.WIDTH * 2 + 500),
+        //     height: Math.round(styles.WIDTH * 2 + 500),
+        //     // compressImageQuality:1,
+        //     hideBottomControls: false,
+        //     cropping: true,
+        // }).then(image => {
+        //     requestData("https://app.jiaowangba.com/qiniu/uptoken", (res)=>{
+        //         if (res.status == 'success'){
+        //             this.updateImage(image.path, res.code, );
+        //         }
+        //     });
+        // }).catch(e => {
+        //     console.log(e);
+        // });
     }
 
     ElementText() {

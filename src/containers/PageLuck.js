@@ -16,7 +16,7 @@ import  PageBaseData from './PageBaseData';
 import styles from '../styleSheet/Styles';
 import {requestData} from '../libs/request';
 import CachedImage from 'react-native-cached-image';
-import SwipeCards from 'react-native-swipe-cards';
+// import SwipeCards from 'react-native-swipe-cards';
 import Swiper from 'react-native-deck-swiper'
 
 

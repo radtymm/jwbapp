@@ -11,7 +11,7 @@ import WebIM from '../../WebIM';
 import CachedImage from 'react-native-cached-image';
 // import {AudioRecorder, AudioUtils} from 'react-native-audio';
 // import Sound from 'react-native-sound';
-import ImageCropPicker from 'react-native-image-crop-picker';
+// import ImageCropPicker from 'react-native-image-crop-picker';
 import { connect } from 'react-redux';
 import {msgData, msgList} from '../redux/action/actions';
 import dateShow from '../libs/myFun';
@@ -103,28 +103,28 @@ class ChatScreen extends React.Component {
     }
 
     pickSingle( circular=false) {
-        ImageCropPicker.openPicker({
-            width: Math.round(styles.WIDTH * 2 + 500),
-            height: Math.round(styles.WIDTH * 2 + 500),
-            // compressImageQuality:1,
-            cropping: false,
-        }).then(image => {
-            this.handleSendImage(image, 'img');
-        }).catch(e => {
-            console.log(e);
-        });
+        // ImageCropPicker.openPicker({
+        //     width: Math.round(styles.WIDTH * 2 + 500),
+        //     height: Math.round(styles.WIDTH * 2 + 500),
+        //     // compressImageQuality:1,
+        //     cropping: false,
+        // }).then(image => {
+        //     this.handleSendImage(image, 'img');
+        // }).catch(e => {
+        //     console.log(e);
+        // });
     }
 
     pickSingleWithCamera() {
-        ImageCropPicker.openCamera({
-            width: Math.round(styles.WIDTH * 2 + 500),
-            height: Math.round(styles.WIDTH * 2 + 500),
-            cropping: false,
-        }).then(image => {
-            this.handleSendImage(image, 'img');
-        }).catch(e => {
-            console.log(e);
-        });
+        // ImageCropPicker.openCamera({
+        //     width: Math.round(styles.WIDTH * 2 + 500),
+        //     height: Math.round(styles.WIDTH * 2 + 500),
+        //     cropping: false,
+        // }).then(image => {
+        //     this.handleSendImage(image, 'img');
+        // }).catch(e => {
+        //     console.log(e);
+        // });
     }
 
     handleRefreshMessage(msg, isOther, type){
